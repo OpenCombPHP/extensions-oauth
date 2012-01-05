@@ -1,0 +1,15 @@
+<Extension>
+
+	<name>webopenapi</name>
+	<version>0.1</version>
+	<title>Web Open API</title>
+	
+ 
+	<class>org.opencomb.webopenapi.WebOpenAPI</class>
+	<package folder="/class" namespace="org.opencomb.webopenapi" />
+ 
+	<template folder="/template" />
+	
+	<publicFolder folder="/public" />
+	
+</Extension>
