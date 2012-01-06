@@ -38,7 +38,10 @@ class AuthorizeRequest extends Controller
 		Session::singleton()->addVariable($this->params['service'].'.RequestToken',$arrRequestToken) ;
 
 		// 重定向引导用户授权
-		$sRequestUrl = $aAdapter->tokenFetchUrl($arrRequestToken['oauth_token'],'authenticate',array('operation'=>$this->params['operation'])) ;
+		$sRequestUrl = $aAdapter->tokenFetchUrl($arrRequestToken['oauth_token'],'authenticate',array(
+				'operation'=>$this->params['operation'] ,
+				'service'=>$this->params['service'] ,
+		)) ;
 		$this->createMessage(Message::notice,"正在请求新浪微博授权...") ;
 		$this->location( $sRequestUrl ) ;
 	}

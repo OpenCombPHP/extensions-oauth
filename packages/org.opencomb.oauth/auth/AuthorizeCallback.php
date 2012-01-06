@@ -1,10 +1,8 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
-use com\weibo\sdk\WeiboOAuth;
-
-use org\opencomb\platform\ext\Extension;
-
+use org\opencomb\oauth\adapter\AuthAdapterException;
+use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\session\Session;
 use org\jecat\framework\message\Message;
 use org\jecat\framework\mvc\controller\Controller ;
@@ -14,40 +12,44 @@ class AuthorizeCallback extends Controller
 	public function process()
 	{
 		// 检查参数 ----------
-		if( empty($this->params['oauth_token']) or empty($this->params['oauth_verifier']) )
+		if( empty($this->params['oauth_token']) or empty($this->params['oauth_verifier']) or empty($this->params['service']) )
 		{
-			$this->createMessage(Message::notice,"缺少参数：oauth_token, oauth_verifier") ;
+			$this->createMessage(Message::notice,"缺少参数：oauth_token, oauth_verifier, service") ;
 			$this->messageQueue()->display() ;
 			return ;
 		}
 		
 		$arrKeys =& Session::singleton()->variable('weiboAuthKeys') ;
-		if( empty($arrKeys['oauth_token']) or empty($arrKeys['oauth_token_secret']) )
+		$arrRequestToken = Session::singleton()->variable($this->params['service'].'.RequestToken') ;
+		if( empty($arrRequestToken['oauth_token_secret']) )
 		{
-			$this->createMessage(Message::notice,"缺少参数：oauth_token, oauth_token_secret") ;
+			$this->createMessage(Message::notice,"request oauth_token_secret 丢失") ;
 			$this->messageQueue()->display() ;
 			return ;
 		}
-		
-		$aSetting = Extension::flyweight('webopenapi')->setting() ;
-		$sAppKey = $aSetting->item('/weibo.com','appKey') ;
-		$sAppSecret = $aSetting->item('/weibo.com','appSecret') ;
-		
-		if( !$sAppKey or !$sAppSecret )
+		if( $arrRequestToken['oauth_token']!=$this->params['oauth_token'] )
 		{
-			$this->createMessage(Message::error,"尚未配置新浪微博API的 AppKey/AppSecret") ;
+			$this->createMessage(Message::notice,"request oauth_token 不匹配") ;
 			$this->messageQueue()->display() ;
 			return ;
 		}
-		
+				
 		// 取得授权信息 --------
-		$aWeiboOAuth = new WeiboOAuth( $sAppKey, $sAppSecret, $arrKeys['oauth_token'] , $arrKeys['oauth_token_secret']  );
+		try{
+			
+			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service']) ;
+			
+			$arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']) ;
+			
+		}catch(AuthAdapterException $e){
+			$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
+			$this->messageQueue()->display() ;
+			return ;
+		}
 		
-		$this->arrAccessToken = $aWeiboOAuth->getAccessToken($this->params['oauth_verifier']) ;
-		print_r($this->arrAccessToken) ;
+		print_r($arrAccessToken) ;
 		
 		// 执行 action 
-		$this->doActions() ;
 		
 		// 绑定用户授权
 		
