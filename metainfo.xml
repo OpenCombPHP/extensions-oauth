@@ -1,12 +1,13 @@
 <Extension>
 
-	<name>webopenapi</name>
+	<name>oauth</name>
 	<version>0.1</version>
-	<title>Web Open API</title>
+	<title>OAuth 协议</title>
 	
  
-	<class>org.opencomb.webopenapi.WebOpenAPI</class>
-	<package folder="/class" namespace="org.opencomb.webopenapi" />
+	<class>org.opencomb.oauth.OAuth</class>
+	<package folder="/packages/org.opencomb.oauth" namespace="org.opencomb.oauth" />
+	<package folder="/packages/am.abrah.oauth" namespace="am.abrah.oauth" />
  
 	<template folder="/template" />
 	
