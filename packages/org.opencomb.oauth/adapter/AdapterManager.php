@@ -10,7 +10,7 @@ class AdapterManager extends Object
 	 * @throws AuthAdapterException
 	 * @return org\opencomb\oauth\adapter\AuthorizeAdapter
 	 */
-	public function createAuthAdapter($sServiceName)
+	public function createAuthAdapter($sServiceName,$sOAuthToken=null,$sOAuthTokenSecret=null)
 	{
 		if( !isset($this->arrAdapteeConfigs[$sServiceName]) )
 		{
@@ -28,14 +28,16 @@ class AdapterManager extends Object
 		{
 			throw new AuthAdapterException("服务:%s尚未配置正确的 app key/secret",$sServiceName,null,AuthAdapterException::not_setup_appkey) ;
 		}
-		
-		return new AuthorizeAdapter($this->arrAdapteeConfigs[$sServiceName]['auth'],$sAppKey,$sAppSecret) ;
+
+		return new AuthorizeAdapter($this->arrAdapteeConfigs[$sServiceName]['auth'],$sAppKey,$sAppSecret,$sOAuthToken,$sOAuthTokenSecret) ;
 	}
 	
 	public $arrAdapteeConfigs = array(
 			
 		// 新浪微博
 		'weibo' => array(
+			'name' => '新浪微博' ,
+				
 			// 授权
 			'auth' => array(
 				'adapter' => 'org\\opencomb\\webopenapi\\adapter\\oauth\\AuthorizerRequest' ,

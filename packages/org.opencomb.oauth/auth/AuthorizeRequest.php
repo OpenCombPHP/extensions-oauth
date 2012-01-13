@@ -42,7 +42,7 @@ class AuthorizeRequest extends Controller
 				'operation'=>$this->params['operation'] ,
 				'service'=>$this->params['service'] ,
 		)) ;
-		$this->createMessage(Message::notice,"正在请求新浪微博授权...") ;
+		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
 		$this->location( $sRequestUrl ) ;
 	}
 }

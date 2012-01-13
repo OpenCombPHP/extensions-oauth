@@ -9,6 +9,11 @@ use org\jecat\framework\mvc\controller\Controller ;
 
 class AuthorizeCallback extends Controller
 {
+	public function createBeanConfig()
+	{
+		
+	}
+	
 	public function process()
 	{
 		// 检查参数 ----------
@@ -33,11 +38,11 @@ class AuthorizeCallback extends Controller
 			$this->messageQueue()->display() ;
 			return ;
 		}
-				
+				print_r($arrRequestToken) ;
 		// 取得授权信息 --------
 		try{
 			
-			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service']) ;
+			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service'],$arrRequestToken['oauth_token'],$arrRequestToken['oauth_token_secret']) ;
 			
 			$arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']) ;
 			

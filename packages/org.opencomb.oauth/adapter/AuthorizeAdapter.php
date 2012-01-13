@@ -2,7 +2,6 @@
 namespace org\opencomb\oauth\adapter ;
 
 use am\abrah\oauth\OAuthRequest;
-
 use am\abrah\oauth\OAuthSignatureMethod_HMAC_SHA1;
 use am\abrah\oauth\OAuthUtil;
 use am\abrah\oauth\OAuthConsumer;
@@ -11,17 +10,22 @@ use org\jecat\framework\system\HttpRequest;
 
 class AuthorizeAdapter {
 	
-	public function __construct(array $arrAdapteeConfig,$consumer_key,$consumer_secret)
+	public function __construct(array $arrAdapteeConfig,$consumer_key,$consumer_secret,$oauth_token = NULL, $oauth_token_secret = NULL)
 	{
 		$this->arrAdapteeConfig = $arrAdapteeConfig ;
 		
 		$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
+		
+		if( $oauth_token and $oauth_token_secret )
+		{echo $oauth_token,$oauth_token_secret ;
+			$this->setOAuthToken(new OAuthConsumer($oauth_token, $oauth_token_secret)) ;
+		}
 	}
 	
 	public function setOAuthToken(OAuthConsumer $aToken)
 	{
-		$this->token = $aToken ;//new OAuthConsumer($oauth_token, $oauth_token_secret);
+		$this->token = $aToken ;
 	}
 	
 	/**
