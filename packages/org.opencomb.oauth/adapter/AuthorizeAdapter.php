@@ -18,7 +18,7 @@ class AuthorizeAdapter {
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
 		
 		if( $oauth_token and $oauth_token_secret )
-		{echo $oauth_token,$oauth_token_secret ;
+		{
 			$this->setOAuthToken(new OAuthConsumer($oauth_token, $oauth_token_secret)) ;
 		}
 	}
@@ -36,7 +36,7 @@ class AuthorizeAdapter {
 	function tokenFetchUrl($sOAuthToken, $sType='authenticate' , $arrCallbackParams=array())
 	{
 		$sCallback = HttpRequest::singleton()->urlNoQuery() ;
-		$sCallback.= '?c=org.opencomb.oauth.auth.AuthorizeCallback' ;
+		$sCallback.= '?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=form' ;
 
 		if($arrCallbackParams)
 		{
@@ -59,7 +59,7 @@ class AuthorizeAdapter {
 	
 		$request = $this->oAuthRequest($this->arrAdapteeConfig['tokenUrl']['request'],'GET',$parameters);
 		$token = OAuthUtil::parse_parameters($request);
-		$this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+		$this->token = new OAuthConsumer(@$token['oauth_token'],@$token['oauth_token_secret']);
 		
 		return $token;
 	}
@@ -80,7 +80,7 @@ class AuthorizeAdapter {
 	
 		$request = $this->oAuthRequest($this->arrAdapteeConfig['tokenUrl']['access'], 'GET', $parameters);
 		$token = OAuthUtil::parse_parameters($request);
-		$this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+		$this->token = new OAuthConsumer(@$token['oauth_token'],@$token['oauth_token_secret']);
 		return $token;
 	}
 	
@@ -124,13 +124,13 @@ class AuthorizeAdapter {
 	 *
 	 * @ignore
 	 */
-	private $timeout = 30;
+	private $timeout = 10;
 	/**
 	 * Set connect timeout.
 	 *
 	 * @ignore
 	 */
-	private $connecttimeout = 30;
+	private $connecttimeout = 10;
 	/**
 	 * Verify SSL Cert.
 	 *
@@ -167,37 +167,7 @@ class AuthorizeAdapter {
 	private $token ;
 	
 	private $arrAdapteeConfig ;
-	
-	
-	/**
-	 * Set API URLS
-	 */
-	/**
-	 * @ignore
-	 */
-	function accessTokenURL()  {
-		return 'http://api.t.sina.com.cn/oauth/access_token';
-	}
-	/**
-	 * @ignore
-	 */
-	function authenticateURL() {
-		return 'http://api.t.sina.com.cn/oauth/authenticate';
-	}
-	/**
-	 * @ignore
-	 */
-	function authorizeURL()    {
-		return 'http://api.t.sina.com.cn/oauth/authorize';
-	}
-	/**
-	 * @ignore
-	 */
-	function requestTokenURL() {
-		return 'http://api.t.sina.com.cn/oauth/request_token';
-	}
-	
-	
+		
 	/**
 	 * Debug helpers
 	 */

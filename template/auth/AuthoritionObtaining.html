@@ -1,0 +1,51 @@
+<lib name='jquery' />
+<msgqueue for='$theController' />
+
+<form id='theForm' method='post' action='?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists'>
+
+	<if "!$theModel->isEmpty()">
+	<div>
+		警告：{=$sServiceName}帐号已经绑定到帐号{=$theModel->username}上了，继续下面的操作，将解除和{=$sBindedUser}的绑定
+	</div>
+	</if>
+	
+	<if $bAlong>
+		<p>
+			<a href="?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindAlong&service={=$sServiceName}">将这个{=$sServiceName}帐号做为独立的用户</a>
+		</p>
+	</if>
+	
+	<p>
+		我已经有一个{=$sSiteName}的帐号，将这个{=$sServiceName}帐号和我的{=$sSiteName}帐号绑定
+		
+		<div>
+			用户名： <input name='user' value='{=$sBindUser}' />
+		</div>
+		<div>
+			密码： <input name='password' />
+		</div>
+		
+		<div id="msgqueue"></div>
+		<input id='btnBindExistsId' onclick='bindExistsId()' type="button" value="绑定帐号" />
+	</p>
+</form>
+<script>
+function bindExistsId()
+{
+	jquery('#btnBindExistsId').attr('disabled','disabled') ;
+	jquery('#msgqueue').html('正在绑定帐号......') ;
+	
+	var data = jquery('#theForm').serializeArray() ;
+	
+	jquery.ajax({
+		url: '?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists&service={=$sServiceName}&rspn=msgqueue'
+		, data: data
+		, complete: function(jqXHR,textStatus){
+			jquery('#btnBindExistsId').attr('disabled',false) ;
+			jquery('#msgqueue').html(jqXHR.responseText) ;
+		}
+		
+	}) ;
+}
+</script>
+	
