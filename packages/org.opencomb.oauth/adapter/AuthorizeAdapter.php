@@ -33,16 +33,8 @@ class AuthorizeAdapter {
 	 *
 	 * @return string
 	 */
-	function tokenFetchUrl($sOAuthToken, $sType='authenticate' , $arrCallbackParams=array())
+	function tokenFetchUrl($sOAuthToken, $sType='authorize' , $sCallback)
 	{
-		$sCallback = HttpRequest::singleton()->urlNoQuery() ;
-		$sCallback.= '?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=form' ;
-
-		if($arrCallbackParams)
-		{
-			$sCallback.= '&'.http_build_query($arrCallbackParams) ;
-		}
-		
 		return $this->arrAdapteeConfig[$sType]."?oauth_token={$sOAuthToken}&oauth_callback=" . urlencode($sCallback);
 	}
 	
@@ -51,12 +43,10 @@ class AuthorizeAdapter {
 	 *
 	 * @return array a key/value array containing oauth_token and oauth_token_secret
 	 */
-	function fetchRequestToken($oauth_callback = NULL) {
+	function fetchRequestToken($oauth_callback='null') {
 		$parameters = array();
-		if (!empty($oauth_callback)) {
-			$parameters['oauth_callback'] = $oauth_callback;
-		}
-	
+		$parameters['oauth_callback'] = $oauth_callback ;
+
 		$request = $this->oAuthRequest($this->arrAdapteeConfig['tokenUrl']['request'],'GET',$parameters);
 		$token = OAuthUtil::parse_parameters($request);
 		$this->token = new OAuthConsumer(@$token['oauth_token'],@$token['oauth_token_secret']);
@@ -81,6 +71,11 @@ class AuthorizeAdapter {
 		$request = $this->oAuthRequest($this->arrAdapteeConfig['tokenUrl']['access'], 'GET', $parameters);
 		$token = OAuthUtil::parse_parameters($request);
 		$this->token = new OAuthConsumer(@$token['oauth_token'],@$token['oauth_token_secret']);
+		
+		// 统一参数
+		$sIdKey = $this->arrAdapteeConfig['accessRspn']['keyId'] ;
+		$token['id'] = $token[$sIdKey] ;
+		
 		return $token;
 	}
 	
@@ -91,16 +86,16 @@ class AuthorizeAdapter {
 	 */
 	function oAuthRequest($url, $method, $parameters , $multi = false) {
 	
-		if (strrpos($url, 'http://') !== 0 && strrpos($url, 'http://') !== 0) {
+		/*if (strrpos($url, 'http://') !== 0 && strrpos($url, 'http://') !== 0) {
 			$url = "{$this->host}{$url}.{$this->format}";
-		}
+		}*/
 	
 		// echo $url ;
 		$request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
 		$request->sign_request($this->sha1_method, $this->consumer, $this->token);
 		switch ($method) {
 			case 'GET':
-				//echo $request->to_url();
+				// echo $request->to_url();
 				return $this->http($request->to_url(), 'GET');
 			default:
 				return $this->http($request->get_normalized_http_url(), $method, $request->to_postdata($multi) , $multi );

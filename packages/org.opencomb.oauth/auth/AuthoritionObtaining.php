@@ -29,8 +29,17 @@ class AuthoritionObtaining extends Controller
 								'table' => 'coresystem:userinfo'
 							) ,
 							'hasOne:token' => array(
-								'table' => 'user'
+								'table' => 'user' ,
+								'fromkeys' => 'uid' ,
+								'tokeys' => 'uid' ,
+								'keys' => array('service','suid') ,
 							) ,
+					)
+			) ,
+			'model:token' => array(
+					'orm'=>array(
+							'table' => 'user' ,
+							// 'keys' => array('service','suid') ,
 					)
 			) ,
 		) ;
@@ -72,7 +81,7 @@ class AuthoritionObtaining extends Controller
 		try{
 			
 			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service'],$arrRequestToken['oauth_token'],$arrRequestToken['oauth_token_secret']) ;
-			
+
 			$this->arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']) ;
 			
 		}catch(AuthAdapterException $e){
@@ -92,7 +101,7 @@ class AuthoritionObtaining extends Controller
 		
 		// 检查 token 是否存在
 		$this->user->load(
-				array($this->params['service'],$this->arrAccessToken['user_id'])
+				array($this->params['service'],$this->arrAccessToken['id'])
 				, array('token.service','token.suid')
 		) ;
 		
@@ -159,7 +168,7 @@ class AuthoritionObtaining extends Controller
 		// 解除以前的绑定
 		$aBind = $this->user->child('token')->prototype()->createModel() ;
 		if( $aBind->load(
-				array($this->params['service'],$arrAccessToken['user_id'])
+				array($this->params['service'],$arrAccessToken['id'])
 				, array('service','suid')
 		) )
 		{
@@ -173,7 +182,7 @@ class AuthoritionObtaining extends Controller
 		}
 		
 		$this->user['token.service'] = $this->params['service'] ;
-		$this->user['token.suid'] = $arrAccessToken['user_id'] ;
+		$this->user['token.suid'] = $arrAccessToken['id'] ;
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
 		
@@ -181,7 +190,7 @@ class AuthoritionObtaining extends Controller
 			$this->user->save() ;
 			$this->createMessage(Message::success,"帐号绑定成功") ;
 		} catch (\Exception $e) {
-			$this->createMessage(Message::error,"帐号绑定失败") ;
+			$this->createMessage(Message::error,"帐号绑定失败:%s",$e->getMessage()) ;
 			return ;
 		}
 	}
@@ -199,7 +208,7 @@ class AuthoritionObtaining extends Controller
 		}
 		
 		// 创建一个新用户
-		$this->user->username = "{$arrAccessToken['user_id']}@{$this->params['service']}" ;
+		$this->user->username = "{$arrAccessToken['id']}@{$this->params['service']}" ;
 		$this->user->password = md5( $this->user->username . time() );
 		$this->user->lastLoginTime = time() ;
 		$this->user->lastLoginIp = $_SERVER['REMOTE_ADDR'] ;
@@ -209,7 +218,7 @@ class AuthoritionObtaining extends Controller
 		$this->user->activeIp = $_SERVER['REMOTE_ADDR'] ;
 		$this->user['info.nickname'] = $this->user->username ;
 		$this->user['token.service'] = $this->params['service'] ;
-		$this->user['token.suid'] = $arrAccessToken['user_id'] ;
+		$this->user['token.suid'] = $arrAccessToken['id'] ;
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
 		

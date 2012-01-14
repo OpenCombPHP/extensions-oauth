@@ -35,24 +35,51 @@ class AdapterManager extends Object
 	public $arrAdapteeConfigs = array(
 			
 		// 新浪微博
-		'weibo' => array(
+		'weibo.com' => array(
 			'name' => '新浪微博' ,
-				
 			// 授权
 			'auth' => array(
 				'adapter' => 'org\\opencomb\\webopenapi\\adapter\\oauth\\AuthorizerRequest' ,
-				'authenticate' => 'http://api.t.sina.com.cn/oauth/authenticate' ,	
-				'authorize' => 'http://api.t.sina.com.cn/oauth/authorize' ,	
+				'authorize' => 'http://api.t.sina.com.cn/oauth/authenticate' ,	
 				'tokenUrl' => array(
 					'request' => 'http://api.t.sina.com.cn/oauth/request_token' ,
 					'access' => 'http://api.t.sina.com.cn/oauth/access_token' ,	
-				)	
+				) ,
+				'accessRspn' => array(
+					'keyId' => 'user_id' ,
+				) ,
 			)
 		) ,
 		
-		// QQ
-		'qq' => array(
+		// 腾讯微博
+		't.qq.com' => array(
+			'name' => '腾讯微博' ,
+			// 授权
+			'auth' => array(
+				'adapter' => 'org\\opencomb\\webopenapi\\adapter\\oauth\\AuthorizerRequest' ,
+				'authorize' => 'https://open.t.qq.com/cgi-bin/authorize' ,
+				'tokenUrl' => array(
+					'request' => 'https://open.t.qq.com/cgi-bin/request_token' ,
+					'access' => 'https://open.t.qq.com/cgi-bin/access_token' ,	
+				) ,
+				'accessRspn' => array(
+					'keyId' => 'name' ,
+				) ,
+			)
 		) ,
-			
+		
+		// douban
+		'douban.com' => array(
+			'name' => '豆瓣社区' ,
+			// 授权
+			'auth' => array(
+				'adapter' => 'org\\opencomb\\webopenapi\\adapter\\oauth\\AuthorizerRequest' ,
+				'authorize' => 'http://www.douban.com/service/auth/authorize' ,
+				'tokenUrl' => array(
+					'request' => 'http://www.douban.com/service/auth/request_token' ,
+					'access' => 'http://www.douban.com/service/auth/access_token' ,	
+				)	
+			)
+		) ,
 	) ;
 }
