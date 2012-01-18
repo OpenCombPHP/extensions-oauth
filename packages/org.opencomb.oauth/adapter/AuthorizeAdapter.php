@@ -6,7 +6,7 @@ use am\abrah\oauth\OAuthSignatureMethod_HMAC_SHA1;
 use am\abrah\oauth\OAuthUtil;
 use am\abrah\oauth\OAuthConsumer;
 use org\jecat\framework\util\DataSrc;
-use org\jecat\framework\system\HttpRequest;
+use org\jecat\framework\mvc\controller\HttpRequest;
 
 class AuthorizeAdapter {
 	

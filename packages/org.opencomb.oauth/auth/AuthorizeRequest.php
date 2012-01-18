@@ -1,7 +1,7 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
-use org\jecat\framework\system\HttpRequest;
+use org\jecat\framework\mvc\controller\HttpRequest;
 
 use org\jecat\framework\session\Session;
 use org\opencomb\oauth\adapter\AuthAdapterException;
