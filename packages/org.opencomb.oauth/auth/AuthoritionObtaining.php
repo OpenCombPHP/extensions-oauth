@@ -30,16 +30,16 @@ class AuthoritionObtaining extends Controller
 							) ,
 							'hasOne:token' => array(
 								'table' => 'user' ,
+								'keys' => array('service','suid') ,
 								'fromkeys' => 'uid' ,
 								'tokeys' => 'uid' ,
-								'keys' => array('service','suid') ,
 							) ,
 					)
 			) ,
 			'model:token' => array(
 					'orm'=>array(
 							'table' => 'user' ,
-							// 'keys' => array('service','suid') ,
+							'keys' => array('service','suid') ,
 					)
 			) ,
 		) ;
@@ -66,6 +66,7 @@ class AuthoritionObtaining extends Controller
 		
 		$arrKeys =& Session::singleton()->variable('weiboAuthKeys') ;
 		$arrRequestToken = Session::singleton()->variable($this->params['service'].'.RequestToken') ;
+		
 		if( empty($arrRequestToken['oauth_token_secret']) )
 		{
 			$this->createMessage(Message::notice,"request oauth_token_secret 丢失") ;
@@ -82,7 +83,7 @@ class AuthoritionObtaining extends Controller
 			
 			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service'],$arrRequestToken['oauth_token'],$arrRequestToken['oauth_token_secret']) ;
 
-			$this->arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']) ;
+			$this->arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']?$this->params['oauth_verifier']:$this->params['code']) ;
 			
 		}catch(AuthAdapterException $e){
 			$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
@@ -143,6 +144,7 @@ class AuthoritionObtaining extends Controller
 	protected function actionBindExists()
 	{
 		$arrAccessToken = Session::singleton()->variable($this->params['service'].'.AccessToken') ;
+		
 		if( empty($arrAccessToken['oauth_token']) or empty($arrAccessToken['oauth_token_secret']) )
 		{
 			$this->createMessage(Message::notice,"access oauth_token/secret 丢失") ;

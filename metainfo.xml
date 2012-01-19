@@ -7,6 +7,7 @@
  
 	<class>org.opencomb.oauth.OAuth</class>
 	<package folder="/packages/org.opencomb.oauth" namespace="org.opencomb.oauth" />
+	<package folder="/packages/net.daichen.oauth" namespace="net.daichen.oauth" />
 	<package folder="/packages/am.abrah.oauth" namespace="am.abrah.oauth" />
  
 	<template folder="/template" />

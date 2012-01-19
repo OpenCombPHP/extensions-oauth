@@ -41,19 +41,22 @@ class AuthorizeRequest extends Controller
 			'operation'=>$this->params['operation'] ,
 			'service'=>$this->params['service'] ,
 		)) ;
-		$arrRequestToken = $aAdapter->fetchRequestToken($sCallbackUrl) ;
-		if(empty($arrRequestToken['oauth_token']))
+		
+		if($this->params['service'] == "renren.com")
+		{
+		    $sCallbackUrl = "http://www.wownei.com";
+		}
+		$sRequestUrl = $aAdapter->fetchRequestTokenUrl($sCallbackUrl) ;
+		
+		if(empty($sRequestUrl))
 		{
 			$this->createMessage( Message::error,"从 %s 取得 request token 失败，请检查 oauth 配置", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
 			$this->messageQueue()->display() ;
-			print_r($arrRequestToken) ;
 			return ;			
 		}
 
-		Session::singleton()->addVariable($this->params['service'].'.RequestToken',$arrRequestToken) ;
 
 		// 重定向引导用户授权
-		$sRequestUrl = $aAdapter->tokenFetchUrl($arrRequestToken['oauth_token'],'authorize',$sCallbackUrl) ;
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
 		$this->location( $sRequestUrl ) ;
 	}
