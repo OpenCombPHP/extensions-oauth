@@ -1,6 +1,7 @@
 <?php 
 namespace org\opencomb\oauth ;
 
+use org\jecat\framework\lang\aop\AOP;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\opencomb\platform\system\PlatformSerializer;
 use org\jecat\framework\ui\xhtml\weave\Patch;
@@ -20,5 +21,7 @@ class OAuth extends Extension
 		// --------------------------
 		// 提供给系统序列化
 		PlatformSerializer::singleton()->addSystemObject(AdapterManager::singleton()) ;
+		
+		AOP::singleton()->register('org\\opencomb\\oauth\\aspect\\MainMenuAspect') ;
 	}
 }
