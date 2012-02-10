@@ -28,12 +28,17 @@ class Oauth10Adapter
     
     public function fetchRequestTokenUrl($call_back_uri){
         $para = array();
+        
+        //腾讯登网站的call_back是第一次申请RequestToken的有效
         $responseData = $this->oauthCommon->RequestToken($call_back_uri, $para);
+        
         $http =new Http();
         $array = $http->GetQueryParameters($responseData);
         
         Session::singleton()->addVariable($this->arrAdapteeConfigs['url'].'.RequestToken',$array) ;
-        return $this->oauthCommon->AuthorizationURL($array["oauth_token"]);
+        
+        //搜狐，网易等网站的call_back是用RequestToken组装RequestTokenUrl时候然有效
+        return $this->oauthCommon->AuthorizationURL($array["oauth_token"],$call_back_uri);
     }
     
     public function fetchAccessToken($verifier){
@@ -45,11 +50,24 @@ class Oauth10Adapter
          
          $array = $http->GetQueryParameters($responseData);
          
-         
          // 统一参数
-         $sIdKey = $this->arrAdapteeConfigs['auth']['accessRspn']['keyId'] ;
-         $array['id'] = $array[$sIdKey] ;
-         
+
+         /**
+          * 认证信息里不包含用户信息的情况
+          */
+         if(empty($array[$this->arrAdapteeConfigs['auth']['accessRspn']['keyId']]))
+         {
+             $userinfoUrl = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
+             $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
+             
+             $responseData = $this->oauthCommon->SignRequest($userinfoUrl, "get", $params, $array['oauth_token'],$array['oauth_token_secret']);
+             
+             
+             $aRs = json_decode($responseData,true);
+             $array['id'] = $aRs[$this->arrAdapteeConfigs['auth']['accessRspn']['keyId']];
+         }else{
+             $array['id'] = $array[$this->arrAdapteeConfigs['auth']['accessRspn']['keyId']] ;
+         }
          
         return  $array;
     }

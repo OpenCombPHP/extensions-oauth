@@ -35,18 +35,20 @@ class AuthorizeRequest extends Controller
 			return ;
 		}
 		
-		// 取得 request token
+		// 取得未授权 request token
 		$sCallbackUrl = HttpRequest::singleton()->urlNoQuery().'?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=form' ;
 		$sCallbackUrl.= '&' . http_build_query(array(
 			'operation'=>$this->params['operation'] ,
 			'service'=>$this->params['service'] ,
 		)) ;
 		
-		if($this->params['service'] == "renren.com")
+		if(AdapterManager::singleton()->getCallbackCode($this->params['service']) == "urlencode")
 		{
 		    $sCallbackUrl = urlencode($sCallbackUrl);
 		}
+		
 		$sRequestUrl = $aAdapter->fetchRequestTokenUrl($sCallbackUrl) ;
+		
 		
 		if(empty($sRequestUrl))
 		{
@@ -54,7 +56,6 @@ class AuthorizeRequest extends Controller
 			$this->messageQueue()->display() ;
 			return ;			
 		}
-
 
 		// 重定向引导用户授权
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;

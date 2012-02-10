@@ -53,6 +53,7 @@ class OAuthCommon extends OAuthBase{
             $url = $uri[0];
             if($uri[1] !=""){
                 $url.="?".$uri[1];
+                
                 return $http->fetch_page($url,false,"Get");
             }
         }else{
@@ -60,9 +61,9 @@ class OAuthCommon extends OAuthBase{
         }
     }
     
-    public function AuthorizationURL($oauth_token) 
+    public function AuthorizationURL($oauth_token,$call_back_uri="") 
     {
-         $getUserAuthorizationURL =$this->GetAuthorizeUri(). "?oauth_token=" .$oauth_token;
+         $getUserAuthorizationURL =$this->GetAuthorizeUri(). "?oauth_token=" .$oauth_token."&oauth_callback=".urlencode($call_back_uri);
          return $getUserAuthorizationURL;
     }
     
@@ -82,7 +83,7 @@ class OAuthCommon extends OAuthBase{
         }
     }
     
-    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert){
+    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert=""){
         $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "", $postData);
         
         $http = new Http();

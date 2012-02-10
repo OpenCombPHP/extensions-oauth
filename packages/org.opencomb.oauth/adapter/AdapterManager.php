@@ -77,6 +77,21 @@ class AdapterManager extends Object
 	    return $oOauth;
 	}
 	
+	/**
+	 * 返回CallbackCode编码类型
+	 * @param unknown_type $sServiceName
+	 */
+	public function getCallbackCode($sServiceName){
+	    return @$this->arrAdapteeConfigs[$sServiceName]['auth']['callbackCode'];
+	}
+	
+	/**
+	 * 返回获得access时所需要然参数
+	 * @param unknown_type $sServiceName
+	 */
+	public function getAccessParam($sServiceName){
+	    return @$this->arrAdapteeConfigs[$sServiceName]['auth']['tokenUrl']['accessParam'];
+	}
 	
 	public $arrAdapteeConfigs = array(
 	
@@ -92,6 +107,7 @@ class AdapterManager extends Object
 	                        'tokenUrl' => array(
 	                                'request' => 'http://api.t.sina.com.cn/oauth/request_token' ,
 	                                'access' => 'http://api.t.sina.com.cn/oauth/access_token' ,
+	                                'accessParam' => 'oauth_verifier' ,//获得access时所需要然参数
 	                        ) ,
 	                        'accessRspn' => array(
 	                                'keyId' => 'user_id' ,
@@ -110,7 +126,7 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                             ),
                             'timeline'=>array(
-                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'uri'=>'http://api.t.sina.com.cn/statuses/friends_timeline.json',
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
@@ -129,6 +145,7 @@ class AdapterManager extends Object
 	                        'tokenUrl' => array(
 	                                'request' => 'https://open.t.qq.com/cgi-bin/request_token' ,
 	                                'access' => 'https://open.t.qq.com/cgi-bin/access_token' ,
+	                                'accessParam' => 'oauth_verifier' ,//获得access时所需要然参数
 	                        ) ,
 	                        'accessRspn' => array(
 	                                'keyId' => 'name' ,
@@ -166,7 +183,11 @@ class AdapterManager extends Object
 	                        'tokenUrl' => array(
 	                                'request' => 'http://www.douban.com/service/auth/request_token' ,
 	                                'access' => 'http://www.douban.com/service/auth/access_token' ,
+	                                'accessParam' => 'oauth_token' ,//获得access时所需要然参数
 	                        ),
+	                        'accessRspn' => array(
+	                                'keyId' => 'douban_user_id' ,
+	                        ) ,
 	
 	                ),
                     // 应用
@@ -179,6 +200,11 @@ class AdapterManager extends Object
                             'add'=>array(
                                     'uri'=>'http://api.douban.com/miniblog/saying',
                                     'params'=>array('format'=>'xml','html'=>"<?xml version='1.0' encoding='UTF-8'?><entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:db=\"http://www.douban.com/xmlns/\"><content>{content}</content></entry>"),
+                            ),
+                            'timeline'=>array(
+                                    'uri'=>'http://api.douban.com/people/%40me/miniblog',
+                                    'params'=>array('alt'=>'json'),
+                                    'columns' => array(''=>'') , 
                             ),
                     ),
 	        ) ,
@@ -195,21 +221,25 @@ class AdapterManager extends Object
 	                        'tokenUrl' => array(
 	                                'request' => 'http://api.t.sohu.com/oauth/request_token' ,
 	                                'access' => 'http://api.t.sohu.com/oauth/access_token' ,
+	                                'accessParam' => 'oauth_token' ,//获得access时所需要然参数
 	                        ),
+	                        'accessRspn'=> array(
+	                                'keyId' => 'id' ,
+	                        ) ,
 	                ),
 	                // 应用
 	                'api' => array(
 	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiSohuAdapter' ,
 	                        'userinfo'=>array(
-	                                'uri'=>'http://api.t.sohu.com/account/verify_credentials.json',
-	                                'params'=>array(),
+	                                'uri'=>'http://api.t.sohu.com/users/show.json',
+	                                'params'=>array('format'=>'json'),
 	                        ),
 	                        'add'=>array(
 	                                'uri'=>'http://api.t.sohu.com/statuses/update.json',
 	                                'params'=>array('format'=>'json'),
 	                        ),
                             'timeline'=>array(
-                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'uri'=>'http://api.t.sohu.com/statuses/friends_timeline.json',
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
@@ -228,7 +258,11 @@ class AdapterManager extends Object
 	                        'tokenUrl' => array(
 	                                'request' => 'http://api.t.163.com/oauth/request_token' ,
 	                                'access' => 'http://api.t.163.com/oauth/access_token' ,
+	                                'accessParam' => 'oauth_token' ,//获得access时所需要然参数
 	                        ),
+	                        'accessRspn'=> array(
+	                                'keyId' => 'id' ,
+	                        ) ,
 	                ),
                     // 应用
                     'api' => array(
@@ -242,7 +276,7 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                             ),
                             'timeline'=>array(
-                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'uri'=>'http://api.t.163.com/statuses/home_timeline.json',
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
@@ -258,9 +292,11 @@ class AdapterManager extends Object
 	                'auth' => array(
 	                        'adapter' => 'org\\opencomb\\webopenapi\\adapter\\oauth\\AuthorizerRequest' ,
 	                        'authorize' => 'https://graph.renren.com/oauth/authorize' ,
+	                        'callbackCode'=>'urlencode',
 	                        'tokenUrl' => array(
 	                                'access_token_uri' => 'https://graph.renren.com/oauth/token' ,
 	                                'scope' => 'read_user_album+read_user_feed' ,
+	                                'accessParam' => 'code' ,//获得access时所需要然参数
 	                        ),
 	                        'accessRspn'=> array(
 	                                'keyId' => 'user.id' ,

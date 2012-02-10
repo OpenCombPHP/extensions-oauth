@@ -58,9 +58,8 @@ class AuthoritionObtaining extends Controller
 	protected function actionForm()
 	{
 	    
-	    
 		// 检查参数 ----------
-		if( empty($this->params['service']) or ((empty($this->params['oauth_token']) or empty($this->params['oauth_verifier']) ) and (empty($this->params['code']))) )
+		if( empty($this->params['service']) or (empty($this->params['oauth_token']) and (empty($this->params['code']))) )
 		{
 			$this->createMessage(Message::notice,"缺少参数：oauth_token, oauth_verifier, service") ;
 			return ;
@@ -84,13 +83,15 @@ class AuthoritionObtaining extends Controller
 		try{
 			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service'],$arrRequestToken['oauth_token'],$arrRequestToken['oauth_token_secret']) ;
 			
-			$this->arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']?$this->params['oauth_verifier']:$this->params['code']) ;
+			$token = $this->params[AdapterManager::singleton()->getAccessParam($this->params['service'])];
 			
+			$this->arrAccessToken = $aAdapter->fetchAccessToken($token) ;
 			
 		}catch(AuthAdapterException $e){
 			$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 			return ;
 		}
+		
 		
 		if( !empty($this->arrAccessToken['error']) )
 		{
