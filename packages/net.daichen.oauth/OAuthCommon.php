@@ -12,7 +12,8 @@ class OAuthCommon extends OAuthBase{
     private $authorize_uri;
     private $access_token_uri;
     
-    public function __construct($appkey,$appkeysercert,$request_token_uri,$authorize_uri,$access_token_uri){
+    public function __construct($appkey,$appkeysercert,$request_token_uri = "",$authorize_uri = "",$access_token_uri = ""){
+        
         $this->appkey = $appkey;
         $this->appkeysercert = $appkeysercert;
         $this->request_token_uri = $request_token_uri;
@@ -83,14 +84,17 @@ class OAuthCommon extends OAuthBase{
     
     public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert){
         $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "", $postData);
+        
         $http = new Http();
         if(is_array($postUri)){
             if(strtoupper($HttpMode) == "GET"){
                 $url = $postUri[0]."?".$postUri[1];
+                
                 return $http->fetch_page($url,false,$HttpMode);
             }  
             else if(strtoupper($HttpMode) == "POST") {
                 $url = $postUri[0];
+                
                 return $http->fetch_page($url,$postUri[1],$HttpMode);
             }  else {
                 return "";
@@ -159,13 +163,17 @@ class OAuthCommon extends OAuthBase{
     }
     
     public function Get2AccessToken($AuthorizationCode,$callback_uri){
+        
         $para = array("grant_type"=>"authorization_code");
         $para["code"] = $AuthorizationCode;
         $para["client_id"] = $this->appkey;
         $para["client_secret"] = $this->appkeysercert;
         $para["redirect_uri"] = $callback_uri;
-        $AccessUrl = $this->authorize_uri."?".$this->NormalizeRequestParameters($para);
+        $AccessUrl = $this->access_token_uri."?".$this->NormalizeRequestParameters($para);
+        
+        
         $http = new Http();
+        
         return $http->fetch_page($AccessUrl,"","POST");
     }
     
@@ -176,29 +184,18 @@ class OAuthCommon extends OAuthBase{
          return $http->fetch_page($SessionUrl,"","POST");
     }
     
-    public function CallRequest($uri, $paras, $session_key,$format,$server,$session_sercert){
+    public function CallRequest($uri, $paras, $format,$token){
         $strSign="";
         $http=new Http();
         if(is_array($paras)){
-            $paras["session_key"] = $session_key;
+            $paras["access_token"] = $token;
             $paras["format"] = $format!=""?$format:"json";
-            if(strtoupper($server) == "RENREN" || empty($server)){
-                $paras["api_key"] =$this->appkey;
-                $paras["call_id"] = floor(microtime()*1000);
-                $paras["v"] = "1.0";
-                $strSign = $this->Sign($paras,false); 
-                $paras["sig"] =$strSign;
-                $call_uri = $uri."?".$this->NormalizeRequestParameters($paras);
-                return $http->fetch_page($call_uri, $paras, "post");
-            }else if(strtoupper($server) == "BAIDU"){
-                $paras["timestamp"] = date("Y-m-d h:i:s");
-                $strSign = $this->Sign($paras, $session_sercert);
-                $paras["sign"] = $strSign;
-                $call_uri = $uri."?".$this->NormalizeRequestParameters($paras);
-                return $http->fetch_page($call_uri, $paras, "post");
-            }else{
-                return $strSign;
-            }
+            $paras["call_id"] = floor(microtime()*1000);
+            $paras["v"] = "1.0";
+            $strSign = $this->Sign($paras,false); 
+            $paras["sig"] =$strSign;
+            $call_uri = $uri."?".$this->NormalizeRequestParameters($paras);
+            return $http->fetch_page($call_uri, $paras, "post");
         }else{
             return $strSign;
         }

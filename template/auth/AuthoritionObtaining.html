@@ -38,7 +38,7 @@ function bindExistsId()
 	var data = jquery('#theForm').serializeArray() ;
 	
 	jquery.ajax({
-		url: '?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists&service={=$sServiceName}&rspn=msgqueue'
+		url: '?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists&service={=$sServiceName}&code={=$sCode}&rspn=msgqueue'
 		, data: data
 		, complete: function(jqXHR,textStatus){
 			jquery('#btnBindExistsId').attr('disabled',false) ;

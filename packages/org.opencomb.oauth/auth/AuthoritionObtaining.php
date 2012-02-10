@@ -57,8 +57,10 @@ class AuthoritionObtaining extends Controller
 	
 	protected function actionForm()
 	{
+	    
+	    
 		// 检查参数 ----------
-		if( empty($this->params['oauth_token']) or empty($this->params['oauth_verifier']) or empty($this->params['service']) )
+		if( empty($this->params['service']) or ((empty($this->params['oauth_token']) or empty($this->params['oauth_verifier']) ) and (empty($this->params['code']))) )
 		{
 			$this->createMessage(Message::notice,"缺少参数：oauth_token, oauth_verifier, service") ;
 			return ;
@@ -67,12 +69,12 @@ class AuthoritionObtaining extends Controller
 		$arrKeys =& Session::singleton()->variable('weiboAuthKeys') ;
 		$arrRequestToken = Session::singleton()->variable($this->params['service'].'.RequestToken') ;
 		
-		if( empty($arrRequestToken['oauth_token_secret']) )
+		if( empty($arrRequestToken['oauth_token_secret']) && empty($this->params['code']))
 		{
 			$this->createMessage(Message::notice,"request oauth_token_secret 丢失") ;
 			return ;
 		}
-		if( $arrRequestToken['oauth_token']!=$this->params['oauth_token'] )
+		if( $arrRequestToken['oauth_token']!=$this->params['oauth_token'] && empty($this->params['code']))
 		{
 			$this->createMessage(Message::notice,"request oauth_token 不匹配") ;
 			return ;
@@ -80,10 +82,10 @@ class AuthoritionObtaining extends Controller
 
 		// 取得授权信息 --------
 		try{
-			
 			$aAdapter = AdapterManager::singleton()->createAuthAdapter($this->params['service'],$arrRequestToken['oauth_token'],$arrRequestToken['oauth_token_secret']) ;
-
+			
 			$this->arrAccessToken = $aAdapter->fetchAccessToken($this->params['oauth_verifier']?$this->params['oauth_verifier']:$this->params['code']) ;
+			
 			
 		}catch(AuthAdapterException $e){
 			$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
@@ -99,6 +101,7 @@ class AuthoritionObtaining extends Controller
 			) ;
 			return ;
 		}
+		
 		
 		// 检查 token 是否存在
 		$this->user->load(
@@ -128,6 +131,7 @@ class AuthoritionObtaining extends Controller
 		
 		$this->view->hideForm(false) ;
 		$this->view->variables()->set('sServiceName',$this->params['service']) ;
+		$this->view->variables()->set('sCode',$this->params['code']) ;
 		
 		Session::singleton()->addVariable($this->params['service'].'.AccessToken',$this->arrAccessToken) ;
 		
@@ -143,20 +147,17 @@ class AuthoritionObtaining extends Controller
 	 */
 	protected function actionBindExists()
 	{
+	    
 		$arrAccessToken = Session::singleton()->variable($this->params['service'].'.AccessToken') ;
 		
-		if( empty($arrAccessToken['oauth_token']) or empty($arrAccessToken['oauth_token_secret']) )
-		{
-			$this->createMessage(Message::notice,"access oauth_token/secret 丢失") ;
-			return ;
-		}
 		$this->params['user'] = trim($this->params['user']) ;
 		if( empty($this->params['user']) or empty($this->params['password']) )
 		{
 			$this->createMessage(Message::error,"请输入用户名和密码") ;
 			return ;
 		}
-		$sPassword = Id::encryptPassword($this->params['user'],$this->params['password']) ;
+		$sPassword = Id::encryptPassword(IdManager::singleton()->currentId(),$this->params['user'],$this->params['password']) ;
+		
 		
 		if( !$this->user->load(
 			array($this->params['user'],$sPassword)		
@@ -188,6 +189,8 @@ class AuthoritionObtaining extends Controller
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
 		
+		
+		
 		try{
 			$this->user->save() ;
 			$this->createMessage(Message::success,"帐号绑定成功") ;
@@ -203,11 +206,6 @@ class AuthoritionObtaining extends Controller
 	protected function actionBindAlong()
 	{
 		$arrAccessToken = Session::singleton()->variable($this->params['service'].'.AccessToken') ;
-		if( empty($arrAccessToken['oauth_token']) or empty($arrAccessToken['oauth_token_secret']) )
-		{
-			$this->createMessage(Message::notice,"access oauth_token/secret 丢失") ;
-			return ;
-		}
 		
 		// 创建一个新用户
 		$this->user->username = "{$arrAccessToken['id']}@{$this->params['service']}" ;

@@ -31,7 +31,10 @@ class Http{
         curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3');
         curl_setopt($ch, CURLOPT_URL,$url);
 
+        
+        
         $result = curl_exec($ch);
+        
         curl_close($ch);
         return $result;
     }

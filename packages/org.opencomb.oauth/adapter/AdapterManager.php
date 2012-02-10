@@ -7,6 +7,7 @@ use org\jecat\framework\lang\Object;
 class AdapterManager extends Object
 {
 	/**
+	 * Auth
 	 * @throws AuthAdapterException
 	 * @return org\opencomb\oauth\adapter\AuthorizeAdapter
 	 */
@@ -40,12 +41,46 @@ class AdapterManager extends Object
 		    $oOauth = new Oauth20Adapter($this->arrAdapteeConfigs[$sServiceName],array('appkey'=>$sAppKey,'appsecret'=>$sAppSecret));
 		}
 		return $oOauth;
-		//return new AuthorizeAdapter($this->arrAdapteeConfigs[$sServiceName]['auth'],$sAppKey,$sAppSecret,$sOAuthToken,$sOAuthTokenSecret) ;
 	}
+	
+	/**
+	 * API
+	 * @param unknown_type $sServiceName
+	 * @param unknown_type $sOAuthToken
+	 * @param unknown_type $sOAuthTokenSecret
+	 * @throws AuthAdapterException
+	 */
+	public function createApiAdapter($sServiceName,$sOAuthToken=null,$sOAuthTokenSecret=null)
+	{
+	    if( !isset($this->arrAdapteeConfigs[$sServiceName]) )
+	    {
+	        throw new AuthAdapterException("无效的服务名称:%s",$sServiceName,null,AuthAdapterException::invalid_service) ;
+	    }
+
+	    $aSetting = Extension::flyweight('oauth')->setting() ;
+	    $sAppKey = $aSetting->item('/'.$sServiceName,'appKey') ;
+	    $sAppSecret = $aSetting->item('/'.$sServiceName,'appSecret') ;
+	
+	    if( !$sAppKey or !$sAppSecret )
+	    {
+	        throw new AuthAdapterException("服务:%s尚未配置正确的 app key/secret",$sServiceName,null,AuthAdapterException::not_setup_appkey) ;
+	    }
+	
+	    $sApiObj = $this->arrAdapteeConfigs[$sServiceName]["api"]['adapter'];
+	    if(!empty($sApiObj))
+	    {
+	        $oOauth = new $sApiObj($this->arrAdapteeConfigs[$sServiceName],array('appkey'=>$sAppKey,'appsecret'=>$sAppSecret));
+	    }else{
+	        $oOauth = new ApiAdapter($this->arrAdapteeConfigs[$sServiceName],array('appkey'=>$sAppKey,'appsecret'=>$sAppSecret));
+	    }
+	    
+	    return $oOauth;
+	}
+	
 	
 	public $arrAdapteeConfigs = array(
 	
-	// 新浪微博
+	        // 新浪微博
 	        'weibo.com' => array(
 	                'name' => '新浪微博' ,
 	                'url' => 'weibo.com' ,
@@ -61,18 +96,25 @@ class AdapterManager extends Object
 	                        'accessRspn' => array(
 	                                'keyId' => 'user_id' ,
 	                        ) ,
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://api.t.sina.com.cn/account/verify_credentials.json',
-	                                        'params'=>array('format'=>'json'),
-	                                ),
-	                                'add'=>array(
-	                                        'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
-	                                        'params'=>array('format'=>'json'),
-	                                ),
-	                        ),
-	                )
+	                ),
+                    // 应用
+                    'api' => array(
+                            
+                            'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiSinaWeiboAdapter' ,
+                            'userinfo'=>array(
+                                    'uri'=>'http://api.t.sina.com.cn/account/verify_credentials.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'add'=>array(
+                                    'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'timeline'=>array(
+                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'params'=>array('format'=>'json'),
+                                    'columns' => array(''=>'') , 
+                            ),
+                    ),
 	        ) ,
 	
 	        // 腾讯微博
@@ -91,18 +133,25 @@ class AdapterManager extends Object
 	                        'accessRspn' => array(
 	                                'keyId' => 'name' ,
 	                        ) ,
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://open.t.qq.com/api/user/info',
-	                                        'params'=>array('format'=>'json'),
-	                                ),
-	                                'add'=>array(
-	                                        'uri'=>'http://open.t.qq.com/api/t/add',
-	                                        'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
-	                                ),
+	                ),
+	                
+	                // 应用
+	                'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiTencentAdapter' ,
+	                        'userinfo'=>array(
+	                                'uri'=>'http://open.t.qq.com/api/user/info',
+	                                'params'=>array('format'=>'json'),
 	                        ),
-	                )
+	                        'add'=>array(
+	                                'uri'=>'http://open.t.qq.com/api/t/add',
+	                                'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
+	                        ),
+                            'timeline'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/statuses/home_timeline',
+                                    'params'=>array('format'=>'json'),
+                                    'columns' => array(''=>'') , 
+                            ),
+	                ),
 	        ) ,
 	
 	        // douban
@@ -118,19 +167,20 @@ class AdapterManager extends Object
 	                                'request' => 'http://www.douban.com/service/auth/request_token' ,
 	                                'access' => 'http://www.douban.com/service/auth/access_token' ,
 	                        ),
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://api.douban.com/people/%40me?alt=json',
-	                                        'params'=>array(),
-	                                ),
-	                                'add'=>array(
-	                                        'uri'=>'http://api.douban.com/miniblog/saying',
-	                                        'params'=>array('format'=>'xml','html'=>"<?xml version='1.0' encoding='UTF-8'?><entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:db=\"http://www.douban.com/xmlns/\"><content>{content}</content></entry>"),
-	                                ),
-	                        ),
 	
-	                )
+	                ),
+                    // 应用
+                    'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiDoubanAdapter' ,
+                            'userinfo'=>array(
+                                    'uri'=>'http://api.douban.com/people/%40me?alt=json',
+                                    'params'=>array(),
+                            ),
+                            'add'=>array(
+                                    'uri'=>'http://api.douban.com/miniblog/saying',
+                                    'params'=>array('format'=>'xml','html'=>"<?xml version='1.0' encoding='UTF-8'?><entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:db=\"http://www.douban.com/xmlns/\"><content>{content}</content></entry>"),
+                            ),
+                    ),
 	        ) ,
 	
 	        // sohu
@@ -146,18 +196,24 @@ class AdapterManager extends Object
 	                                'request' => 'http://api.t.sohu.com/oauth/request_token' ,
 	                                'access' => 'http://api.t.sohu.com/oauth/access_token' ,
 	                        ),
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://api.t.sohu.com/account/verify_credentials.json',
-	                                        'params'=>array(),
-	                                ),
-	                                'add'=>array(
-	                                        'uri'=>'http://api.t.sohu.com/statuses/update.json',
-	                                        'params'=>array('format'=>'json'),
-	                                ),
+	                ),
+	                // 应用
+	                'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiSohuAdapter' ,
+	                        'userinfo'=>array(
+	                                'uri'=>'http://api.t.sohu.com/account/verify_credentials.json',
+	                                'params'=>array(),
 	                        ),
-	                )
+	                        'add'=>array(
+	                                'uri'=>'http://api.t.sohu.com/statuses/update.json',
+	                                'params'=>array('format'=>'json'),
+	                        ),
+                            'timeline'=>array(
+                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'params'=>array('format'=>'json'),
+                                    'columns' => array(''=>'') , 
+                            ),
+	                ),
 	        ) ,
 	
 	        // 163
@@ -173,18 +229,24 @@ class AdapterManager extends Object
 	                                'request' => 'http://api.t.163.com/oauth/request_token' ,
 	                                'access' => 'http://api.t.163.com/oauth/access_token' ,
 	                        ),
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://api.t.163.com/account/verify_credentials.json',
-	                                        'params'=>array("format"=>"json"),
-	                                ),
-	                                'add'=>array(
-	                                        'uri'=>'http://api.t.163.com/statuses/update.json',
-	                                        'params'=>array('format'=>'json'),
-	                                ),
-	                        ),
-	                )
+	                ),
+                    // 应用
+                    'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\Api163Adapter' ,
+                            'userinfo'=>array(
+                                    'uri'=>'http://api.t.163.com/account/verify_credentials.json',
+                                    'params'=>array("format"=>"json"),
+                            ),
+                            'add'=>array(
+                                    'uri'=>'http://api.t.163.com/statuses/update.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'timeline'=>array(
+                                    'uri'=>'https://api.weibo.com/2/users/show.json',
+                                    'params'=>array('format'=>'json'),
+                                    'columns' => array(''=>'') , 
+                            ),
+                    ),
 	        ) ,
 	
 	        // renren
@@ -198,16 +260,24 @@ class AdapterManager extends Object
 	                        'authorize' => 'https://graph.renren.com/oauth/authorize' ,
 	                        'tokenUrl' => array(
 	                                'access_token_uri' => 'https://graph.renren.com/oauth/token' ,
-	                                'scope' => 'status_update' ,
+	                                'scope' => 'read_user_album+read_user_feed' ,
 	                        ),
-	                        // 应用
-	                        'app' => array(
-	                                'userinfo'=>array(
-	                                        'uri'=>'http://api.renren.com/restserver.do',
-	                                        'params'=>array('mode'=>'users.getInfo','method'=>'users.getInfo','fields'=>'uid,name,sex,star,zidou,vip,birthday,email_hash,tinyurl,headurl,mainurl,hometown_location,work_history,university_history'),
-	                                ),
-	                        ),
-	                )
+	                        'accessRspn'=> array(
+	                                'keyId' => 'user.id' ,
+	                        ) ,
+	                ),
+                    // 应用
+                    'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiRenRenAdapter' ,
+                            'userinfo'=>array(
+                                    'uri'=>'http://api.renren.com/restserver.do',
+                                    'params'=>array('mode'=>'users.getInfo','method'=>'users.getInfo','fields'=>'uid,name,sex,star,zidou,vip,birthday,email_hash,tinyurl,headurl,mainurl,hometown_location,work_history,university_history'),
+                            ),
+                            'timeline'=>array(
+                                    'uri'=>'http://api.renren.com/restserver.do',
+                                    'params'=>array('format'=>'json','method'=>'feed.get','type'=>'10,11,20,21,22,23,30,31,32,33,34,35,36,40,41,50,51,52,53,54,55'),
+                            ),
+                    ),
 	        ) ,
 	) ;
 }

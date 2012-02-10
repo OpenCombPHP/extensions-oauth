@@ -44,7 +44,7 @@ class AuthorizeRequest extends Controller
 		
 		if($this->params['service'] == "renren.com")
 		{
-		    $sCallbackUrl = "http://www.wownei.com";
+		    $sCallbackUrl = urlencode($sCallbackUrl);
 		}
 		$sRequestUrl = $aAdapter->fetchRequestTokenUrl($sCallbackUrl) ;
 		
