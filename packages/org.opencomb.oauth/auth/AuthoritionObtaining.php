@@ -157,7 +157,7 @@ class AuthoritionObtaining extends Controller
 			$this->createMessage(Message::error,"请输入用户名和密码") ;
 			return ;
 		}
-		$sPassword = Id::encryptPassword(IdManager::singleton()->currentId(),$this->params['user'],$this->params['password']) ;
+		$sPassword = Id::encryptPassword($this->user,$this->params['user'],$this->params['password']) ;
 		
 		
 		if( !$this->user->load(
