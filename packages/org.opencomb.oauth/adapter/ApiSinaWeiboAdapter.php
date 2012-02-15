@@ -26,15 +26,15 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$time=""){
+    public function TimeLine($token,$token_secret ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if($time)
+        if(!empty($lastData))
         {
-            //$params["pagetime"] = $time;
+            $params['since_id'] = $lastData['cursor_id'];
         }
         
         $params["access_token"] = $token;
@@ -73,6 +73,7 @@ class ApiSinaWeiboAdapter
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source'];
+            $aRsTmp['cursor_id'] = $aRs['id'];
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
         
         

@@ -25,16 +25,10 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$time=""){
+    public function TimeLine($token,$token_secret ,$lastData){
         
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
-        
-        if($time)
-        {
-            //$params["pagetime"] = $time;
-        }
-        
         
         $responseData = $this->oauthCommon->CallRequest($url, $params,"json", $token);
     
@@ -42,8 +36,11 @@ class ApiRenRenAdapter
         
         foreach ($aRs as $v)
         {
-            $aRs = $this->filter($v);
-            $aRsTrue[] = $aRs;
+            if($lastData['time'] < strtotime($v['update_time']))
+            {
+                $aRs = $this->filter($v);
+                $aRsTrue[] = $aRs;
+            }
         }
         
         return $aRsTrue;

@@ -26,16 +26,12 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$time=""){
+    public function TimeLine($token,$token_secret ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if($time)
-        {
-            //$params["pagetime"] = $time;
-        }
         
         $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
         
@@ -43,8 +39,11 @@ class ApiDoubanAdapter
         
         foreach ($aRs['entry'] as $v)
         {
-            $aRs = $this->filter($v);
-            $aRsTrue[] = $aRs;
+            if($lastData['time'] < strtotime($v['published']['$t']))
+            {
+                $aRs = $this->filter($v);
+                $aRsTrue[] = $aRs;
+            }
         }
         return $aRsTrue;
     }

@@ -28,14 +28,13 @@ class Api163Adapter
     
     public function TimeLine($token,$token_secret ,$lastData){
     
-        if(empty($lastData))
-        {
-            
-        }
-    
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
-        //$params['max_id'] = "-4235698966700794925:1329280145147";
+        
+        if(!empty($lastData))
+        {
+            $params['max_id'] = $lastData['cursor_id'];
+        }
         
         $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
     
@@ -43,16 +42,23 @@ class Api163Adapter
     
         foreach ($aRs as $v)
         {
-            $aRs = $this->filter($v);
+            /**
+             * 排除当前条
+             */
             
-            if(!empty($v['in_reply_to_status_text']))
+            if($lastData['cursor_id'] != $v['cursor_id'])
             {
-                $aRs['source'] = $this->filter(array(
-                        'user'=>array('id'=>$v['in_reply_to_user_id'],'name'=>$v['in_reply_to_user_name'])       ,
-                        'text'=>$v['in_reply_to_status_text'],
-                ));
+                $aRs = $this->filter($v);
+                
+                if(!empty($v['in_reply_to_status_text']))
+                {
+                    $aRs['source'] = $this->filter(array(
+                            'user'=>array('id'=>$v['in_reply_to_user_id'],'name'=>$v['in_reply_to_user_name'])       ,
+                            'text'=>$v['in_reply_to_status_text'],
+                    ));
+                }
+                $aRsTrue[] = $aRs;
             }
-            $aRsTrue[] = $aRs;
         }
     
         return $aRsTrue;
@@ -72,6 +78,7 @@ class Api163Adapter
         $aRsTmp['time'] = strtotime($aRs['created_at']);
         $aRsTmp['data'] = json_encode($aRs);
         $aRsTmp['client'] = $aRs['source'];
+        $aRsTmp['cursor_id'] = $aRs['cursor_id'];
         //             $aRsTmp['client_url'] = $aRs['source']['href'];
     
     

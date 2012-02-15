@@ -26,15 +26,15 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret,$time=""){
+    public function TimeLine($token,$token_secret,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
     
-        $params["pageflag"] = '2';
-        if($time)
+        if(!empty($lastData))
         {
-            $params["pagetime"] = $time;
+            $params['pageflag'] = "2";
+            $params['pagetime'] = $lastData['time'];
         }
         
         $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);

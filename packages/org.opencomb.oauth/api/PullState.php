@@ -78,11 +78,13 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && $o->service == "163.com" && ($o->pulltime+$o->pullnexttime) < time())
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() /* && $o->service == "renren.com"  */)
 	        {
+	            echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
 	                $aRs = @$aAdapter->TimeLine($o->token,$o->token_secret,json_decode($o->pulldata,true));
+	                echo "<pre>";print_r($aRs);echo "</pre>";
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
@@ -123,13 +125,10 @@ class PullState extends Controller
 	                if($i == 0)
 	                {
 	                    $o->setData("pulldata",json_encode($aRs[$i]));
-	                    $o->save() ;
 	                }
-	                
 	                
 	                //测试用户是否已经存在
 	                
-	                /*
 	                $uid = "0";
 	                $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
 	                $this->auser->clearData();
@@ -164,14 +163,12 @@ class PullState extends Controller
 	            
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['fstid'] = '0';
-	                */
 	                
 	                /**
 	                 * add feed
 	                 * @example new Controller
 	                 */
 	            
-	                /*
 	                if(!empty($aRs[$i]['source']))
 	                {
 	                    $aRs[$i]['source']['fstid'] = '0';
@@ -184,9 +181,11 @@ class PullState extends Controller
 	                }
 	                $stateController = new CreateState($aRs[$i]);
 	                $stateController->process();
-	                */
 	            }
 	            
+	            $o->save() ;
+	        }else{
+	            echo "<pre>";print_r("时间没到:".$o->service);echo "</pre>";
 	        }
 	    }
 	    
