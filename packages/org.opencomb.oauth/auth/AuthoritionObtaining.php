@@ -3,6 +3,7 @@ namespace org\opencomb\oauth\auth ;
 
 use org\jecat\framework\db\ExecuteException;
 use org\opencomb\coresystem\auth\Id;
+use org\opencomb\coresystem\auth\Authenticate;
 use org\jecat\framework\auth\IdManager;
 use org\jecat\framework\bean\BeanFactory;
 use org\opencomb\oauth\adapter\AuthAdapterException;
@@ -157,7 +158,7 @@ class AuthoritionObtaining extends Controller
 			$this->createMessage(Message::error,"请输入用户名和密码") ;
 			return ;
 		}
-		$sPassword = Id::encryptPassword($this->user,$this->params['user'],$this->params['password']) ;
+		$sPassword = Authenticate::encryptPassword($this->user,$this->params['user'],$this->params['password']) ;
 		
 		
 		if( !$this->user->load(
