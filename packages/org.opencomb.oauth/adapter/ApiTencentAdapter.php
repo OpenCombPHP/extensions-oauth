@@ -26,15 +26,93 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ){
-    
+    public function TimeLine($token,$token_secret,$time=""){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
     
+        $params["pageflag"] = '2';
+        if($time)
+        {
+            $params["pagetime"] = $time;
+        }
+        
         $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
-        return $responseData;
+	    $responseData = preg_replace("||",'',$responseData );
+        $aRs = json_decode ($responseData,true);
+        $aUser = $aRs['data']['user'];
+        
+        
+        foreach ($aRs['data']['info'] as $v)
+        {
+            $v['user'] = $aUser;
+            $aRs = $this->filter($v);
+            
+            if(!empty($v['source']))
+            {
+                $v['source']['user'] = $aUser;
+                $aRs['source'] = $this->filter($v['source']);
+            }
+            $aRsTrue[] = $aRs;
+        }
+        
+        return $aRsTrue;
     }
+    
+    
+    private function filter($aRs){
+        
+        
+            $aRsTmp = array();
+            $aRsTmp['system'] = 't.qq.com';
+        
+        
+            $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
+        
+            preg_match_all("/@(.*?):/", $text, $aAT);
+            if(!empty($aAT[1][0])) $text = preg_replace("/@(.*?):/", "<a href='http://t.qq.com/$1'>".$aRs['user'][$aAT[1][0]]."</a>:", $text);
+        
+            $aRsTmp['subject'] = trim($text);
+            $aRsTmp['time'] = $aRs['timestamp'];
+            $aRsTmp['data'] = json_encode($aRs);
+            $aRsTmp['client'] = $aRs['from'];
+            $aRsTmp['client_url'] = @$aRs['fromurl'];
+        
+        
+            $aRsTmp['username'] = $aRs['name'];
+            $aRsTmp['password'] = md5($aRs['name']);
+            $aRsTmp['registerTime'] = time();
+            $aRsTmp['nickname'] = $aRs['nick'];
+            $aRsTmp['avatar'] = $aRs['head'];
+        
+            for($i = 0; $i < sizeof($aRs['image']); $i++){
+        
+                $aRsAttachmentTmp = array();
+                $aRsAttachmentTmp['type'] = 'image';
+                $aRsAttachmentTmp['url'] = $aRs['image'][$i];
+                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            }
+        
+            for($i = 0; $i < sizeof($aRs['video']); $i++){
+        
+                $aRsAttachmentTmp = array();
+                $aRsAttachmentTmp['type'] = 'video';
+                $aRsAttachmentTmp['url'] = $aRs['video']['realurl'];
+                $aRsAttachmentTmp['title'] = $aRs['video']['title'];
+                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            }
+        
+            for($i = 0; $i < sizeof($aRs['music']); $i++){
+        
+                $aRsAttachmentTmp = array();
+                $aRsAttachmentTmp['type'] = 'music';
+                $aRsAttachmentTmp['url'] = $aRs['music']['url'];
+                $aRsAttachmentTmp['title'] = $aRs['music']['title'];
+                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            }
+        
+            return $aRsTmp;
+        }
 }
 
 ?>

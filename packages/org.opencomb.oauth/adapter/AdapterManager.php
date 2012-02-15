@@ -202,7 +202,7 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'xml','html'=>"<?xml version='1.0' encoding='UTF-8'?><entry xmlns:ns0=\"http://www.w3.org/2005/Atom\" xmlns:db=\"http://www.douban.com/xmlns/\"><content>{content}</content></entry>"),
                             ),
                             'timeline'=>array(
-                                    'uri'=>'http://api.douban.com/people/%40me/miniblog',
+                                    'uri'=>'http://api.douban.com/people/%40me/miniblog/contacts',
                                     'params'=>array('alt'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
