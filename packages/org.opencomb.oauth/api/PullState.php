@@ -15,6 +15,9 @@ use org\opencomb\coresystem\mvc\controller\Controller ;
 
 class PullState extends Controller
 {
+    private $minNextTime = 2;
+    private $maxNextTime = 10;
+    
 	public function createBeanConfig()
 	{
 	    $aOrm = array(
@@ -75,16 +78,35 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && $o->service == "163.com" )
+	        if($o->hasData('token') && $o->hasData('token_secret') && $o->service == "163.com" && ($o->pulltime+$o->pullnexttime) < time())
 	        {
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
-	                $aRs = $aAdapter->TimeLine($o->token,$o->token_secret,$o->pulltime);
-	                
+	                $aRs = @$aAdapter->TimeLine($o->token,$o->token_secret,json_decode($o->pulldata,true));
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
 	                return ;
+	            }
+	            
+	            /**
+	             * 最新一条记录的时间
+	             */
+	            $o->setData("pulltime",time());
+	            if(empty($aRs))
+	            {
+	                /**
+	                 * 如果没有更新到数据下次更新时间增加20%
+	                 * @var unknown_type
+	                 */
+	                $nextTime = $o->pullnexttime +2;
+	                if($nextTime > $this->maxNextTime)
+	                {
+	                    $nextTime = $this->maxNextTime;
+	                }
+	                $o->setData("pullnexttime",$nextTime);
+	            }else{
+	                $o->setData("pullnexttime",$this->minNextTime);
 	            }
 	            
 	            
@@ -94,7 +116,20 @@ class PullState extends Controller
 	            
 	            for($i = 0; $i < sizeof($aRs); $i++){
 	                
+	                
+	                /**
+	                 * 把最新一条记录的数据存到oauth表中
+	                 */
+	                if($i == 0)
+	                {
+	                    $o->setData("pulldata",json_encode($aRs[$i]));
+	                    $o->save() ;
+	                }
+	                
+	                
 	                //测试用户是否已经存在
+	                
+	                /*
 	                $uid = "0";
 	                $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
 	                $this->auser->clearData();
@@ -129,12 +164,14 @@ class PullState extends Controller
 	            
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['fstid'] = '0';
-	            
+	                */
+	                
 	                /**
 	                 * add feed
 	                 * @example new Controller
 	                 */
 	            
+	                /*
 	                if(!empty($aRs[$i]['source']))
 	                {
 	                    $aRs[$i]['source']['fstid'] = '0';
@@ -147,19 +184,7 @@ class PullState extends Controller
 	                }
 	                $stateController = new CreateState($aRs[$i]);
 	                $stateController->process();
-	                
-	                /**
-	                 * 把最后一条记录的时间以及数据存到oauth表中
-	                 */
-	                if($i == 0)
-	                {
-	                    $o->setData("pulltime",$aRs[$i]['time']);
-	                    $o->setData("pulldata",json_encode($aRs[$i]));
-	                    $o->printStruct() ;
-	                    echo '>>' ;
-	                    $o->save() ;
-	                    DB::singleton()->executeLog() ;
-	                }
+	                */
 	            }
 	            
 	        }

@@ -26,18 +26,17 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$time="",$page=1){
+    public function TimeLine($token,$token_secret ,$lastData){
     
+        if(empty($lastData))
+        {
+            
+        }
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         //$params['max_id'] = "-4235698966700794925:1329280145147";
         
-        if($time)
-        {
-            //$params["pagetime"] = $time;
-        }
-    
         $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
     
         $aRs = json_decode ($responseData,true);
