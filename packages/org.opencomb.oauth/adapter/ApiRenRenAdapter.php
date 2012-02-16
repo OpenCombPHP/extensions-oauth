@@ -13,9 +13,11 @@ class ApiRenRenAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $appkey;
     
     public function __construct($aSiteConfig,$aKey) {
         
+        $this->appkey = $aKey;
         if(empty($aSiteConfig) || empty($aKey))
         {
             throw new Exception("尚不能绑定此网站");
@@ -25,13 +27,28 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function filterTimeLineParams($token,$token_secret ,$lastData){
         
-        $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
+        $params['appkey'] = $this->appkey["appkey"];
+        $params['appsecret'] = $this->appkey["appsecret"];
+        $params['HttpMode'] = "post";
         
-        $responseData = $this->oauthCommon->CallRequest($url, $params,"json", $token);
+        $params["access_token"] = $token;
+        $params["format"] = "json";
+        $params["call_id"] = floor(microtime()*1000);
+        $params["v"] = "1.0";
+        $strSign = $this->oauthCommon->Sign($params,false);
+        $params["sig"] =$strSign;
+        $call_uri = $this->arrAdapteeConfigs['api']['timeline']['uri']."?".$this->oauthCommon->NormalizeRequestParameters($params);
+        
+        $params['url'] = $call_uri;
+        
+        return $params;
+    }
     
+    public function execTimeLine()
+    {
         $aRs = json_decode ($responseData,true);
         
         foreach ($aRs as $v)
@@ -42,8 +59,6 @@ class ApiRenRenAdapter
                 $aRsTrue[] = $aRs;
             }
         }
-        
-        return $aRsTrue;
     }
     
     private function filter($aRs){

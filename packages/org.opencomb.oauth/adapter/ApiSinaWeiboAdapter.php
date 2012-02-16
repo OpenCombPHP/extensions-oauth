@@ -13,9 +13,11 @@ class ApiSinaWeiboAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $appkey;
     
     public function __construct($aSiteConfig,$aKey) {
         
+        $this->appkey = $aKey;
         if(empty($aSiteConfig) || empty($aKey))
         {
             throw new Exception("尚不能绑定此网站");
@@ -26,11 +28,13 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function filterTimeLineParams($token,$token_secret ,$lastData){
     
-    
-        $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
+        $params['appkey'] = $this->appkey["appkey"];
+        $params['appsecret'] = $this->appkey["appsecret"];
+        $params['url'] = $this->arrAdapteeConfigs['api']['timeline']['uri'];
+        $params['HttpMode'] = "get";
         
         if(!empty($lastData))
         {
@@ -40,9 +44,11 @@ class ApiSinaWeiboAdapter
         $params["access_token"] = $token;
         $params["source"] = '3576764673';
     
-        
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
-        
+        return $params;
+    }
+    
+    public function execTimeLine()
+    {
         $aRs = json_decode ($responseData,true);
         
         foreach ($aRs as $v)
@@ -55,8 +61,6 @@ class ApiSinaWeiboAdapter
             }
             $aRsTrue[] = $aRs;
         }
-        
-        return $aRsTrue;
     }
     
     private function filter($aRs){

@@ -13,9 +13,11 @@ class ApiSohuAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $appkey;
     
     public function __construct($aSiteConfig,$aKey) {
         
+        $this->appkey = $aKey;
         if(empty($aSiteConfig) || empty($aKey))
         {
             throw new Exception("尚不能绑定此网站");
@@ -26,20 +28,24 @@ class ApiSohuAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function filterTimeLineParams($token,$token_secret ,$lastData){
     
-    
-        $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
+        $params['appkey'] = $this->appkey["appkey"];
+        $params['appsecret'] = $this->appkey["appsecret"];
+        $params['url'] = $this->arrAdapteeConfigs['api']['timeline']['uri'];
+        $params['HttpMode'] = "get";
         
         if(!empty($lastData))
         {
             $params['since_id'] = $lastData['cursor_id'];
         }
+        
+        return $params;
+    }
     
-        
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
-        
+    public function execTimeLine()
+    {
         $aRs = json_decode ($responseData,true);
         
         foreach ($aRs as $v)
@@ -55,8 +61,6 @@ class ApiSohuAdapter
             }
             $aRsTrue[] = $aRs;
         }
-        
-        return $aRsTrue;
     }
     
     private function filter($aRs){
