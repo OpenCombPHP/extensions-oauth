@@ -89,6 +89,10 @@ class OAuthCommon extends OAuthBase{
         echo "<pre>";print_r($params);echo "</pre>";
         for($i = 0; $i < sizeof($params); $i++)
         {
+            $ss = $this->http->fetch_page($params[$i]['params']['url'],$params[$i]['params'],$params[$i]['params']['HttpMode']);
+            
+            echo "<pre>";print_r($ss);echo "</pre>";exit;
+            
             $postUri = $this->GetOauthUrl($params[$i]['params']['url'], $params[$i]['params']['HttpMode'], $params[$i]['params']['appkey'] ,$params[$i]['params']['appsecret'], $params[$i]['token'] ,$params[$i]['token_secret'],"" , "", $params[$i]['params']);
             
             if(is_array($postUri)){
