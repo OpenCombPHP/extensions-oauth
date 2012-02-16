@@ -162,7 +162,7 @@ class PullState extends Controller
 	                }
 	            
 	                $aRs[$i]['uid'] = $uid;
-	                $aRs[$i]['fstid'] = '0';
+	                $aRs[$i]['forwardtid'] = '0';
 	                
 	                /**
 	                 * add feed
@@ -171,13 +171,13 @@ class PullState extends Controller
 	            
 	                if(!empty($aRs[$i]['source']))
 	                {
-	                    $aRs[$i]['source']['fstid'] = '0';
+	                    $aRs[$i]['source']['forwardtid'] = '0';
 	                    $aRs[$i]['source']['uid'] = $uid;
 	            
 	            
 	                    $stateController = new CreateState($aRs[$i]['source']);
 	                    $stid = $stateController->process();
-	                    $aRs[$i]['fstid'] = $stid; 
+	                    $aRs[$i]['forwardtid'] = $stid; 
 	                }
 	                $stateController = new CreateState($aRs[$i]);
 	                $stateController->process();
