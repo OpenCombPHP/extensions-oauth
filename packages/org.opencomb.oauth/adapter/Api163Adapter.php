@@ -13,11 +13,9 @@ class Api163Adapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
-    public $appkey;
     
     public function __construct($aSiteConfig,$aKey) {
         
-        $this->appkey = $aKey;
         if(empty($aSiteConfig) || empty($aKey))
         {
             throw new Exception("尚不能绑定此网站");
@@ -28,25 +26,17 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function filterTimeLineParams($token,$token_secret ,$lastData){
+    public function TimeLine($token,$token_secret ,$lastData){
     
+        $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
-        $params['appkey'] = $this->appkey["appkey"];
-        $params['appsecret'] = $this->appkey["appsecret"];
-        $params['url'] = $this->arrAdapteeConfigs['api']['timeline']['uri'];
-        $params['HttpMode'] = "get";
         
         if(!empty($lastData))
         {
             $params['max_id'] = $lastData['cursor_id'];
         }
         
-        return $params;
-    }
-    
-    
-    public function execTimeLine()
-    {
+        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
     
         $aRs = json_decode ($responseData,true);
     
@@ -70,8 +60,9 @@ class Api163Adapter
                 $aRsTrue[] = $aRs;
             }
         }
-    }
     
+        return $aRsTrue;
+    }
     
     private function filter($aRs){
     
