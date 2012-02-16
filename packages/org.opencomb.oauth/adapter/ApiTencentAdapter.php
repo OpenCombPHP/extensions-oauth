@@ -72,7 +72,7 @@ class ApiTencentAdapter
             preg_match_all("/@(.*?):/", $text, $aAT);
             if(!empty($aAT[1][0])) $text = preg_replace("/@(.*?):/", "<a href='http://t.qq.com/$1'>".$aRs['user'][$aAT[1][0]]."</a>:", $text);
         
-            $aRsTmp['subject'] = trim($text);
+            $aRsTmp['title'] = trim($text);
             $aRsTmp['time'] = $aRs['timestamp'];
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['from'];

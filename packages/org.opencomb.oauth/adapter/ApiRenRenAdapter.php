@@ -54,16 +54,16 @@ class ApiRenRenAdapter
         
             if(empty($aRs['trace']))
             {
-                $aRsTmp['subject'] = $aRs['prefix'].' <a href="'.$aRs['href'].'">'.$aRs['title']."</a>";
-                $aRsTmp['summary'] = $aRs['description'];
+                $aRsTmp['title'] = $aRs['prefix'].' <a href="'.$aRs['href'].'">'.$aRs['title']."</a>";
+                $aRsTmp['body'] = $aRs['description'];
             }else{
                 $title = $aRs['trace']['text'];
                 for($i = 0; $i < sizeof($aRs['trace']['node']); $i++){
                     $title = preg_replace("/".$aRs['trace']['node'][$i]['name']."/","<a href='http://www.renren.com/profile.do?id=".$aRs['trace']['node'][$i]['id']."'>".$aRs['trace']['node'][$i]['name']."</a>",$title);
                 }
                 
-                $aRsTmp['subject'] = $title;
-                $aRsTmp['summary'] = "<b>".$aRs['title']."</b><br/>".$aRs['description'];
+                $aRsTmp['title'] = $title;
+                $aRsTmp['body'] = "<b>".$aRs['title']."</b><br/>".$aRs['description'];
             }
             
             $aRsTmp['time'] = strtotime($aRs['update_time']);

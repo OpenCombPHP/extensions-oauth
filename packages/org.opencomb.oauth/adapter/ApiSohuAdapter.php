@@ -68,8 +68,8 @@ class ApiSohuAdapter
             
             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
-            $aRsTmp['subject'] = $text;
-//             $aRsTmp['summary'] = $aRs['description'];
+            $aRsTmp['title'] = $text;
+//             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source'];

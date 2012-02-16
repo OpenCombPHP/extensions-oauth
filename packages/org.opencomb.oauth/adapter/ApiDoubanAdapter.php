@@ -54,7 +54,7 @@ class ApiDoubanAdapter
             $aRsTmp = array();
             $aRsTmp['system'] = 'douban.com';
         
-            $aRsTmp['subject'] = $aRs['content']['$t'];
+            $aRsTmp['title'] = $aRs['content']['$t'];
             $aRsTmp['time'] = strtotime($aRs['published']['$t']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = "";
