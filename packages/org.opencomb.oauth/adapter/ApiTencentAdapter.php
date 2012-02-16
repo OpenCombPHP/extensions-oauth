@@ -13,9 +13,11 @@ class ApiTencentAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $appkey;
     
     public function __construct($aSiteConfig,$aKey) {
         
+        $this->appkey = $aKey;
         if(empty($aSiteConfig) || empty($aKey))
         {
             throw new Exception("尚不能绑定此网站");
@@ -26,19 +28,27 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret,$lastData){
+    public function filterTimeLineParams($token,$token_secret,$lastData){
     
-        $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
-    
+        $params['appkey'] = $this->appkey["appkey"];
+        $params['appsecret'] = $this->appkey["appsecret"];
+        $params['url'] = $this->arrAdapteeConfigs['api']['timeline']['uri'];
+        $params['HttpMode'] = "get";
         if(!empty($lastData))
         {
             $params['pageflag'] = "2";
             $params['pagetime'] = $lastData['time'];
         }
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
-	    $responseData = preg_replace("||",'',$responseData );
+        //$responseData = $this->oauthCommon->SignRequest_multi($url, "get", $params, $token, $token_secret);
+        
+        return $params;
+    }
+    
+    public function execTimeLine()
+    {
+        $responseData = preg_replace("||",'',$responseData );
         $aRs = json_decode ($responseData,true);
         $aUser = $aRs['data']['user'];
         
@@ -47,7 +57,7 @@ class ApiTencentAdapter
         {
             $v['user'] = $aUser;
             $aRs = $this->filter($v);
-            
+        
             if(!empty($v['source']))
             {
                 $v['source']['user'] = $aUser;
@@ -55,8 +65,6 @@ class ApiTencentAdapter
             }
             $aRsTrue[] = $aRs;
         }
-        
-        return $aRsTrue;
     }
     
     
