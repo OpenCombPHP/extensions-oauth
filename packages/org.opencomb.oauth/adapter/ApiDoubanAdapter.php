@@ -26,14 +26,18 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function createTimeLineMulti($token,$token_secret ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'douban.com');
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
         
         $aRs = json_decode ($responseData,true);
         
@@ -52,9 +56,10 @@ class ApiDoubanAdapter
         
         
             $aRsTmp = array();
-            $aRsTmp['system'] = 'douban.com';
+            $aRsTmp['system'] = '';
         
             $aRsTmp['title'] = $aRs['content']['$t'];
+            $aRsTmp['id'] = $aRs['id']['$t'];
             $aRsTmp['time'] = strtotime($aRs['published']['$t']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = "";

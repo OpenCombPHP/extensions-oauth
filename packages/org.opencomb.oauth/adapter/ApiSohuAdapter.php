@@ -26,7 +26,7 @@ class ApiSohuAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function createTimeLineMulti($token,$token_secret ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
@@ -38,8 +38,12 @@ class ApiSohuAdapter
         }
     
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+        return  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'sohu.com');
         
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
         $aRs = json_decode ($responseData,true);
         
         foreach ($aRs as $v)
@@ -51,6 +55,7 @@ class ApiSohuAdapter
                 $aRs['source'] = $this->filter(array(
                     'user'=>array('id'=>$v['in_reply_to_user_id'],'screen_name'=>$v['in_reply_to_screen_name'])       , 
                     'text'=>$v['in_reply_to_status_text'],
+                    'id'=>$v['in_reply_to_status_id'],
                 ));
             }
             $aRsTrue[] = $aRs;
@@ -63,12 +68,13 @@ class ApiSohuAdapter
         
         
             $aRsTmp = array();
-            $aRsTmp['system'] = 'sohu.com';
+            $aRsTmp['system'] = '';
         
             
             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
             $aRsTmp['title'] = $text;
+            $aRsTmp['id'] = $aRs['id'];
 //             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);

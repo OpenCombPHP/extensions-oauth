@@ -25,12 +25,16 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function createTimeLineMulti($token,$token_secret ,$lastData){
         
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        $responseData = $this->oauthCommon->CallRequest($url, $params,"json", $token);
+        return $this->oauthCommon->CallRequest($url, $params,"json", $token,'renren.com');
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
     
         $aRs = json_decode ($responseData,true);
         
@@ -50,7 +54,16 @@ class ApiRenRenAdapter
         
         
             $aRsTmp = array();
-            $aRsTmp['system'] = 'renren.com';
+            
+            if($aRs['feed_type'] == 20 || $aRs['feed_type'] == 21 ||$aRs['feed_type'] == 22 || $aRs['feed_type'] == 23)
+            {
+                $aRsTmp['system'] = 'blog';
+            }elseif ($aRs['feed_type'] == 30 || $aRs['feed_type'] == 31 ||$aRs['feed_type'] == 32 || $aRs['feed_type'] == 33){
+                $aRsTmp['system'] = 'album';
+            }else{
+                $aRsTmp['system'] = "";
+            }
+            
         
             if(empty($aRs['trace']))
             {
@@ -67,6 +80,7 @@ class ApiRenRenAdapter
             }
             
             $aRsTmp['time'] = strtotime($aRs['update_time']);
+            $aRsTmp['id'] = $aRs['post_id'];
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source']['text'];
             $aRsTmp['client_url'] = $aRs['source']['href'];

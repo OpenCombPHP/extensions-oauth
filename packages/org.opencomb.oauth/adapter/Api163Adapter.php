@@ -26,7 +26,7 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function createTimeLineMulti($token,$token_secret ,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
@@ -36,7 +36,11 @@ class Api163Adapter
             $params['max_id'] = $lastData['cursor_id'];
         }
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+        return  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'163.com');
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
     
         $aRs = json_decode ($responseData,true);
     
@@ -55,6 +59,7 @@ class Api163Adapter
                     $aRs['source'] = $this->filter(array(
                             'user'=>array('id'=>$v['in_reply_to_user_id'],'name'=>$v['in_reply_to_user_name'])       ,
                             'text'=>$v['in_reply_to_status_text'],
+                            'id'=>$v['in_reply_to_status_id'],
                     ));
                 }
                 $aRsTrue[] = $aRs;
@@ -68,7 +73,7 @@ class Api163Adapter
     
     
         $aRsTmp = array();
-        $aRsTmp['system'] = '163.com';
+        $aRsTmp['system'] = '';
     
     
         $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
@@ -76,6 +81,7 @@ class Api163Adapter
         $aRsTmp['title'] = $text;
         //             $aRsTmp['body'] = $aRs['description'];
         $aRsTmp['time'] = strtotime($aRs['created_at']);
+        $aRsTmp['id'] = $aRs['id'];
         $aRsTmp['data'] = json_encode($aRs);
         $aRsTmp['client'] = $aRs['source'];
         $aRsTmp['cursor_id'] = $aRs['cursor_id'];

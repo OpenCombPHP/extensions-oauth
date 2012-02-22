@@ -26,7 +26,7 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret ,$lastData){
+    public function createTimeLineMulti($token,$token_secret ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
@@ -39,9 +39,12 @@ class ApiSinaWeiboAdapter
         
         $params["access_token"] = $token;
         $params["source"] = '3576764673';
-    
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'weibo.com');
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
         
         $aRs = json_decode ($responseData,true);
         
@@ -63,11 +66,11 @@ class ApiSinaWeiboAdapter
         
         
             $aRsTmp = array();
-            $aRsTmp['system'] = 'weibo.com';
-        
+            $aRsTmp['system'] = '';
             
             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
+            $aRsTmp['id'] = $aRs['id'];
             $aRsTmp['title'] = $text;
 //             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);

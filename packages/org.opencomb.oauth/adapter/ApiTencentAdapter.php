@@ -26,19 +26,24 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function TimeLine($token,$token_secret,$lastData){
+    public function createTimeLineMulti($token,$token_secret,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
-    
+        
         if(!empty($lastData))
         {
             $params['pageflag'] = "2";
             $params['pagetime'] = $lastData['time'];
+            $params['pagetime'] = $lastData['time'];
         }
         
-        $responseData = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
-	    $responseData = preg_replace("||",'',$responseData );
+        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'t.qq.com');
+    }
+    
+    public function filterTimeLine($responseData,$lastData)
+    {
+        $responseData = preg_replace("||",'',$responseData );
         $aRs = json_decode ($responseData,true);
         $aUser = $aRs['data']['user'];
         
@@ -47,7 +52,7 @@ class ApiTencentAdapter
         {
             $v['user'] = $aUser;
             $aRs = $this->filter($v);
-            
+        
             if(!empty($v['source']))
             {
                 $v['source']['user'] = $aUser;
@@ -59,12 +64,11 @@ class ApiTencentAdapter
         return $aRsTrue;
     }
     
-    
     private function filter($aRs){
         
         
             $aRsTmp = array();
-            $aRsTmp['system'] = 't.qq.com';
+            $aRsTmp['system'] = '';
         
         
             $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
@@ -74,6 +78,7 @@ class ApiTencentAdapter
         
             $aRsTmp['title'] = trim($text);
             $aRsTmp['time'] = $aRs['timestamp'];
+            $aRsTmp['id'] = $aRs['id'];
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['from'];
             $aRsTmp['client_url'] = @$aRs['fromurl'];

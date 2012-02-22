@@ -11,6 +11,7 @@ class OAuthCommon extends OAuthBase{
     private $request_token_uri;
     private $authorize_uri;
     private $access_token_uri;
+    private static $http;
     
     public function __construct($appkey,$appkeysercert,$request_token_uri = "",$authorize_uri = "",$access_token_uri = ""){
         
@@ -19,6 +20,18 @@ class OAuthCommon extends OAuthBase{
         $this->request_token_uri = $request_token_uri;
         $this->authorize_uri = $authorize_uri;
         $this->access_token_uri = $access_token_uri;
+    }
+    
+    static function http(){
+        if(empty(self::$http))
+        {
+            self::$http = new Http();
+        }
+        return self::$http;
+    }
+    
+    public function multi_exec(){
+        return self::http()->multi_exec();
     }
     
     public function  GetAppKey()
@@ -83,20 +96,33 @@ class OAuthCommon extends OAuthBase{
         }
     }
     
-    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert=""){
+    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert="" , $isMulti = ""){
         $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "", $postData);
         
-        $http = new Http();
         if(is_array($postUri)){
             if(strtoupper($HttpMode) == "GET"){
                 $url = $postUri[0]."?".$postUri[1];
                 
-                return $http->fetch_page($url,false,$HttpMode);
+                if(!empty($isMulti))
+                {
+                    return self::http()->createMultiParams($url,false,$HttpMode,$isMulti);
+                }else{
+                    return self::http()->fetch_page($url,false,$HttpMode);
+                }
+                
             }  
             else if(strtoupper($HttpMode) == "POST") {
                 $url = $postUri[0];
                 
-                return $http->fetch_page($url,$postUri[1],$HttpMode);
+                
+                if(!empty($isMulti))
+                {
+                    return self::http()->createMultiParams($url,$postUri[1],$HttpMode,$isMulti);
+                }else{
+                    return self::http()->fetch_page($url,$postUri[1],$HttpMode);
+                }
+                
+                
             }  else {
                 return "";
             }           
@@ -185,9 +211,8 @@ class OAuthCommon extends OAuthBase{
          return $http->fetch_page($SessionUrl,"","POST");
     }
     
-    public function CallRequest($uri, $paras, $format,$token){
+    public function CallRequest($uri, $paras, $format,$token,$isMulti=""){
         $strSign="";
-        $http=new Http();
         if(is_array($paras)){
             $paras["access_token"] = $token;
             $paras["format"] = $format!=""?$format:"json";
@@ -196,7 +221,16 @@ class OAuthCommon extends OAuthBase{
             $strSign = $this->Sign($paras,false); 
             $paras["sig"] =$strSign;
             $call_uri = $uri."?".$this->NormalizeRequestParameters($paras);
-            return $http->fetch_page($call_uri, $paras, "post");
+            
+            
+            if(!empty($isMulti))
+            {
+                return self::http()->createMultiParams($call_uri, $paras, "post",$isMulti);
+            }else{
+                return self::http()->fetch_page($call_uri, $paras, "post");
+            }
+            
+            
         }else{
             return $strSign;
         }

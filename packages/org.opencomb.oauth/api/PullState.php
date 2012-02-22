@@ -1,6 +1,10 @@
 <?php
 namespace org\opencomb\oauth\api ;
 
+use net\daichen\oauth\OAuthCommon;
+
+use net\daichen\oauth\Http;
+
 use org\opencomb\userstate\CreateState;
 
 use org\opencomb\oauth\adapter\AuthAdapterException;
@@ -78,18 +82,40 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() /* && $o->service == "renren.com"  */)
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()   /* && $o->service == "t.qq.com" */  )
 	        {
+	            
 	            echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
-	                $aRs = @$aAdapter->TimeLine($o->token,$o->token_secret,json_decode($o->pulldata,true));
-	                echo "<pre>";print_r($aRs);echo "</pre>";
+	                $aRs = @$aAdapter->createTimeLineMulti($o->token,$o->token_secret,json_decode($o->pulldata,true));
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
 	                return ;
 	            }
+	        }else{
+	            echo "<pre>";print_r("时间未到:".$o->service);echo "</pre>";
+	        }
+	    }
+	    
+	    $OAuthCommon = new OAuthCommon("",  "");
+	    $aRsT = $OAuthCommon -> multi_exec();
+	    
+// 	    echo "<pre>";print_r(json_decode($aRsT['weibo.com'],true));echo "</pre>";
+// 	    echo "<pre>";print_r(json_decode($aRsT['163.com'],true));echo "</pre>";
+// 	    echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
+// 	    echo "<pre>";print_r(json_decode($aRsT['renren.com'],true));echo "</pre>";
+// 	    echo "<pre>";print_r(json_decode($aRsT['douban.com'],true));echo "</pre>";
+// 	    echo "<pre>";print_r(json_decode($aRsT['sohu.com'],true));echo "</pre>";
+	    
+	    foreach($this->auser->childIterator() as $o)
+	    {
+	        if(!empty($aRsT[$o->service]))
+	        {
+	            $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
+	            
+	            $aRs = @$aAdapter->filterTimeLine($aRsT[$o->service],json_decode($o->pulldata,true));
 	            
 	            /**
 	             * 最新一条记录的时间
@@ -115,10 +141,9 @@ class PullState extends Controller
 	            /**
 	             * 插入
 	             */
-	            
 	            for($i = 0; $i < sizeof($aRs); $i++){
-	                
-	                
+	            
+	            
 	                /**
 	                 * 把最新一条记录的数据存到oauth表中
 	                 */
@@ -126,17 +151,17 @@ class PullState extends Controller
 	                {
 	                    $o->setData("pulldata",json_encode($aRs[$i]));
 	                }
-	                
+	            
 	                //测试用户是否已经存在
-	                
+	            
 	                $uid = "0";
 	                $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
 	                $this->auser->clearData();
 	                $auserModelInfo->eq('service',$o->service);
 	                $auserModelInfo->eq('suid',$aRs[$i]['username']);
 	                $this->auser->load($auserModelInfo);
-	                
-	                
+	            
+	            
 	                if( $this->auser->isEmpty())
 	                {
 	                    $this->user->clearData();
@@ -151,7 +176,7 @@ class PullState extends Controller
 	                    $this->user->setData("info.avatar",md5($aRs[$i]['avatar']));
 	            
 	                    $this->user->child("friends")->createChild()
-	                        ->setData("from",$aId->userId());
+	                    ->setData("from",$aId->userId());
 	            
 	                    $this->user->save() ;
 	                    $uid = $this->user->uid;
@@ -163,35 +188,32 @@ class PullState extends Controller
 	            
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['forwardtid'] = '0';
-	                
+	                $aRs[$i]['stid'] = $o->service."|".$aRs[$i]['id']."|".$uid;
+
 	                /**
 	                 * add feed
 	                 * @example new Controller
 	                 */
-	            
 	                if(!empty($aRs[$i]['source']))
 	                {
 	                    $aRs[$i]['source']['forwardtid'] = '0';
 	                    $aRs[$i]['source']['uid'] = $uid;
-	            
+	                    $aRs[$i]['source']['stid'] = $o->service."|".$aRs[$i]['source']['id']."|".$uid;
 	            
 	                    $stateController = new CreateState($aRs[$i]['source']);
 	                    $stid = $stateController->process();
-	                    $aRs[$i]['forwardtid'] = $stid; 
+	                    $aRs[$i]['forwardtid'] = $stid;
 	                }
 	                $stateController = new CreateState($aRs[$i]);
 	                $stateController->process();
 	            }
 	            
 	            $o->save() ;
-	        }else{
-	            echo "<pre>";print_r("时间没到:".$o->service);echo "</pre>";
 	        }
 	    }
 	    
-	    
-	    
 	}
+	
 }
 
 ?>
