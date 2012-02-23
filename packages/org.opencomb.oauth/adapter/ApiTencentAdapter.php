@@ -41,7 +41,7 @@ class ApiTencentAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'t.qq.com');
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         $responseData = preg_replace("||",'',$responseData );
         $aRs = json_decode ($responseData,true);

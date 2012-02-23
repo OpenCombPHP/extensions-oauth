@@ -12,6 +12,17 @@ use org\jecat\framework\mvc\controller\Controller;
 
 class AuthorizeRequest extends Controller
 {
+	public function createBeanConfig()
+	{
+	    return array(
+		
+			// 视图
+			'view' => array(
+				'template' => 'oauth:auth/AuthorizeRequest.html' ,
+			) ,
+		) ;
+	}
+	
 	public function process()
 	{
 		if( empty($this->params['service']) )

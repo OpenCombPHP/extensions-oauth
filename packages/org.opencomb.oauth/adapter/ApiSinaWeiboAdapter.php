@@ -43,7 +43,7 @@ class ApiSinaWeiboAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'weibo.com');
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         
         $aRs = json_decode ($responseData,true);
@@ -90,6 +90,7 @@ class ApiSinaWeiboAdapter
             {
                 $aRsAttachmentTmp['type'] = 'image';
                 $aRsAttachmentTmp['url'] = $aRs['thumbnail_pic'];
+                $aRsAttachmentTmp['source_pic'] = $aRs['bmiddle_pic'];
                 $aRsAttachmentTmp['link'] = $aRs['bmiddle_pic'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }

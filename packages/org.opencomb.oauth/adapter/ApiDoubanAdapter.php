@@ -36,7 +36,7 @@ class ApiDoubanAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'douban.com');
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         
         $aRs = json_decode ($responseData,true);

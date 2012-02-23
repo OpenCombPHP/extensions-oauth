@@ -39,7 +39,7 @@ class Api163Adapter
         return  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'163.com');
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
     
         $aRs = json_decode ($responseData,true);
@@ -56,11 +56,12 @@ class Api163Adapter
                 
                 if(!empty($v['in_reply_to_status_text']))
                 {
-                    $aRs['source'] = $this->filter(array(
-                            'user'=>array('id'=>$v['in_reply_to_user_id'],'name'=>$v['in_reply_to_user_name'])       ,
-                            'text'=>$v['in_reply_to_status_text'],
-                            'id'=>$v['in_reply_to_status_id'],
-                    ));
+                    
+                    $url = $this->arrAdapteeConfigs['api']['show']['uri'];
+                    $params = $this->arrAdapteeConfigs['api']['show']['params'];
+                    $url = preg_replace("{id}",$v['in_reply_to_status_id'],$url );
+                    $aSource =  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+                    $aRs['source'] = $this->filter(json_decode($aSource,true));
                 }
                 $aRsTrue[] = $aRs;
             }

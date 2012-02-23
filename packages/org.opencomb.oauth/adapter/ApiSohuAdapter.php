@@ -42,7 +42,7 @@ class ApiSohuAdapter
         
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         $aRs = json_decode ($responseData,true);
         
@@ -93,7 +93,7 @@ class ApiSohuAdapter
             {
                 $aRsAttachmentTmp['type'] = 'image';
                 $aRsAttachmentTmp['url'] = $aRs['small_pic'];
-                $aRsAttachmentTmp['link'] = $aRs['middle_pic'];
+                $aRsAttachmentTmp['source_pic'] = $aRs['middle_pic'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         

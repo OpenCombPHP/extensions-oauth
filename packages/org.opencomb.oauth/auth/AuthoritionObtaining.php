@@ -30,7 +30,7 @@ class AuthoritionObtaining extends Controller
 								'table' => 'coresystem:userinfo'
 							) ,
 							'hasOne:token' => array(
-								'table' => 'user' ,
+								'table' => 'oauth:user' ,
 								'keys' => array('service','suid') ,
 								'fromkeys' => 'uid' ,
 								'tokeys' => 'uid' ,
@@ -39,7 +39,7 @@ class AuthoritionObtaining extends Controller
 			) ,
 			'model:token' => array(
 					'orm'=>array(
-							'table' => 'user' ,
+							'table' => 'oauth:user' ,
 							'keys' => array('service','suid') ,
 					)
 			) ,
@@ -123,7 +123,20 @@ class AuthoritionObtaining extends Controller
 					) ;
 				}
 				
-				$this->createMessage( Message::success, '已经以 %s 的身份登录', $this->user->username ) ;
+				
+				if($this->user->child('token')->token && $this->user->child('token')->token_secret)
+				{
+				    $this->createMessage( Message::success, '已经以 %s 的身份登录', $this->user->username ) ;
+				}else{
+				    
+				    $this->user->setData("token.token",$this->arrAccessToken['oauth_token']);
+				    $this->user->setData("token.token_secret",$this->arrAccessToken['oauth_token_secret']);
+				    
+				    $this->user->save();
+				    $this->createMessage( Message::success, '已经以 %s 的身份绑定并登录', $this->user->username ) ;
+				}
+				
+				
 				return ;
 			}
 			
@@ -158,15 +171,17 @@ class AuthoritionObtaining extends Controller
 			$this->createMessage(Message::error,"请输入用户名和密码") ;
 			return ;
 		}
-		$sPassword = Authenticate::encryptPassword($this->user,$this->params['user'],$this->params['password']) ;
 		
 		
-		if( !$this->user->load(
-			array($this->params['user'],$sPassword)		
-			, array('username','password')		
-		) )
+		if( !$this->user->load( $this->params['user'],'username') )
 		{
-			$this->createMessage(Message::error,"用户名和密码不匹配，无法完成绑定") ;
+			$this->createMessage(Message::error,"用户名不存在，无法完成绑定") ;
+			return ;
+		}
+		
+		if( $this->user['password']!=Authenticate::encryptPassword($this->user,$this->params['user'],$this->params['password']) )
+		{
+			$this->createMessage(Message::error,"密码错误，无法完成绑定") ;
 			return ;
 		}
 		

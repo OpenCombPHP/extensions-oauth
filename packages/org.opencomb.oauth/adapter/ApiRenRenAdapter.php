@@ -33,7 +33,7 @@ class ApiRenRenAdapter
         return $this->oauthCommon->CallRequest($url, $params,"json", $token,'renren.com');
     }
     
-    public function filterTimeLine($responseData,$lastData)
+    public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
     
         $aRs = json_decode ($responseData,true);
@@ -99,6 +99,7 @@ class ApiRenRenAdapter
                 {
                     $aRsAttachmentTmp['type'] = 'image';
                     $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['src'];
+                    $aRsAttachmentTmp['source_pic'] = $aRs['attachment'][$i]['raw_src'];
                     $aRsAttachmentTmp['link'] = $aRs['attachment'][$i]['href'];
                     $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['content'];
                     $aRsTmp['attachment'][] = $aRsAttachmentTmp;

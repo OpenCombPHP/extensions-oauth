@@ -38,7 +38,7 @@ class PullState extends Controller
                 			'table' => 'coresystem:userinfo' ,
                 		) ,
                 		'hasOne:auser' => array(
-                			'table' => 'user' ,
+                			'table' => 'oauth:user' ,
         		            'keys'=>array('uid','suid'),
             				'fromkeys'=>'uid',
             				'tokeys'=>'uid',
@@ -56,7 +56,7 @@ class PullState extends Controller
 	         */
             'model:auser' => array(
                 	'orm' => array(
-                		'table' => 'user' ,
+                		'table' => 'oauth:user' ,
     		            'keys'=>array('uid','suid'),
                 	) ,
                     'list' => true,
@@ -82,7 +82,7 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()   /* && $o->service == "t.qq.com" */  )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() /*  && $o->service == "sohu.com"  */)
 	        {
 	            
 	            echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
@@ -104,7 +104,7 @@ class PullState extends Controller
 	    
 // 	    echo "<pre>";print_r(json_decode($aRsT['weibo.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['163.com'],true));echo "</pre>";
-// 	    echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
+//  	echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['renren.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['douban.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['sohu.com'],true));echo "</pre>";
@@ -115,7 +115,9 @@ class PullState extends Controller
 	        {
 	            $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
 	            
-	            $aRs = @$aAdapter->filterTimeLine($aRsT[$o->service],json_decode($o->pulldata,true));
+	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
+	            
+	            echo "<pre>";print_r($aRs);echo "</pre>";
 	            
 	            /**
 	             * 最新一条记录的时间
@@ -143,7 +145,6 @@ class PullState extends Controller
 	             */
 	            for($i = 0; $i < sizeof($aRs); $i++){
 	            
-	            
 	                /**
 	                 * 把最新一条记录的数据存到oauth表中
 	                 */
@@ -153,38 +154,7 @@ class PullState extends Controller
 	                }
 	            
 	                //测试用户是否已经存在
-	            
-	                $uid = "0";
-	                $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
-	                $this->auser->clearData();
-	                $auserModelInfo->eq('service',$o->service);
-	                $auserModelInfo->eq('suid',$aRs[$i]['username']);
-	                $this->auser->load($auserModelInfo);
-	            
-	            
-	                if( $this->auser->isEmpty())
-	                {
-	                    $this->user->clearData();
-	                    $this->user->setData("username",$aRs[$i]['username']);
-	                    $this->user->setData("password",md5($aRs[$i]['username'])) ;
-	                    $this->user->setData("registerTime",time()) ;
-	            
-	                    $this->user->setData('auser.service',$o->service);
-	                    $this->user->setData('auser.suid',$aRs[$i]['username']);
-	            
-	                    $this->user->setData("info.nickname",$aRs[$i]['nickname']);
-	                    $this->user->setData("info.avatar",md5($aRs[$i]['avatar']));
-	            
-	                    $this->user->child("friends")->createChild()
-	                    ->setData("from",$aId->userId());
-	            
-	                    $this->user->save() ;
-	                    $uid = $this->user->uid;
-	                }else{
-	                    foreach($this->auser->childIterator() as $oAuser){
-	                        $uid = $oAuser->uid;
-	                    }
-	                }
+	                $uid = $this->checkUid($aRs[$i],$o->service);
 	            
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['forwardtid'] = '0';
@@ -196,12 +166,14 @@ class PullState extends Controller
 	                 */
 	                if(!empty($aRs[$i]['source']))
 	                {
+	                    $sourceUid = $this->checkUid($aRs[$i]['source'],$o->service);
 	                    $aRs[$i]['source']['forwardtid'] = '0';
-	                    $aRs[$i]['source']['uid'] = $uid;
-	                    $aRs[$i]['source']['stid'] = $o->service."|".$aRs[$i]['source']['id']."|".$uid;
+	                    $aRs[$i]['source']['uid'] = $sourceUid;
+	                    $aRs[$i]['source']['stid'] = $o->service."|".$aRs[$i]['source']['id']."|".$sourceUid;
 	            
 	                    $stateController = new CreateState($aRs[$i]['source']);
 	                    $stid = $stateController->process();
+	                    
 	                    $aRs[$i]['forwardtid'] = $stid;
 	                }
 	                $stateController = new CreateState($aRs[$i]);
@@ -213,6 +185,46 @@ class PullState extends Controller
 	    }
 	    
 	}
+	
+	/**
+	 * 测试用户是否存在，不存在就创建
+	 * @param unknown_type $aUserInfo
+	 * @param unknown_type $service
+	 */
+	public function checkUid($aUserInfo,$service)
+	{
+	    $aId = IdManager::singleton()->currentId() ;
+	    $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
+	    $this->auser->clearData();
+	    $auserModelInfo->eq('service',$service);
+	    $auserModelInfo->eq('suid',$aUserInfo['username']);
+	    $this->auser->load($auserModelInfo);
+	    
+	    if( $this->auser->isEmpty())
+	    {
+	        $this->user->clearData();
+	        $this->user->setData("username",$aUserInfo['username']);
+	        $this->user->setData("password","") ;
+	        $this->user->setData("registerTime",time()) ;
+	    
+	        $this->user->setData('auser.service',$service);
+	        $this->user->setData('auser.suid',$aUserInfo['username']);
+	    
+	        $this->user->setData("info.nickname",$aUserInfo['username']);
+	        $this->user->setData("info.avatar",$aUserInfo['avatar']);
+	    
+	        $this->user->child("friends")->createChild()
+	        ->setData("from",$aId->userId());
+	    
+	        $this->user->save() ;
+	        $uid = $this->user->uid;
+	    }else{
+	        foreach($this->auser->childIterator() as $oAuser){
+	            $uid = $oAuser->uid;
+	        }
+	    }
+	    return $uid;
+	} 
 	
 }
 

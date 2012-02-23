@@ -280,6 +280,10 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+                            'show'=>array(
+                                    'uri'=>'http://api.t.163.com/statuses/show/{id}.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
                     ),
 	        ) ,
 	
