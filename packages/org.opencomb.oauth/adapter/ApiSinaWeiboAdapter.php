@@ -89,8 +89,8 @@ class ApiSinaWeiboAdapter
             if(!empty($aRs['thumbnail_pic']))
             {
                 $aRsAttachmentTmp['type'] = 'image';
-                $aRsAttachmentTmp['url'] = $aRs['thumbnail_pic'];
-                $aRsAttachmentTmp['source_pic'] = $aRs['bmiddle_pic'];
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['thumbnail_pic'];
+                $aRsAttachmentTmp['url'] = $aRs['bmiddle_pic'];
                 $aRsAttachmentTmp['link'] = $aRs['bmiddle_pic'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }

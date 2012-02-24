@@ -56,10 +56,9 @@ class Api163Adapter
                 
                 if(!empty($v['in_reply_to_status_text']))
                 {
-                    
                     $url = $this->arrAdapteeConfigs['api']['show']['uri'];
                     $params = $this->arrAdapteeConfigs['api']['show']['params'];
-                    $url = preg_replace("{id}",$v['in_reply_to_status_id'],$url );
+                    $url = preg_replace("/\{id\}/",$v['in_reply_to_status_id'],$url );
                     $aSource =  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
                     $aRs['source'] = $this->filter(json_decode($aSource,true));
                 }

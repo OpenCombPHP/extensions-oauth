@@ -98,8 +98,8 @@ class ApiRenRenAdapter
                 if($aRs['attachment'][$i]['media_type'] == "photo")
                 {
                     $aRsAttachmentTmp['type'] = 'image';
-                    $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['src'];
-                    $aRsAttachmentTmp['source_pic'] = $aRs['attachment'][$i]['raw_src'];
+                    $aRsAttachmentTmp['thumbnail_pic'] = $aRs['attachment'][$i]['src'];
+                    $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['raw_src'];
                     $aRsAttachmentTmp['link'] = $aRs['attachment'][$i]['href'];
                     $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['content'];
                     $aRsTmp['attachment'][] = $aRsAttachmentTmp;

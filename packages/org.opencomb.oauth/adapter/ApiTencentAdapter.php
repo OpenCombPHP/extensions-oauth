@@ -102,8 +102,9 @@ class ApiTencentAdapter
         
                 $aRsAttachmentTmp = array();
                 $aRsAttachmentTmp['type'] = 'video';
-                $aRsAttachmentTmp['url'] = $aRs['video']['realurl'];
+                $aRsAttachmentTmp['url'] = $aRs['video']['player'];
                 $aRsAttachmentTmp['title'] = $aRs['video']['title'];
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
