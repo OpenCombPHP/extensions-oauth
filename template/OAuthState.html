@@ -1,0 +1,20 @@
+
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=weibo.com" title="使用新浪微博帐号登录"><img src="/extensions/oauth/0.1/public/image/weibo.com/login.png" /></a>
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=renren.com" title="使用人人社区登录">[人人]</a>
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=sohu.com" title="使用搜狐社区登录">[搜狐]</a>
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=douban.com" title="使用豆瓣社区登录"><img src="/extensions/oauth/0.1/public/image/douban.com/login.png" /></a>
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=163.com" title="使用网易社区登录">[网易]</a>
+<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service=t.qq.com" title="使用腾讯微博帐号登录"><img src="/extensions/oauth/0.1/public/image/t.qq.com/login.png" /></a>
+
+
+<foreach for="$theModel->childIterator()" item="value">
+<hr/>
+			<div>{=$value['service']}:{=$value['suid']} 
+				<if "$value['token']==''">
+					<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$value['service']}">绑定</a>
+				<else/>
+					<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$value['suid']}&service={=$value['service']}">解除</a>
+				</if>
+			</div> 
+</foreach>
+<hr/>
