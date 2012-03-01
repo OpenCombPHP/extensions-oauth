@@ -68,6 +68,7 @@ class PullState extends Controller
 	}
 	public function process()
 	{
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    
 	    /**
@@ -81,13 +82,13 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() && $o->service == "sohu.com" )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() && $o->service == "t.qq.com" )
 	        {
 	            
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
-	                $aRs = @$aAdapter->createTimeLineMulti($o->token,$o->token_secret,json_decode($o->pulldata,true));
+	                $aRs = @$aAdapter->createTimeLineMulti($o,json_decode($o->pulldata,true));
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
@@ -101,9 +102,10 @@ class PullState extends Controller
 	    $OAuthCommon = new OAuthCommon("",  "");
 	    $aRsT = $OAuthCommon -> multi_exec();
 	    
+// 	    echo "<pre>";print_r($aRsT['qzone.qq.com']);echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['weibo.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['163.com'],true));echo "</pre>";
-//  	echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
+//   	echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['renren.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['douban.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['sohu.com'],true));echo "</pre>";
@@ -116,7 +118,7 @@ class PullState extends Controller
 	            
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
-	            //echo "<pre>";print_r($aRs);echo "</pre>";
+	            echo "<pre>";print_r($aRs);echo "</pre>";
 	            
 	            /**
 	             * 最新一条记录的时间
@@ -158,6 +160,7 @@ class PullState extends Controller
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['forwardtid'] = '0';
 	                $aRs[$i]['stid'] = $o->service."|".$aRs[$i]['id']."|".$uid;
+	                $aRs[$i]['service'] = $o->service;
 
 	                /**
 	                 * add feed
@@ -169,14 +172,22 @@ class PullState extends Controller
 	                    $aRs[$i]['source']['forwardtid'] = '0';
 	                    $aRs[$i]['source']['uid'] = $sourceUid;
 	                    $aRs[$i]['source']['stid'] = $o->service."|".$aRs[$i]['source']['id']."|".$sourceUid;
+	                    $aRs[$i]['source']['service'] = $o->service;
 	            
-	                    $stateController = new CreateState($aRs[$i]['source']);
-	                    $stid = $stateController->process();
+	                    if($uid)
+	                    {
+    	                    $stateController = new CreateState($aRs[$i]['source']);
+    	                    $stid = $stateController->process();
+	                    }
 	                    
 	                    $aRs[$i]['forwardtid'] = $stid;
 	                }
-	                $stateController = new CreateState($aRs[$i]);
-	                $stateController->process();
+	                
+	                if($uid)
+	                {
+	                    $stateController = new CreateState($aRs[$i]);
+	                    $stateController->process();
+	                }
 	            }
 	            
 	            $o->save() ;
@@ -192,6 +203,11 @@ class PullState extends Controller
 	 */
 	public function checkUid($aUserInfo,$service)
 	{
+	    if(empty($aUserInfo['username']))
+	    {
+	        return false;
+	    }
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
 	    $this->auser->clearData();
@@ -202,7 +218,7 @@ class PullState extends Controller
 	    if( $this->auser->isEmpty())
 	    {
 	        $this->user->clearData();
-	        $this->user->setData("username",$aUserInfo['username']);
+	        $this->user->setData("username",$service."#".$aUserInfo['username']);
 	        $this->user->setData("password","") ;
 	        $this->user->setData("registerTime",time()) ;
 	    

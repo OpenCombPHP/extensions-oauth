@@ -26,7 +26,18 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret,$lastData){
+    public function createPushMulti($o,$title){
+    
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['content'] = $title;
+        $params['clientip'] = $_SERVER['REMOTE_ADDR'];
+        
+        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
+    public function createTimeLineMulti($o,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
@@ -35,10 +46,9 @@ class ApiTencentAdapter
         {
             $params['pageflag'] = "2";
             $params['pagetime'] = $lastData['time'];
-            $params['pagetime'] = $lastData['time'];
         }
         
-        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'t.qq.com');
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)

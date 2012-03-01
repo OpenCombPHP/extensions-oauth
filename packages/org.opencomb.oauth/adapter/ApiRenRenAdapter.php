@@ -13,6 +13,7 @@ class ApiRenRenAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $keys;
     
     public function __construct($aSiteConfig,$aKey) {
         
@@ -21,16 +22,40 @@ class ApiRenRenAdapter
             throw new Exception("尚不能绑定此网站");
         }else{
             $this->arrAdapteeConfigs = $aSiteConfig;
+            $this->keys = $aKey;
         }
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret ,$lastData){
+    public function createPushMulti($o,$title){
+        
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['status'] = $this->oauthCommon->http()->utf82Unicode($title);
+        
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+    }
+    
+    public function createTimeLineMulti($o ,$lastData){
         
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        return $this->oauthCommon->CallRequest($url, $params,"json", $token,'renren.com');
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+    }
+    
+    
+    public function refreshTtoken($token,$token_secret)
+    {
+        $url = $this->arrAdapteeConfigs['auth']['refreshTtoken']['uri'];
+        $params = $this->arrAdapteeConfigs['auth']['refreshTtoken']['params'];
+        
+        $params['refresh_token'] = $token_secret;
+        $params['client_id'] = $this->keys['appkey'];
+        $params['client_secret'] = $this->keys['appsecret'];
+        
+        return $this->oauthCommon->CallRequest($url, $params,"json", $token);
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)

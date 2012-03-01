@@ -9,7 +9,7 @@ use net\daichen\oauth\OAuthCommon;
 
 if (!session_id()) session_start();
 
-class ApiDoubanAdapter
+class ApiQzoneAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
@@ -26,38 +26,34 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createPushMulti($o,$title){
-    
-        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['add']['params'];
-        
-        $params['html'] = str_replace("{content}", $title, $params['html']);
-        
-        return $this->oauthCommon->SignXMLRequest($url, "post", $params['html'], $o->token, $o->token_secret);
-    }
-    
-    public function createTimeLineMulti($o ,$lastData){
-    
+    public function createTimeLineMulti($o,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
+        $url = str_replace("{id}", $o->suid, $url);
         
-        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'douban.com');
+        return $this->oauthCommon->SignRequest($url, "get", array(), $o->token, $o->token_secret,'qzone.qq.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
-        
+        $responseData = preg_replace("||",'',$responseData );
         $aRs = json_decode ($responseData,true);
+        $aUser = $aRs['data']['user'];
         
-        foreach ($aRs['entry'] as $v)
+        
+        foreach ($aRs['data']['info'] as $v)
         {
-            if($lastData['time'] < strtotime($v['published']['$t']))
+            $v['user'] = $aUser;
+            $aRs = $this->filter($v);
+        
+            if(!empty($v['source']))
             {
-                $aRs = $this->filter($v);
-                $aRsTrue[] = $aRs;
+                $v['source']['user'] = $aUser;
+                $aRs['source'] = $this->filter($v['source']);
             }
+            $aRsTrue[] = $aRs;
         }
+        
         return $aRsTrue;
     }
     
@@ -67,19 +63,25 @@ class ApiDoubanAdapter
             $aRsTmp = array();
             $aRsTmp['system'] = '';
         
-            $aRsTmp['title'] = $aRs['content']['$t'];
-            $aRsTmp['id'] = $aRs['id']['$t'];
-            $aRsTmp['time'] = strtotime($aRs['published']['$t']);
+        
+            $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
+        
+            preg_match_all("/@(.*?):/", $text, $aAT);
+            if(!empty($aAT[1][0])) $text = preg_replace("/@(.*?):/", "<a href='http://t.qq.com/$1'>".$aRs['user'][$aAT[1][0]]."</a>:", $text);
+        
+            $aRsTmp['title'] = trim($text);
+            $aRsTmp['time'] = $aRs['timestamp'];
+            $aRsTmp['id'] = $aRs['id'];
             $aRsTmp['data'] = json_encode($aRs);
-            $aRsTmp['client'] = "";
-            $aRsTmp['client_url'] = "";
+            $aRsTmp['client'] = $aRs['from'];
+            $aRsTmp['client_url'] = @$aRs['fromurl'];
         
         
-            $aRsTmp['username'] = $aRs['author']['name']['$t'];
-            $aRsTmp['password'] = md5($aRs['author']['name']['$t']);
+            $aRsTmp['username'] = $aRs['name'];
+            $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
-            $aRsTmp['nickname'] = $aRs['author']['name']['$t'];
-            $aRsTmp['avatar'] = $aRs['author']['link'][2]['@href'];
+            $aRsTmp['nickname'] = $aRs['nick'];
+            $aRsTmp['avatar'] = $aRs['head'];
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         
@@ -93,8 +95,9 @@ class ApiDoubanAdapter
         
                 $aRsAttachmentTmp = array();
                 $aRsAttachmentTmp['type'] = 'video';
-                $aRsAttachmentTmp['url'] = $aRs['video'][$i]['realurl'];
-                $aRsAttachmentTmp['title'] = $aRs['video'][$i]['title'];
+                $aRsAttachmentTmp['url'] = $aRs['video']['player'];
+                $aRsAttachmentTmp['title'] = $aRs['video']['title'];
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
@@ -102,8 +105,8 @@ class ApiDoubanAdapter
         
                 $aRsAttachmentTmp = array();
                 $aRsAttachmentTmp['type'] = 'music';
-                $aRsAttachmentTmp['url'] = $aRs['music'][$i]['url'];
-                $aRsAttachmentTmp['title'] = $aRs['music'][$i]['title'];
+                $aRsAttachmentTmp['url'] = $aRs['music']['url'];
+                $aRsAttachmentTmp['title'] = $aRs['music']['title'];
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
