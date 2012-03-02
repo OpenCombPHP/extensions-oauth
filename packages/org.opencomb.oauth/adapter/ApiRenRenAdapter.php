@@ -132,9 +132,16 @@ class ApiRenRenAdapter
                 if($aRs['attachment'][$i]['media_type'] == "video")
                 {
                     $aRsAttachmentTmp['type'] = 'video';
+                    $aRsAttachmentTmp['thumbnail_pic'] = $aRs['attachment'][$i]['src'];
+                    $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['href'];
+                    $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['owner_name'];
+                    $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+                }
+                if($aRs['attachment'][$i]['media_type'] == "page")
+                {
+                    $aRsAttachmentTmp['type'] = 'text/html';
                     $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['src'];
                     $aRsAttachmentTmp['link'] = $aRs['attachment'][$i]['href'];
-                    $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['owner_name'];
                     $aRsTmp['attachment'][] = $aRsAttachmentTmp;
                 }
                 

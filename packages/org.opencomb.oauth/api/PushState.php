@@ -44,6 +44,13 @@ class PushState extends Controller
 	    $aService = $this->params['service'];
 	    $sTitle = $this->params['title'];
 	    
+	    
+	    if(empty($aService) || empty($sTitle))
+	    {
+	        return;
+	    }
+	    
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    
 	    /**

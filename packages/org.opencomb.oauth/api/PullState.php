@@ -77,12 +77,11 @@ class PullState extends Controller
 	     */
 	    $auserModelWhere = clone $this->auser->prototype()->criteria()->where();
 	    $auserModelWhere->eq('uid',$aId->userId());
-	    //$this->auser->prototype()->criteria()->where()->eq('service',$this->params["service"]);
 	    $this->auser->load($auserModelWhere) ;
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() && $o->service == "t.qq.com" )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()      )
 	        {
 	            
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
@@ -102,6 +101,7 @@ class PullState extends Controller
 	    $OAuthCommon = new OAuthCommon("",  "");
 	    $aRsT = $OAuthCommon -> multi_exec();
 	    
+	    
 // 	    echo "<pre>";print_r($aRsT['qzone.qq.com']);echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['weibo.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['163.com'],true));echo "</pre>";
@@ -118,7 +118,7 @@ class PullState extends Controller
 	            
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
-	            echo "<pre>";print_r($aRs);echo "</pre>";
+	            //echo "<pre>";print_r($aRs);echo "</pre>";
 	            
 	            /**
 	             * 最新一条记录的时间
