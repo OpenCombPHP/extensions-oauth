@@ -81,9 +81,8 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()  /*  && $o->service == "sohu.com"  */  )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()  /* && $o->service == "renren.com" */  )
 	        {
-	            
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
@@ -118,8 +117,7 @@ class PullState extends Controller
 	            
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
-	            //echo "<pre>";print_r($aRs);echo "</pre>";
-	            
+	            echo "<pre>";print_r($aRs);echo "</pre>";
 	            /**
 	             * 最新一条记录的时间
 	             */
@@ -219,7 +217,7 @@ class PullState extends Controller
 	    {
 	        $this->user->clearData();
 	        $this->user->setData("username",$service."#".$aUserInfo['username']);
-	        $this->user->setData("password","") ;
+	        $this->user->setData("password",md5($service."#".$aUserInfo['username'])) ;
 	        $this->user->setData("registerTime",time()) ;
 	    
 	        $this->user->setData('auser.service',$service);
@@ -231,7 +229,9 @@ class PullState extends Controller
 	        $this->user->child("friends")->createChild()
 	        ->setData("from",$aId->userId());
 	    
+	        
 	        $this->user->save() ;
+	        
 	        $uid = $this->user->uid;
 	    }else{
 	        foreach($this->auser->childIterator() as $oAuser){

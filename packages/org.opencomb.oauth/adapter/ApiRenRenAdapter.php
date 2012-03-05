@@ -92,13 +92,13 @@ class ApiRenRenAdapter
         
             if(empty($aRs['trace']))
             {
-                $aRsTmp['title'] = $aRs['prefix'].' <a href="'.$aRs['href'].'">'.$aRs['title']."</a>";
+                $aRsTmp['title'] = $aRs['prefix'].$aRs['title'];
                 $aRsTmp['body'] = $aRs['description'];
             }else{
                 $title = $aRs['trace']['text'];
-                for($i = 0; $i < sizeof($aRs['trace']['node']); $i++){
-                    $title = preg_replace("/".$aRs['trace']['node'][$i]['name']."/","<a href='http://www.renren.com/profile.do?id=".$aRs['trace']['node'][$i]['id']."'>".$aRs['trace']['node'][$i]['name']."</a>",$title);
-                }
+//                 for($i = 0; $i < sizeof($aRs['trace']['node']); $i++){
+//                     $title = preg_replace("/".$aRs['trace']['node'][$i]['name']."/","<a href='http://www.renren.com/profile.do?id=".$aRs['trace']['node'][$i]['id']."'>".$aRs['trace']['node'][$i]['name']."</a>",$title);
+//                 }
                 
                 $aRsTmp['title'] = $title;
                 $aRsTmp['body'] = "<b>".$aRs['title']."</b><br/>".$aRs['description'];

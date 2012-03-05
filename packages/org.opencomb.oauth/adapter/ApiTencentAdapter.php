@@ -81,12 +81,15 @@ class ApiTencentAdapter
             $aRsTmp['system'] = '';
         
         
-            $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
+           // $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
         
-            preg_match_all("/@(.*?):/", $text, $aAT);
-            if(!empty($aAT[1][0])) $text = preg_replace("/@(.*?):/", "<a href='http://t.qq.com/$1'>".$aRs['user'][$aAT[1][0]]."</a>:", $text);
-        
-            $aRsTmp['title'] = trim($text);
+            preg_match_all("/@(.*?)[ |:]/", $aRs['text'], $aAT);
+            
+            for($i = 0; $i < sizeof($aAT[1]); $i++){
+                $aRs['text'] = str_replace($aAT[0][$i], "@".$aRs['user'][$aAT[1][$i]], $aRs['text']);
+            }
+            
+            $aRsTmp['title'] = $aRs['text'];
             $aRsTmp['time'] = $aRs['timestamp'];
             $aRsTmp['id'] = $aRs['id'];
             $aRsTmp['data'] = json_encode($aRs);

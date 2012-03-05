@@ -78,10 +78,10 @@ class ApiSinaWeiboAdapter
             $aRsTmp = array();
             $aRsTmp['system'] = '';
             
-            $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
-            $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
+//             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
+//             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
             $aRsTmp['id'] = $aRs['id'];
-            $aRsTmp['title'] = $text;
+            $aRsTmp['title'] = $aRs['text'];
 //             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);
