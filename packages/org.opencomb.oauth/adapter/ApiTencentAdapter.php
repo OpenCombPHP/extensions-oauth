@@ -101,7 +101,7 @@ class ApiTencentAdapter
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['nick'];
-            $aRsTmp['avatar'] = $aRs['head'];
+            $aRsTmp['avatar'] = $aRs['head']."/50";
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         
