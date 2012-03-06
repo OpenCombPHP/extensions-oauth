@@ -117,7 +117,7 @@ class PullState extends Controller
 	            
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
-	            echo "<pre>";print_r($aRs);echo "</pre>";
+	            //echo "<pre>";print_r($aRs);echo "</pre>";
 	            /**
 	             * 最新一条记录的时间
 	             */
