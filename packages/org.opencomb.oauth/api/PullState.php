@@ -69,6 +69,12 @@ class PullState extends Controller
 	public function process()
 	{
 	    
+	    if(!IdManager::singleton()->currentId())
+	    {
+	        return;
+	    }
+	    
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    
 	    /**
