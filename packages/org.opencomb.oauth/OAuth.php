@@ -23,5 +23,9 @@ class OAuth extends Extension
 		PlatformSerializer::singleton()->addSystemObject(AdapterManager::singleton()) ;
 		
 		AOP::singleton()->register('org\\opencomb\\oauth\\aspect\\MainMenuAspect') ;
+		
+		//发布消息同步到weibo
+		$aWeaveMgr->registerTemplate( 'userstate:CreateState.html', "/div@0", 'oauth:api/pushState.html', Patch::appendAfter ) ;
+		AOP::singleton()->register('org\\opencomb\\oauth\\aspect\\WowneiPushStateAspect') ;
 	}
 }
