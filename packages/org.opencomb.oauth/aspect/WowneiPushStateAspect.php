@@ -14,7 +14,7 @@ class WowneiPushStateAspect
 	public function pointcutWowneiPushState()
 	{
 		return array(
-			new JointPointMethodDefine('org\\opencomb\\coresystem\\mvc\\controller\\ControlPanelFrame','process') ,
+			new JointPointMethodDefine('org\\opencomb\\userstate\\CreateState','process') ,
 		) ;
 	}
 	
@@ -24,15 +24,19 @@ class WowneiPushStateAspect
 	 */
 	private function process()
 	{
-		// 调用原始原始函数
-		aop_call_origin() ;
-		
-			
 		/**
 		 * push weibo
 		 * @var unknown_type
 		 */
-		$aWeibo = $this->params['pushweibo'];
+		
+		if(is_array($this->params['pushweibo']))
+		{
+		    $aWeibo = $this->params['pushweibo'];
+		}else{
+		    $aWeibo = explode(",", $this->params['pushweibo']);
+		}
+		
+		
 		if($aWeibo)
 		{
 		    $aParams = array(
@@ -42,6 +46,11 @@ class WowneiPushStateAspect
 		    $oOauthPush = new PushState($aParams);
 		    $oOauthPush->process();
 		}
+		
+		
+		
+		// 调用原始原始函数
+		aop_call_origin() ;
 	}
 }
 ?>
