@@ -56,6 +56,10 @@ class Api163Adapter
     
         foreach ($aRs as $v)
         {
+            if(empty($v['text']))
+            {
+                return ;
+            }
             /**
              * 排除当前条
              */

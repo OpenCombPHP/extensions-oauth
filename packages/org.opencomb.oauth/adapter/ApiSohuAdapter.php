@@ -55,6 +55,10 @@ class ApiSohuAdapter
         
         foreach ($aRs as $v)
         {
+            if(empty($v['text']))
+            {
+                return ;
+            }
             $aRs = $this->filter($v);
             
             if(!empty($v['in_reply_to_status_text']))

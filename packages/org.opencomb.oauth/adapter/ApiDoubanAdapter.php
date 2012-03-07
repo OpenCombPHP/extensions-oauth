@@ -52,6 +52,10 @@ class ApiDoubanAdapter
         
         foreach ($aRs['entry'] as $v)
         {
+            if(empty($v['content']['$t']))
+            {
+                return ;
+            }
             if($lastData['time'] < strtotime($v['published']['$t']))
             {
                 $aRs = $this->filter($v);
