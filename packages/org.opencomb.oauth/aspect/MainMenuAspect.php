@@ -31,8 +31,7 @@ class MainMenuAspect
 				['menu']['items'],$arrMenus
 		) ;
 		*/
-		$arrConfig['frameview:frameView']['widget:mainMenu']['items']['system']['menu']['items']['platform-manage']
-		['menu']['items']['oauth-menu']=array (
+		$arrConfig['frameview:frameView']['widget:mainMenu']['item:system']['item:platform-manage']['item:oauth']=array (
 					  		'title'=>'OAuth' ,
 					  		'link' => '?c=org.opencomb.oauth.controlPanel.OAuthSetting' ,
 					  		'query' => 'c=org.opencomb.oauth.controlPanel.OAuthSetting' ,
