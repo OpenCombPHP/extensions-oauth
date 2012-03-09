@@ -92,7 +92,7 @@ class ApiRenRenAdapter
         
             if(empty($aRs['trace']))
             {
-                $aRsTmp['title'] = $aRs['prefix'].$aRs['title'];
+                $aRsTmp['title'] = $aRs['prefix'] == $aRs['title']? $aRs['title'] : $aRs['prefix'].$aRs['title'];
                 $aRsTmp['body'] = $aRs['description'];
             }else{
                 $title = $aRs['trace']['text'];
@@ -111,7 +111,7 @@ class ApiRenRenAdapter
             $aRsTmp['client_url'] = $aRs['source']['href'];
         
         
-            $aRsTmp['username'] = $aRs['name'];
+            $aRsTmp['username'] = $aRs['actor_id'];
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['name'];

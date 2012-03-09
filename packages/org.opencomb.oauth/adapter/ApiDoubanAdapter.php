@@ -72,14 +72,17 @@ class ApiDoubanAdapter
             $aRsTmp['system'] = '';
         
             $aRsTmp['title'] = $aRs['content']['$t'];
-            $aRsTmp['id'] = $aRs['id']['$t'];
+            
+            //http://api.douban.com/miniblog/879502427
+            preg_match("/\/([0-9]{1,20})$/", $aRs['id']['$t'],$aId);
+            $aRsTmp['id'] = $aId[1];
             $aRsTmp['time'] = strtotime($aRs['published']['$t']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = "";
             $aRsTmp['client_url'] = "";
         
-        
-            $aRsTmp['username'] = $aRs['author']['name']['$t'];
+            preg_match("/\/([0-9]{1,20})$/", $aRs['author']['uri']['$t'],$aUId);
+            $aRsTmp['username'] = $aUId[1];
             $aRsTmp['password'] = md5($aRs['author']['name']['$t']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['author']['name']['$t'];
