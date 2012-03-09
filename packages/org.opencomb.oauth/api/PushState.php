@@ -36,7 +36,7 @@ class PushState extends Controller
             'model:state' => array(
                 	'orm' => array(
                 		'table' => 'oauth:state' ,
-    		            'keys'=>array('stid','service'),
+    		            'keys'=>array('sid','service'),
                 	) ,
             ) ,
 	            
