@@ -26,7 +26,17 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret ,$lastData){
+    public function createPushMulti($o,$title){
+    
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['status'] = urlencode($title);
+        
+        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+    }
+    
+    public function createTimeLineMulti($o ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
@@ -37,10 +47,10 @@ class ApiSinaWeiboAdapter
             $params['since_id'] = $lastData['cursor_id'];
         }
         
-        $params["access_token"] = $token;
+        $params["access_token"] = $o->token;
         $params["source"] = '3576764673';
         
-        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'weibo.com');
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -68,10 +78,10 @@ class ApiSinaWeiboAdapter
             $aRsTmp = array();
             $aRsTmp['system'] = '';
             
-            $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
-            $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
+//             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
+//             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
             $aRsTmp['id'] = $aRs['id'];
-            $aRsTmp['title'] = $text;
+            $aRsTmp['title'] = $aRs['text'];
 //             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);

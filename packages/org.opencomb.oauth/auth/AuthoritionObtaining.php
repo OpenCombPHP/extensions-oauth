@@ -207,7 +207,6 @@ class AuthoritionObtaining extends Controller
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
 		
 		
-		
 		try{
 			$this->user->save() ;
 			$this->createMessage(Message::success,"帐号绑定成功") ;

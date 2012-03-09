@@ -19,8 +19,8 @@ use org\opencomb\coresystem\mvc\controller\Controller ;
 
 class PullState extends Controller
 {
-    private $minNextTime = 2;
-    private $maxNextTime = 10;
+    private $minNextTime = 4;
+    private $maxNextTime = 20;
     
 	public function createBeanConfig()
 	{
@@ -68,6 +68,13 @@ class PullState extends Controller
 	}
 	public function process()
 	{
+	    
+	    if(!IdManager::singleton()->currentId())
+	    {
+	        return;
+	    }
+	    
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    
 	    /**
@@ -76,18 +83,16 @@ class PullState extends Controller
 	     */
 	    $auserModelWhere = clone $this->auser->prototype()->criteria()->where();
 	    $auserModelWhere->eq('uid',$aId->userId());
-	    //$this->auser->prototype()->criteria()->where()->eq('service',$this->params["service"]);
 	    $this->auser->load($auserModelWhere) ;
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() && $o->service == "sohu.com" )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()   /* && $o->service == "weibo.com" */   )
 	        {
-	            
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
-	                $aRs = @$aAdapter->createTimeLineMulti($o->token,$o->token_secret,json_decode($o->pulldata,true));
+	                $aRs = @$aAdapter->createTimeLineMulti($o,json_decode($o->pulldata,true));
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
@@ -101,9 +106,11 @@ class PullState extends Controller
 	    $OAuthCommon = new OAuthCommon("",  "");
 	    $aRsT = $OAuthCommon -> multi_exec();
 	    
+	    
+// 	    echo "<pre>";print_r($aRsT['qzone.qq.com']);echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['weibo.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['163.com'],true));echo "</pre>";
-//  	echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
+//   	echo "<pre>";print_r(json_decode($aRsT['t.qq.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['renren.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['douban.com'],true));echo "</pre>";
 // 	    echo "<pre>";print_r(json_decode($aRsT['sohu.com'],true));echo "</pre>";
@@ -117,7 +124,6 @@ class PullState extends Controller
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
 	            //echo "<pre>";print_r($aRs);echo "</pre>";
-	            
 	            /**
 	             * 最新一条记录的时间
 	             */
@@ -125,10 +131,10 @@ class PullState extends Controller
 	            if(empty($aRs))
 	            {
 	                /**
-	                 * 如果没有更新到数据下次更新时间增加20%
+	                 * 如果没有更新到数据下次更新时间增加
 	                 * @var unknown_type
 	                 */
-	                $nextTime = $o->pullnexttime +2;
+	                $nextTime = $o->pullnexttime +4;
 	                if($nextTime > $this->maxNextTime)
 	                {
 	                    $nextTime = $this->maxNextTime;
@@ -158,6 +164,7 @@ class PullState extends Controller
 	                $aRs[$i]['uid'] = $uid;
 	                $aRs[$i]['forwardtid'] = '0';
 	                $aRs[$i]['stid'] = $o->service."|".$aRs[$i]['id']."|".$uid;
+	                $aRs[$i]['service'] = $o->service;
 
 	                /**
 	                 * add feed
@@ -169,14 +176,22 @@ class PullState extends Controller
 	                    $aRs[$i]['source']['forwardtid'] = '0';
 	                    $aRs[$i]['source']['uid'] = $sourceUid;
 	                    $aRs[$i]['source']['stid'] = $o->service."|".$aRs[$i]['source']['id']."|".$sourceUid;
+	                    $aRs[$i]['source']['service'] = $o->service;
 	            
-	                    $stateController = new CreateState($aRs[$i]['source']);
-	                    $stid = $stateController->process();
+	                    if($uid)
+	                    {
+    	                    $stateController = new CreateState($aRs[$i]['source']);
+    	                    $stateController->process();
+	                    }
 	                    
-	                    $aRs[$i]['forwardtid'] = $stid;
+	                    $aRs[$i]['forwardtid'] = "pull|".$o->service."|".$aRs[$i]['source']['id']."|".$sourceUid;
 	                }
-	                $stateController = new CreateState($aRs[$i]);
-	                $stateController->process();
+	                
+	                if($uid)
+	                {
+	                    $stateController = new CreateState($aRs[$i]);
+	                    $stateController->process();
+	                }
 	            }
 	            
 	            $o->save() ;
@@ -192,6 +207,11 @@ class PullState extends Controller
 	 */
 	public function checkUid($aUserInfo,$service)
 	{
+	    if(empty($aUserInfo['username']))
+	    {
+	        return false;
+	    }
+	    
 	    $aId = IdManager::singleton()->currentId() ;
 	    $auserModelInfo = clone $this->auser->prototype()->criteria()->where();
 	    $this->auser->clearData();
@@ -202,8 +222,8 @@ class PullState extends Controller
 	    if( $this->auser->isEmpty())
 	    {
 	        $this->user->clearData();
-	        $this->user->setData("username",$aUserInfo['username']);
-	        $this->user->setData("password","") ;
+	        $this->user->setData("username",$service."#".$aUserInfo['username']);
+	        $this->user->setData("password",md5($service."#".$aUserInfo['username'])) ;
 	        $this->user->setData("registerTime",time()) ;
 	    
 	        $this->user->setData('auser.service',$service);
@@ -215,7 +235,9 @@ class PullState extends Controller
 	        $this->user->child("friends")->createChild()
 	        ->setData("from",$aId->userId());
 	    
+	        
 	        $this->user->save() ;
+	        
 	        $uid = $this->user->uid;
 	    }else{
 	        foreach($this->auser->childIterator() as $oAuser){

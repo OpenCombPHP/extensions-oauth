@@ -26,14 +26,23 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret ,$lastData){
+    public function createPushMulti($o,$title){
+    
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['html'] = str_replace("{content}", $title, $params['html']);
+        
+        return $this->oauthCommon->SignXMLRequest($url, "post", $params['html'], $o->token, $o->token_secret);
+    }
+    
+    public function createTimeLineMulti($o ,$lastData){
     
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        
-        return $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'douban.com');
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'douban.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -43,6 +52,10 @@ class ApiDoubanAdapter
         
         foreach ($aRs['entry'] as $v)
         {
+            if(empty($v['content']['$t']))
+            {
+                return ;
+            }
             if($lastData['time'] < strtotime($v['published']['$t']))
             {
                 $aRs = $this->filter($v);

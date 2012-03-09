@@ -13,6 +13,7 @@ class ApiRenRenAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $keys;
     
     public function __construct($aSiteConfig,$aKey) {
         
@@ -21,16 +22,40 @@ class ApiRenRenAdapter
             throw new Exception("尚不能绑定此网站");
         }else{
             $this->arrAdapteeConfigs = $aSiteConfig;
+            $this->keys = $aKey;
         }
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret ,$lastData){
+    public function createPushMulti($o,$title){
+        
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['status'] = $this->oauthCommon->http()->utf82Unicode($title);
+        
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+    }
+    
+    public function createTimeLineMulti($o ,$lastData){
         
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        return $this->oauthCommon->CallRequest($url, $params,"json", $token,'renren.com');
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+    }
+    
+    
+    public function refreshTtoken($token,$token_secret)
+    {
+        $url = $this->arrAdapteeConfigs['auth']['refreshTtoken']['uri'];
+        $params = $this->arrAdapteeConfigs['auth']['refreshTtoken']['params'];
+        
+        $params['refresh_token'] = $token_secret;
+        $params['client_id'] = $this->keys['appkey'];
+        $params['client_secret'] = $this->keys['appsecret'];
+        
+        return $this->oauthCommon->CallRequest($url, $params,"json", $token);
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -67,13 +92,13 @@ class ApiRenRenAdapter
         
             if(empty($aRs['trace']))
             {
-                $aRsTmp['title'] = $aRs['prefix'].' <a href="'.$aRs['href'].'">'.$aRs['title']."</a>";
+                $aRsTmp['title'] = $aRs['prefix'].$aRs['title'];
                 $aRsTmp['body'] = $aRs['description'];
             }else{
                 $title = $aRs['trace']['text'];
-                for($i = 0; $i < sizeof($aRs['trace']['node']); $i++){
-                    $title = preg_replace("/".$aRs['trace']['node'][$i]['name']."/","<a href='http://www.renren.com/profile.do?id=".$aRs['trace']['node'][$i]['id']."'>".$aRs['trace']['node'][$i]['name']."</a>",$title);
-                }
+//                 for($i = 0; $i < sizeof($aRs['trace']['node']); $i++){
+//                     $title = preg_replace("/".$aRs['trace']['node'][$i]['name']."/","<a href='http://www.renren.com/profile.do?id=".$aRs['trace']['node'][$i]['id']."'>".$aRs['trace']['node'][$i]['name']."</a>",$title);
+//                 }
                 
                 $aRsTmp['title'] = $title;
                 $aRsTmp['body'] = "<b>".$aRs['title']."</b><br/>".$aRs['description'];
@@ -107,9 +132,16 @@ class ApiRenRenAdapter
                 if($aRs['attachment'][$i]['media_type'] == "video")
                 {
                     $aRsAttachmentTmp['type'] = 'video';
+                    $aRsAttachmentTmp['thumbnail_pic'] = $aRs['attachment'][$i]['src'];
+                    $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['href'];
+                    $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['owner_name'];
+                    $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+                }
+                if($aRs['attachment'][$i]['media_type'] == "page")
+                {
+                    $aRsAttachmentTmp['type'] = 'text/html';
                     $aRsAttachmentTmp['url'] = $aRs['attachment'][$i]['src'];
                     $aRsAttachmentTmp['link'] = $aRs['attachment'][$i]['href'];
-                    $aRsAttachmentTmp['title'] = $aRs['attachment'][$i]['owner_name'];
                     $aRsTmp['attachment'][] = $aRsAttachmentTmp;
                 }
                 

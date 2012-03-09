@@ -26,7 +26,17 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createTimeLineMulti($token,$token_secret ,$lastData){
+    public function createPushMulti($o,$title){
+    
+        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        
+        $params['status'] = $title;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'163.com');
+    }
+    
+    public function createTimeLineMulti($o ,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
@@ -36,7 +46,7 @@ class Api163Adapter
             $params['max_id'] = $lastData['cursor_id'];
         }
         
-        return  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret,'163.com');
+        return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -46,10 +56,13 @@ class Api163Adapter
     
         foreach ($aRs as $v)
         {
+            if(empty($v['text']))
+            {
+                return ;
+            }
             /**
              * 排除当前条
              */
-            
             if($lastData['cursor_id'] != $v['cursor_id'])
             {
                 $aRs = $this->filter($v);
@@ -75,10 +88,7 @@ class Api163Adapter
         $aRsTmp = array();
         $aRsTmp['system'] = '';
     
-    
-        $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
-        $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
-        $aRsTmp['title'] = $text;
+        $aRsTmp['title'] = $aRs['text'];
         //             $aRsTmp['body'] = $aRs['description'];
         $aRsTmp['time'] = strtotime($aRs['created_at']);
         $aRsTmp['id'] = $aRs['id'];

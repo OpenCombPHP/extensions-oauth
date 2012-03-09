@@ -15,6 +15,10 @@
 				<else/>
 					<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$value['suid']}&service={=$value['service']}">解除</a>
 				</if>
+				
+				<if "$value['service']=='renren.com'">
+					<a href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$value['suid']}&service={=$value['service']}">刷新</a>
+				</if>
 			</div> 
 </foreach>
 <hr/>

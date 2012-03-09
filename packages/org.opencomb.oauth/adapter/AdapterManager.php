@@ -52,6 +52,7 @@ class AdapterManager extends Object
 	 */
 	public function createApiAdapter($sServiceName,$sOAuthToken=null,$sOAuthTokenSecret=null)
 	{
+	    
 	    if( !isset($this->arrAdapteeConfigs[$sServiceName]) )
 	    {
 	        throw new AuthAdapterException("无效的服务名称:%s",$sServiceName,null,AuthAdapterException::invalid_service) ;
@@ -61,7 +62,7 @@ class AdapterManager extends Object
 	    $sAppKey = $aSetting->item('/'.$sServiceName,'appKey') ;
 	    $sAppSecret = $aSetting->item('/'.$sServiceName,'appSecret') ;
 	
-	    if( !$sAppKey or !$sAppSecret )
+	    if( (!$sAppKey or !$sAppSecret) and $this->arrAdapteeConfigs[$sServiceName]['OAuthVersion']!="null")
 	    {
 	        throw new AuthAdapterException("服务:%s尚未配置正确的 app key/secret",$sServiceName,null,AuthAdapterException::not_setup_appkey) ;
 	    }
@@ -167,6 +168,20 @@ class AdapterManager extends Object
                                     'uri'=>'http://open.t.qq.com/api/statuses/home_timeline',
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
+                            ),
+	                ),
+	        ) ,
+	
+	        // 腾讯空间
+	        'qzone.qq.com' => array(
+	                'name' => '腾讯空间' ,
+	                'url' => 'qzone.qq.com' ,
+	                'OAuthVersion'=>'null',
+	                // 应用
+	                'api' => array(
+	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiQzoneAdapter' ,
+                            'timeline'=>array(
+                                    'uri'=>'http://qz.qq.com/{id}/fic/',
                             ),
 	                ),
 	        ) ,
@@ -309,6 +324,10 @@ class AdapterManager extends Object
 	                        'accessRspn'=> array(
 	                                'keyId' => 'user.id' ,
 	                        ) ,
+	                        'refreshTtoken'=>array(
+                                    'uri'=>'https://graph.renren.com/oauth/token',
+                                    'params'=>array('grant_type'=>'refresh_token'),
+                            ),
 	                ),
                     // 应用
                     'api' => array(
@@ -316,6 +335,10 @@ class AdapterManager extends Object
                             'userinfo'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
                                     'params'=>array('mode'=>'users.getInfo','method'=>'users.getInfo','fields'=>'uid,name,sex,star,zidou,vip,birthday,email_hash,tinyurl,headurl,mainurl,hometown_location,work_history,university_history'),
+                            ),
+                            'add'=>array(
+                                    'uri'=>'http://api.renren.com/restserver.do',
+                                    'params'=>array('format'=>'json','method'=>'status.set'),
                             ),
                             'timeline'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',

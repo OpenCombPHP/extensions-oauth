@@ -9,7 +9,7 @@ use net\daichen\oauth\OAuthCommon;
 
 if (!session_id()) session_start();
 
-class ApiTencentAdapter
+class ApiQzoneAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
@@ -26,29 +26,12 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function createPushMulti($o,$title){
-    
-        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['add']['params'];
-        
-        $params['content'] = $title;
-        $params['clientip'] = $_SERVER['REMOTE_ADDR'];
-        
-        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
-    }
-    
     public function createTimeLineMulti($o,$lastData){
     
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
+        $url = str_replace("{id}", $o->suid, $url);
         
-        if(!empty($lastData))
-        {
-            $params['pageflag'] = "2";
-            $params['pagetime'] = $lastData['time'];
-        }
-        
-        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
+        return $this->oauthCommon->SignRequest($url, "get", array(), $o->token, $o->token_secret,'qzone.qq.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -81,15 +64,12 @@ class ApiTencentAdapter
             $aRsTmp['system'] = '';
         
         
-           // $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
+            $text = preg_replace("/#(.*)#/", "<a href='http://t.qq.com/k/$1'>#$1#</a>", $aRs['text']);
         
-            preg_match_all("/@(.*?)[ |:]/", $aRs['text'], $aAT);
-            
-            for($i = 0; $i < sizeof($aAT[1]); $i++){
-                $aRs['text'] = str_replace($aAT[0][$i], "@".$aRs['user'][$aAT[1][$i]], $aRs['text']);
-            }
-            
-            $aRsTmp['title'] = $aRs['text'];
+            preg_match_all("/@(.*?):/", $text, $aAT);
+            if(!empty($aAT[1][0])) $text = preg_replace("/@(.*?):/", "<a href='http://t.qq.com/$1'>".$aRs['user'][$aAT[1][0]]."</a>:", $text);
+        
+            $aRsTmp['title'] = trim($text);
             $aRsTmp['time'] = $aRs['timestamp'];
             $aRsTmp['id'] = $aRs['id'];
             $aRsTmp['data'] = json_encode($aRs);
@@ -101,7 +81,7 @@ class ApiTencentAdapter
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['nick'];
-            $aRsTmp['avatar'] = $aRs['head']."/50";
+            $aRsTmp['avatar'] = $aRs['head'];
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         
