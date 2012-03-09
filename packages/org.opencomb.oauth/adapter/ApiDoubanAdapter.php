@@ -26,6 +26,18 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastId($o,$aRs){
+        
+        $url = $this->arrAdapteeConfigs['api']['laststate']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['laststate']['params'];
+        
+        $aTmp = json_decode($this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret),true);
+        $id = $aTmp['entry'][0]['id']['$t'];
+        
+        preg_match("/\/([0-9]{1,20})$/", $id,$aId);
+        return $aId[1];
+    }
+    
     public function createPushMulti($o,$title){
     
         $url = $this->arrAdapteeConfigs['api']['add']['uri'];

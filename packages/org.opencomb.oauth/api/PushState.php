@@ -33,6 +33,12 @@ class PushState extends Controller
                 	) ,
                     'list' => true,
             ) ,
+            'model:state' => array(
+                	'orm' => array(
+                		'table' => 'oauth:state' ,
+    		            'keys'=>array('stid','service'),
+                	) ,
+            ) ,
 	            
 		) ;
 	    
@@ -59,12 +65,11 @@ class PushState extends Controller
 	     */
 	    $auserModelWhere = clone $this->auser->prototype()->criteria()->where();
 	    $auserModelWhere->eq('uid',$aId->userId());
-	    //$this->auser->prototype()->criteria()->where()->eq('service',$this->params["service"]);
 	    $this->auser->load($auserModelWhere) ;
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time() && in_array($o->service, $aService) )
+	        if(in_array($o->service, $aService) )
 	        {
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
@@ -81,11 +86,26 @@ class PushState extends Controller
 	    $aRsT = $OAuthCommon -> multi_exec();
 	    
 	    
-	    echo "<pre>";print_r($aRs);echo "</pre>";
-	    echo "<pre>";print_r($aRsT);echo "</pre>";
+	    $aIdList = array();
+	    foreach($this->auser->childIterator() as $o)
+	    {
+	        if(in_array($o->service, $aService) )
+	        {
+	            $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
 	    
+	            $aIdList[$o->service] = @$aAdapter->pushLastId($o,$aRsT[$o->service]);
+	        }
+	    }
 	    
+	    foreach($aIdList as $k => $id)
+	    {
+	        $this->state->setData('stid',$this->params['stid']) ;
+	        $this->state->setData('service',$k) ;
+	        $this->state->setData('sid',$id) ;
+	        $this->state->save();
+	    }
 	    
+	    exit;
 	}
 }
 

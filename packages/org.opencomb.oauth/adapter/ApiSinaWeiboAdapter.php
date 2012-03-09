@@ -26,6 +26,12 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastId($o,$aRs){
+    
+        $aRs = json_decode($aRs,true);
+        return  $aRs['id'];
+    }
+    
     public function createPushMulti($o,$title){
     
         $url = $this->arrAdapteeConfigs['api']['add']['uri'];

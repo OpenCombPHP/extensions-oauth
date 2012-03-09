@@ -26,6 +26,12 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastId($o,$aRs){
+    
+        $aRs = json_decode($aRs,true);
+        return  $aRs['data']['id'];
+    }
+    
     public function createPushMulti($o,$title){
     
         $url = $this->arrAdapteeConfigs['api']['add']['uri'];

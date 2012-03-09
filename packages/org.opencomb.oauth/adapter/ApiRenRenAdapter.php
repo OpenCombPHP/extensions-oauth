@@ -27,6 +27,15 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastId($o,$aRs){
+        
+        $url = $this->arrAdapteeConfigs['api']['laststate']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['laststate']['params'];
+        
+        $aTmp = json_decode($this->oauthCommon->CallRequest($url, $params,"json", $o->token),true);
+        return $aTmp['status_id'];
+    }
+    
     public function createPushMulti($o,$title){
         
         $url = $this->arrAdapteeConfigs['api']['add']['uri'];

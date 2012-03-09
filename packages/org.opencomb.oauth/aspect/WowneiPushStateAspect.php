@@ -26,6 +26,11 @@ class WowneiPushStateAspect
 	 */
 	private function process()
 	{
+		
+		// 调用原始原始函数
+		$stid = aop_call_origin() ;
+		
+		
 		/**
 		 * push weibo
 		 * @var unknown_type
@@ -46,15 +51,13 @@ class WowneiPushStateAspect
 	            $aParams = array(
 	                    'service'=>$aWeibo,
 	                    'title'=>$this->params['body'],
+	                    'stid'=>$stid,
 	            );
 	            $oOauthPush = new PushState($aParams);
 	            $oOauthPush->process();
 	        }
 	    }
 		
-		
-		// 调用原始原始函数
-		aop_call_origin() ;
 	}
 }
 ?>

@@ -221,6 +221,11 @@ class AdapterManager extends Object
                                     'params'=>array('alt'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+                            'laststate'=>array(
+                                    'uri'=>'http://api.douban.com/people/%40me/miniblog',
+                                    'params'=>array('alt'=>'json','max-results'=>'1'),
+                                    'columns' => array(''=>'') , 
+                            ),
                     ),
 	        ) ,
 	
@@ -318,7 +323,7 @@ class AdapterManager extends Object
 	                        'callbackCode'=>'urlencode',
 	                        'tokenUrl' => array(
 	                                'access_token_uri' => 'https://graph.renren.com/oauth/token' ,
-	                                'scope' => 'read_user_album+read_user_feed' ,
+	                                'scope' => 'read_user_album+read_user_feed+read_user_status' ,
 	                                'accessParam' => 'code' ,//获得access时所需要然参数
 	                        ),
 	                        'accessRspn'=> array(
@@ -343,6 +348,10 @@ class AdapterManager extends Object
                             'timeline'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
                                     'params'=>array('format'=>'json','method'=>'feed.get','type'=>'10,11,20,21,22,23,30,31,32,33,34,35,36,40,41,50,51,52,53,54,55'),
+                            ),
+                            'laststate'=>array(
+                                    'uri'=>'http://api.renren.com/restserver.do',
+                                    'params'=>array('format'=>'json','method'=>'status.get'),
                             ),
                     ),
 	        ) ,
