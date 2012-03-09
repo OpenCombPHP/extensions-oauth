@@ -55,6 +55,7 @@ class OAuthItem extends Controller
 	public function process()
 	{
 		$aSetting = Extension::flyweight('oauth')->setting();
+		$akey=$aSetting->key('/'.'dalian',true);
 		$this->viewAuthItem->widget('appKey_text')->setValue($this->params->get('appKey'));
 		$this->viewAuthItem->widget('appSecret_text')->setValue($this->params->get('appSecret'));
 		$this->viewAuthItem->variables()->set('oAuthName',$this->params->get('name')) ;

@@ -67,10 +67,10 @@ class OAuthSetting extends ControlPanel
 			$arrb = array();
 			$arrb['name']=$value['name'];
 			$arrb['domain']=$value['url'];
-			$a=$aSetting->key('/'.$value['url'],true);
-			$arrb['appkey'] = $a->item('appKey',"1");
-			$arrb['appSecret'] = $a->item('appSecret',"1");
-			$arrb['flag'] = $a->item('flag',"1");
+			$akey=$aSetting->key('/'.$value['url'],true);
+			$arrb['appkey'] = $akey->item('appKey',"1");
+			$arrb['appSecret'] = $akey->item('appSecret',"1");
+			$arrb['flag'] = $akey->item('flag',"1");
 			$arrl[] = $arrb;
 		}
 		
