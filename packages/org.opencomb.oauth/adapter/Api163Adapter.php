@@ -62,7 +62,7 @@ class Api163Adapter
     
         foreach ($aRs as $v)
         {
-            if(empty($v['text']))
+            if(empty($v['text']) || empty($v['user']['id']))
             {
                 return ;
             }
