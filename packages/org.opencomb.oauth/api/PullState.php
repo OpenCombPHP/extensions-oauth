@@ -87,7 +87,7 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()    && $o->service == "weibo.com"    )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()    /* && $o->service == "weibo.com" */    )
 	        {
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
@@ -123,7 +123,7 @@ class PullState extends Controller
 	            
 	            $aRs = @$aAdapter->filterTimeLine($o->token,$o->token_secret,$aRsT[$o->service],json_decode($o->pulldata,true));
 	            
-	            echo "<pre>";print_r($aRs);echo "</pre>";
+	            //echo "<pre>";print_r($aRs);echo "</pre>";
 	            /**
 	             * 最新一条记录的时间
 	             */
