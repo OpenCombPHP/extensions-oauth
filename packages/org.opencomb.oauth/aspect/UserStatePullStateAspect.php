@@ -26,10 +26,8 @@ class UserStatePullStateAspect
 	 */
 	private function process()
 	{
-		
         $oAuth = new PullState();
         $oAuth->process();
-		
 		
 		// 调用原始原始函数
 		aop_call_origin() ;

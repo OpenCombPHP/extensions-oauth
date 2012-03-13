@@ -8,12 +8,12 @@ use org\opencomb\oauth\api\PushState;
 use org\jecat\framework\bean\BeanFactory;
 use org\jecat\framework\lang\aop\jointpoint\JointPointMethodDefine;
 
-class WowneiPushStateAspect
+class UserStateForwardStateAspect
 {
 	/**
 	 * @pointcut
 	 */
-	public function pointcutWowneiPushState()
+	public function pointcutUserStateForwardStateAspect()
 	{
 		return array(
 			new JointPointMethodDefine('org\\opencomb\\userstate\\CreateState','process') ,
@@ -22,7 +22,7 @@ class WowneiPushStateAspect
 	
 	/**
 	 * @advice around
-	 * @for pointcutWowneiPushState
+	 * @for pointcutUserStateForwardStateAspect
 	 */
 	private function process()
 	{
