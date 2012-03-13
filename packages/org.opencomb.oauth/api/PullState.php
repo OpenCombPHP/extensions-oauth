@@ -87,7 +87,7 @@ class PullState extends Controller
 	    
 	    foreach($this->auser->childIterator() as $o)
 	    {
-	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()    /* && $o->service == "weibo.com" */    )
+	        if($o->hasData('token') && $o->hasData('token_secret') && ($o->pulltime+$o->pullnexttime) < time()    /* && $o->service == "weibo.com" */   )
 	        {
 	            //echo "<pre>";print_r("拉取:".$o->service);echo "</pre>";
 	            try{
