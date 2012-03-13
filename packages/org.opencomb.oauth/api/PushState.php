@@ -105,7 +105,6 @@ class PushState extends Controller
 	        $this->state->save();
 	    }
 	    
-	    exit;
 	}
 }
 

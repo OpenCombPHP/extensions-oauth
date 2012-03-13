@@ -47,20 +47,65 @@ class UserStatePushStateAspect
 	            {
 	                $aWeibo = $this->params['pushweibo'];
 	            }else{
-	                $aWeibo = explode(",", $this->params['pushweibo']);
+	                $aWeibo = explode("|", $this->params['pushweibo']);
 	            }
 	            
 	            
 	            if($aWeibo)
 	            {
-	                $aParams = array(
-	                        'service'=>$aWeibo,
-	                        'title'=>$this->params['body'],
-	                        'stid'=>$stid,
-	                );
-	                $oOauthPush = new ForwardState($aParams);
-	                $oOauthPush->process();
+	                $aModel = \org\jecat\framework\bean\BeanFactory::singleton()->createBean( $conf=array(
+	                        'class' => 'model' ,
+	                        'list'=>true,
+	                        'orm' => array(
+	                                'table' => 'oauth:state' ,
+		                            'keys'=>array('sid','service'),
+	                                'where' => array(
+	                                    array('eq','stid',$this->params['forwardtid']) ,
+	                                ) ,
+	                        ) ,
+	                ), 'UserStatePushStateAspect' ) ;
+	                $aModel->load() ;
+	                
+	                foreach($aModel->childIterator() as $o)
+	                {
+	                    $ostate[$o->service] = $o->sid ;
+	                }
+	                for($i = 0; $i < sizeof($aWeibo); $i++){
+	                    if(!empty($ostate[$aWeibo[$i]]))
+	                    {
+	                        $aList1[] = $aWeibo[$i];
+	                    }else{
+	                        $aList2[] = $aWeibo[$i];
+	                    }
+	                    
+	                }
+	                
+	                if(!empty($aList1))
+	                {
+	                    $aParams = array(
+	                            'service'=>$aList1,
+	                            'title'=>preg_replace("/<a .*?>(.*?)<\/a>/u", "$1", $this->params['body']),
+	                            'forwardtid'=>$ostate,
+	                            'stid'=>$stid,
+	                    );
+	                    $oOauthPush = new \org\opencomb\oauth\api\ForwardState($aParams);
+	                    $oOauthPush->process();
+	                }
+	                
+	                if(!empty($aList2))
+	                {
+	                    $aParams = array(
+	                            'service'=>$aList2,
+	                            'title'=>preg_replace("/<a .*?>(.*?)<\/a>/u", "$1", $this->params['body']),
+	                            'stid'=>$stid,
+	                    );
+	                    $oOauthPush = new PushState($aParams);
+	                    $oOauthPush->process();
+	                }
+	                
+	                
 	            }
+	            
 	        }else{
 	            if(is_array($this->params['pushweibo']))
 	            {

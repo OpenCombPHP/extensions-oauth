@@ -26,6 +26,23 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastForwardId($o,$aRs){
+    
+        $aRs = json_decode($aRs,true);
+        return  $aRs['data']['id'];
+    }
+    
+    public function createPushForwardMulti($o,$forwardid,$title){
+    
+        $url = $this->arrAdapteeConfigs['api']['forward']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['forward']['params'];
+        
+        $params['content'] = $title;
+        $params['reid'] = $forwardid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
     public function pushLastId($o,$aRs){
     
         $aRs = json_decode($aRs,true);

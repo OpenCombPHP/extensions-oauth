@@ -49,9 +49,9 @@ class ForwardState extends Controller
 	    
 	    $aService = $this->params['service'];
 	    $sTitle = $this->params['title'];
+	    $forwardtid = $this->params['forwardtid'];
 	    
-	    
-	    if(empty($aService) || empty($sTitle))
+	    if(empty($aService) || empty($sTitle) || empty($forwardtid))
 	    {
 	        return;
 	    }
@@ -73,7 +73,7 @@ class ForwardState extends Controller
 	        {
 	            try{
 	                $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
-	                $aRs = @$aAdapter->createPushMulti($o,$sTitle);
+	                $aRs = @$aAdapter->createPushForwardMulti($o,$forwardtid[$o->service],$sTitle);
 	            }catch(AuthAdapterException $e){
 	                $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
 	                $this->messageQueue()->display() ;
@@ -85,7 +85,7 @@ class ForwardState extends Controller
 	    $OAuthCommon = new OAuthCommon("",  "");
 	    $aRsT = $OAuthCommon -> multi_exec();
 	    
-	    
+	    echo "<pre>";print_r($aRsT);echo "</pre>";
 	    $aIdList = array();
 	    foreach($this->auser->childIterator() as $o)
 	    {
@@ -93,7 +93,7 @@ class ForwardState extends Controller
 	        {
 	            $aAdapter = AdapterManager::singleton()->createApiAdapter($o->service) ;
 	    
-	            $aIdList[$o->service] = @$aAdapter->pushLastId($o,$aRsT[$o->service]);
+	            $aIdList[$o->service] = @$aAdapter->pushLastForwardId($o,$aRsT[$o->service]);
 	        }
 	    }
 	    
@@ -105,7 +105,6 @@ class ForwardState extends Controller
 	        $this->state->save();
 	    }
 	    
-	    exit;
 	}
 }
 

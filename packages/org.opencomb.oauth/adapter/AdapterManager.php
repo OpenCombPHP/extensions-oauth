@@ -126,6 +126,10 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
                                     'params'=>array('format'=>'json'),
                             ),
+                            'forward'=>array(
+                                    'uri'=>'http://api.t.sina.com.cn/statuses/repost.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
                             'timeline'=>array(
                                     'uri'=>'http://api.t.sina.com.cn/statuses/friends_timeline.json',
                                     'params'=>array('format'=>'json'),
@@ -164,6 +168,10 @@ class AdapterManager extends Object
 	                                'uri'=>'http://open.t.qq.com/api/t/add',
 	                                'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
 	                        ),
+                            'forward'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/t/re_add',
+                                    'params'=>array('format'=>'json'),
+                            ),
                             'timeline'=>array(
                                     'uri'=>'http://open.t.qq.com/api/statuses/home_timeline',
                                     'params'=>array('format'=>'json'),
@@ -258,6 +266,10 @@ class AdapterManager extends Object
 	                                'uri'=>'http://api.t.sohu.com/statuses/update.json',
 	                                'params'=>array('format'=>'json'),
 	                        ),
+                            'forward'=>array(
+                                    'uri'=>'http://api.t.sohu.com/statuses/transmit/{id}.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
                             'timeline'=>array(
                                     'uri'=>'http://api.t.sohu.com/statuses/friends_timeline.json',
                                     'params'=>array('format'=>'json'),
@@ -297,6 +309,10 @@ class AdapterManager extends Object
                             ),
                             'add'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/update.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'forward'=>array(
+                                    'uri'=>'http://api.t.163.com/statuses/retweet/{id}.json',
                                     'params'=>array('format'=>'json'),
                             ),
                             'timeline'=>array(
