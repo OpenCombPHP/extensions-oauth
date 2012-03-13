@@ -57,6 +57,14 @@ class ApiTencentAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
+    public function createPullCommentMulti($o){
+    
+        $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+        
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         $responseData = preg_replace("||",'',$responseData );

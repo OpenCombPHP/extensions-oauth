@@ -131,6 +131,10 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+                    		'pullcomment'=>array(
+                    				'uri'=>'https://api.weibo.com/2/comments/show.json',
+                    				
+                    		),
                     ),
 	        ) ,
 	
@@ -183,6 +187,15 @@ class AdapterManager extends Object
                             'timeline'=>array(
                                     'uri'=>'http://qz.qq.com/{id}/fic/',
                             ),
+                            'pullcomment'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/statuses/sub_re_list',
+                            		'params'=>array(
+                            				'format'=>'json',
+                            				'type'=>2,//回复
+                            				'reqnum'=>30, //条目数量
+                            				'lastid'=>0, //和pagetime配合使用（第一页：填0，向上翻页：填上一次请求返回的第一条记录id，向下翻页：填上一次请求返回的最后一条记录id
+                            				),
+                            ),
 	                ),
 	        ) ,
 	
@@ -226,6 +239,10 @@ class AdapterManager extends Object
                                     'params'=>array('alt'=>'json','max-results'=>'1'),
                                     'columns' => array(''=>'') , 
                             ),
+                            'pullcomment'=>array(
+                                    'uri'=>'http://api.douban.com/review/{id}',
+                                    'params'=>array(),
+                            ),
                     ),
 	        ) ,
 	
@@ -267,6 +284,10 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.sohu.com/statuses/show/{id}.json',
                                     'params'=>array('format'=>'json'),
                             ),
+                            'pullcomment'=>array(
+                                    'uri'=>'http://api.t.sohu.com/statuses/comments/{id}.json',
+                                    'params'=>array('count'=>30,),
+                            ),
 	                ),
 	        ) ,
 	
@@ -302,6 +323,11 @@ class AdapterManager extends Object
                             'timeline'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/home_timeline.json',
                                     'params'=>array('format'=>'json'),
+                                    'columns' => array(''=>'') , 
+                            ),
+                            'pullcomment'=>array(
+                                    'uri'=>'http://api.t.163.com/statuses/comments/{id}.json',
+                                    'params'=>array('format'=>'json','count'=>30),
                                     'columns' => array(''=>'') , 
                             ),
                             'show'=>array(
@@ -352,6 +378,10 @@ class AdapterManager extends Object
                             'laststate'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
                                     'params'=>array('format'=>'json','method'=>'status.get'),
+                            ),
+                            'pullcomment'=>array(
+                                    'uri'=>'http://api.renren.com/restserver.do',
+                                    'params'=>array('format'=>'json','method'=>'status.getComment','count'=>20),
                             ),
                     ),
 	        ) ,
