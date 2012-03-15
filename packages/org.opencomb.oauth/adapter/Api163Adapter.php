@@ -73,11 +73,9 @@ class Api163Adapter
     }
     
     public function createPullCommentMulti($o , $astate){
-    
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
-        
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     

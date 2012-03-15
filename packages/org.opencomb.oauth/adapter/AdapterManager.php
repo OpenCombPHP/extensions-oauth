@@ -300,6 +300,9 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.sohu.com/statuses/comments/{id}.json',
                                     'params'=>array('count'=>100,),
                             ),
+                            'commentcount'=>array(
+                                    'uri'=>'http://api.t.sohu.com/statuses/counts/{id}.json',
+                            ),
 	                ),
 	        ) ,
 	

@@ -45,7 +45,7 @@ class PullComment extends Controller
                 		        'table'=>'friends:subscription',
         		                'keys'=>array('from','to'),
                 		),
-                	) ,
+				) ,
             ) ,
 	        /**
 	         * 用来快速获取，判断认证信息
@@ -82,6 +82,7 @@ class PullComment extends Controller
 	}
 	public function process()
 	{
+		
 	    if(!$aId =IdManager::singleton()->currentId())
 	    {
 	    	$this->messageQueue ()->create ( Message::error, "请先登录" );
@@ -96,14 +97,14 @@ class PullComment extends Controller
 
 	    $aSetting = Application::singleton()->extensions()->extension('comment')->setting() ;
 	    $nWaitTime = (int)$aSetting->item('/commentFromOtherWeb','commentTime',300) ;
-	    
 	    //有几个网站存在这个state就拉几个网站的评论
 	    foreach($this->state->child('ostate')->childIterator() as $ostate){
 	    	//需要新的评论,结果却没有到该拉评论的时间限制
-    		if( !$this->params->has('oldcommentes') && !($ostate['pullcommenttime'] + $nWaitTime) < time() )
+    		if( !$this->params->has('oldcommentes') && ($ostate['pullcommenttime'] + $nWaitTime) > time() )
     		{
     			continue;
     		}
+    		
     		//state的作者信息,包括在本站的和在对方网站上的,目前只有renren需要
     		$auther = null ;
     		if($ostate['service'] == 'renren.com'){
@@ -114,7 +115,6 @@ class PullComment extends Controller
     			$auther = $this->stateauther;
     		}
     		
-    		
     		//取一个用户的认证来拉取评论,挑最早用过的,避免超对方网站限制
     		$auserModelWhere = clone $this->auser->prototype()->criteria()->where();
     		$auserModelWhere->eq('service',$ostate['service']);
@@ -123,11 +123,11 @@ class PullComment extends Controller
     		if(!$this->auser->load($auserModelWhere)){
     			continue;
     		}
-    		
 			try{
+				
 				$aAdapter = AdapterManager::singleton()->createApiAdapter($ostate['service']) ;
 				//$this->params->has('oldcommentes')请求最近的评论还是旧评论
-				$aRs = @$aAdapter->createPullCommentMulti($this->auser, $ostate ,$this->params->has('oldcommentes') , $auther);
+				$aRs = @$aAdapter->createPullCommentMulti($this->auser, $ostate ,array(), $auther);
 
 			}catch(AuthAdapterException $e){
 				$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
@@ -138,7 +138,7 @@ class PullComment extends Controller
 		    $OAuthCommon = new OAuthCommon("",  "");
 		    $aRsT = $OAuthCommon -> multi_exec();
 		    
-		    var_dump($aRsT);exit;
+		    print_r($aRsT);exit;
 		    $this->saveComment($aRsT);
 	    }
 	}
@@ -190,6 +190,20 @@ class PullComment extends Controller
 	    return $uid;
 	}
 	
+	static public function commentCount(){
+		try{
+			$aAdapter = AdapterManager::singleton()->createApiAdapter($ostate['service']) ;
+			//$this->params->has('oldcommentes')请求最近的评论还是旧评论
+			$aRs = @$aAdapter->createCommentCountMulti($this->auser, $ostate );
+		}catch(AuthAdapterException $e){
+			$this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
+			$this->messageQueue()->display() ;
+			return ;
+		}
+		
+		$OAuthCommon = new OAuthCommon("",  "");
+		$aRsT = $OAuthCommon -> multi_exec();
+	}
 	
 	public function saveComment($aRsT){
 		foreach($this->auser->childIterator() as $o)

@@ -78,7 +78,7 @@ class ApiTencentAdapter
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params['rootid']= $astate['sid'];
-        
+        $params = array('flag'=>2 , 'format'=>'json' , 'reqnum'=>5, 'rootid'=>$astate['sid']);
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
