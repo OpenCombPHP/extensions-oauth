@@ -26,6 +26,16 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function pushLastForwardId($o,$aRs){
+
+        return $this->pushLastId($o, $aRs);
+    }
+    
+    public function createPushForwardMulti($o,$forwardid,$title){
+        
+        return $this->createPushMulti($o, $title);
+    }
+    
     public function pushLastId($o,$aRs){
         
         $url = $this->arrAdapteeConfigs['api']['laststate']['uri'];
