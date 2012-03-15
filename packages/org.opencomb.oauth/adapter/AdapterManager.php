@@ -130,6 +130,14 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.sina.com.cn/statuses/repost.json',
                                     'params'=>array('format'=>'json'),
                             ),
+                            'createFriend'=>array(
+                                    'uri'=>'http://api.t.sina.com.cn/friendships/create.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'removeFriend'=>array(
+                                    'uri'=>'http://api.t.sina.com.cn/friendships/destroy.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
                             'timeline'=>array(
                                     'uri'=>'http://api.t.sina.com.cn/statuses/friends_timeline.json',
                                     'params'=>array('format'=>'json'),
@@ -170,6 +178,14 @@ class AdapterManager extends Object
 	                        ),
                             'forward'=>array(
                                     'uri'=>'http://open.t.qq.com/api/t/re_add',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'createFriend'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/friends/add',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'removeFriend'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/friends/del',
                                     'params'=>array('format'=>'json'),
                             ),
                             'timeline'=>array(
@@ -275,6 +291,14 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+                            'createFriend'=>array(
+                                    'uri'=>'http://api.t.sohu.com/friendships/create/{id}.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'removeFriend'=>array(
+                                    'uri'=>'http://api.t.sohu.com/friendships/destroy/{id}.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
                             'show'=>array(
                                     'uri'=>'http://api.t.sohu.com/statuses/show/{id}.json',
                                     'params'=>array('format'=>'json'),
@@ -319,6 +343,14 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.163.com/statuses/home_timeline.json',
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
+                            ),
+                            'createFriend'=>array(
+                                    'uri'=>'http://api.t.163.com/friendships/create.json',
+                                    'params'=>array('format'=>'json'),
+                            ),
+                            'removeFriend'=>array(
+                                    'uri'=>'http://api.t.163.com/friendships/destroy.json',
+                                    'params'=>array('format'=>'json'),
                             ),
                             'show'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/show/{id}.json',

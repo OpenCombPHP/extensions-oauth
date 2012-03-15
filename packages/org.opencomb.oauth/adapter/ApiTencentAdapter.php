@@ -26,6 +26,26 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function createFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
+        
+        $params['name'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
+    public function removeFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
+        
+        $params['name'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
     public function pushLastForwardId($o,$aRs){
     
         $aRs = json_decode($aRs,true);
