@@ -63,6 +63,14 @@ class ApiRenRenAdapter
         
         return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
     }
+    public function createPullCommentMulti($o ,$astate , $auther){
+        $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+        $params['status_id'] = $astate['sid'];
+        $params['owner_id'] = $auther['suid'];
+        
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+    }
     
     
     public function refreshTtoken($token,$token_secret)
@@ -124,7 +132,8 @@ class ApiRenRenAdapter
             }
             
             $aRsTmp['time'] = strtotime($aRs['update_time']);
-            $aRsTmp['id'] = $aRs['post_id'];
+//             $aRsTmp['id'] = $aRs['post_id'];
+            $aRsTmp['id'] = $aRs['source_id'];
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source']['text'];
             $aRsTmp['client_url'] = $aRs['source']['href'];

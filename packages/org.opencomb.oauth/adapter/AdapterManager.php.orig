@@ -368,6 +368,7 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+<<<<<<< HEAD
                             'createFriend'=>array(
                                     'uri'=>'http://api.t.163.com/friendships/create.json',
                                     'params'=>array('format'=>'json'),
@@ -375,10 +376,11 @@ class AdapterManager extends Object
                             'removeFriend'=>array(
                                     'uri'=>'http://api.t.163.com/friendships/destroy.json',
                                     'params'=>array('format'=>'json'),
-                            ),
+=======
                             'pullcomment'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/comments/{id}.json',
                                     'params'=>array('format'=>'json','count'=>30),
+>>>>>>> a0a353d43ccd3c87bf77498d817df29bb1dc2533
                             ),
                             'show'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/show/{id}.json',
