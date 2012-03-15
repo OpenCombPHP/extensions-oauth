@@ -54,6 +54,16 @@ class ApiSohuAdapter
     
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
+    public function createPullCommentMulti($o ,$astate , $otherParams){
+    
+        $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
+        $url = preg_replace("/\{id\}/",$astate['sid'],$url );
+        $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+        
+        $params = $params + $otherParams;  // 组合额外配置
+       
+        return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
+    }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {

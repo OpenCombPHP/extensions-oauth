@@ -57,6 +57,16 @@ class ApiDoubanAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'douban.com');
     }
     
+    //豆瓣没有提供广播的评论接口
+//     public function createPullCommentMulti($o ,$id){
+//         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
+//         $url = preg_replace("/\{id\}/",$id,$url );
+//         var_dump($url);
+//         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+// //         $params['apikey']=  $o->token_secret;
+//         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'douban.com');
+//     }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         

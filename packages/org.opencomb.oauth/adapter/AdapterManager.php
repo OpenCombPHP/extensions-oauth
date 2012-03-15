@@ -132,8 +132,8 @@ class AdapterManager extends Object
                                     'columns' => array(''=>'') , 
                             ),
                     		'pullcomment'=>array(
-                    				'uri'=>'https://api.weibo.com/2/comments/show.json',
-                    				
+                    				'uri'=>'http://api.t.sina.com.cn/statuses/comments.json',
+                    				'params'=>array('format'=>'json','count'=>30),
                     		),
                     ),
 	        ) ,
@@ -173,6 +173,15 @@ class AdapterManager extends Object
                                     'params'=>array('format'=>'json'),
                                     'columns' => array(''=>'') , 
                             ),
+	                		'pullcomment'=>array(
+	                				'uri'=>'http://open.t.qq.com/api/t/re_list',
+	                				'params'=>array(
+	                						'format'=>'json',
+	                						'flag'=>2,//回复
+	                						'reqnum'=>30, //条目数量
+	                						'lastid'=>0, //和pagetime配合使用（第一页：填0，向上翻页：填上一次请求返回的第一条记录id，向下翻页：填上一次请求返回的最后一条记录id
+	                				),
+	                		),
 	                ),
 	        ) ,
 	
@@ -186,15 +195,6 @@ class AdapterManager extends Object
 	                        'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiQzoneAdapter' ,
                             'timeline'=>array(
                                     'uri'=>'http://qz.qq.com/{id}/fic/',
-                            ),
-                            'pullcomment'=>array(
-                                    'uri'=>'http://open.t.qq.com/api/statuses/sub_re_list',
-                            		'params'=>array(
-                            				'format'=>'json',
-                            				'type'=>2,//回复
-                            				'reqnum'=>30, //条目数量
-                            				'lastid'=>0, //和pagetime配合使用（第一页：填0，向上翻页：填上一次请求返回的第一条记录id，向下翻页：填上一次请求返回的最后一条记录id
-                            				),
                             ),
 	                ),
 	        ) ,
@@ -240,8 +240,8 @@ class AdapterManager extends Object
                                     'columns' => array(''=>'') , 
                             ),
                             'pullcomment'=>array(
-                                    'uri'=>'http://api.douban.com/review/{id}',
-                                    'params'=>array(),
+                                    'uri'=>'http://api.douban.com/miniblog/subject/{id}/reviews',
+                                    'params'=>array('alt'=>'json'),
                             ),
                     ),
 	        ) ,
@@ -286,7 +286,7 @@ class AdapterManager extends Object
                             ),
                             'pullcomment'=>array(
                                     'uri'=>'http://api.t.sohu.com/statuses/comments/{id}.json',
-                                    'params'=>array('count'=>30,),
+                                    'params'=>array('count'=>100,),
                             ),
 	                ),
 	        ) ,
@@ -328,7 +328,6 @@ class AdapterManager extends Object
                             'pullcomment'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/comments/{id}.json',
                                     'params'=>array('format'=>'json','count'=>30),
-                                    'columns' => array(''=>'') , 
                             ),
                             'show'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/show/{id}.json',
@@ -381,7 +380,7 @@ class AdapterManager extends Object
                             ),
                             'pullcomment'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
-                                    'params'=>array('format'=>'json','method'=>'status.getComment','count'=>20),
+                                    'params'=>array('format'=>'json','method'=>'status.getComment','count'=>30),
                             ),
                     ),
 	        ) ,
