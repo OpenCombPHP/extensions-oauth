@@ -85,7 +85,7 @@ class ApiTencentAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        if(!empty($lastData['time']))
         {
             $params['pageflag'] = "2";
             $params['pagetime'] = $lastData['time'];

@@ -85,9 +85,13 @@ class ApiSinaWeiboAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        if(!empty($lastData['cursor_id']))
         {
             $params['since_id'] = $lastData['cursor_id'];
+        }
+        if(!empty($lastData['id']))
+        {
+            $params['max_id'] = $lastData['id'];
         }
         
         $params["access_token"] = $o->token;
@@ -115,10 +119,10 @@ class ApiSinaWeiboAdapter
         {
             $aRs = $this->filter($v);
             
-            if(!empty($v['retweeted_status']))
-            {
+            //if(!empty($v['retweeted_status']))
+            //{
                 $aRs['source'] = $this->filter($v['retweeted_status']);
-            }
+            //}
             $aRsTrue[] = $aRs;
         }
         
