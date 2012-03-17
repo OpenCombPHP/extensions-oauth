@@ -119,10 +119,10 @@ class ApiSinaWeiboAdapter
         {
             $aRs = $this->filter($v);
             
-            //if(!empty($v['retweeted_status']))
-            //{
+            if(!empty($v['retweeted_status']))
+            {
                 $aRs['source'] = $this->filter($v['retweeted_status']);
-            //}
+            }
             $aRsTrue[] = $aRs;
         }
         
