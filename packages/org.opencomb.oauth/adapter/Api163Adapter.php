@@ -84,14 +84,15 @@ class Api163Adapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
+        
         if(!empty($lastData['cursor_id']))
         {
             $params['max_id'] = $lastData['cursor_id'];
         }
         
-        if(!empty($lastData['id']))
+        if(!empty($lastData['max_id']))
         {
-            $params['max_id'] = $lastData['id'];
+            $params['max_id'] = $lastData['max_id'];
         }
         
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');

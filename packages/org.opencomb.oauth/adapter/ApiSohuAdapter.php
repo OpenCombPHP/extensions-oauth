@@ -85,9 +85,9 @@ class ApiSohuAdapter
             $params['since_id'] = $lastData['cursor_id'];
         }
         
-        if(!empty($lastData['id']))
+        if(!empty($lastData['max_id']))
         {
-            $params['max_id'] = $lastData['id'];
+            $params['max_id'] = $lastData['max_id'];
         }
         
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
