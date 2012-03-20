@@ -177,7 +177,7 @@ class AdapterManager extends Object
 	                                'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
 	                        ),
                             'forward'=>array(
-                                    'uri'=>'http://open.t.qq.com/api/t/re_add',
+                                    'uri'=>'http://open.tq.com/api/t/re_add',
                                     'params'=>array('format'=>'json'),
                             ),
                             'timeline'=>array(
