@@ -61,6 +61,12 @@ class ApiRenRenAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
+        if($lastData['num'])
+        {
+            $params['count'] = 30;
+            $params['page'] = ceil($lastData['num'] / 30);
+        }
+        
         return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
     }
     public function createPullCommentMulti($o ,$astate , $auther){
@@ -98,11 +104,11 @@ class ApiRenRenAdapter
         
         foreach ($aRs as $v)
         {
-            if($lastData['time'] < strtotime($v['update_time']))
-            {
+            //if($lastData['time'] < strtotime($v['update_time']))
+            //{
                 $aRs = $this->filter($v);
                 $aRsTrue[] = $aRs;
-            }
+            //}
         }
         
         return $aRsTrue;

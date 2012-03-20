@@ -26,6 +26,26 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function createFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
+        
+        $params['user_id'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'163.com');
+    }
+    
+    public function removeFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
+        
+        $params['user_id'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'163.com');
+    }
+    
     public function pushLastForwardId($o,$aRs){
     
         $aRs = json_decode($aRs,true);
@@ -64,28 +84,39 @@ class Api163Adapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        
+        if(!empty($lastData['cursor_id']))
         {
             $params['max_id'] = $lastData['cursor_id'];
+        }
+        
+        if(!empty($lastData['max_id']))
+        {
+            $params['max_id'] = $lastData['max_id'];
         }
         
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     
-    public function createPullCommentMulti($o , $astate){
+    public function createPullCommentMulti($o , $astate, $otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+        $params = $otherParams + $params;  // 组合额外配置
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
-    
-    public function pushCommentMulti($o , $astate ,$arrOtherParams){
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['show']['uri'];
+		$url = preg_replace("/\{id\}/",$astate['sid'],$url );
+		return $this->oauthCommon->SignRequest($url, 'get' , array() , $o->token, $o->token_secret,'163.com');
+	}
+
+	public function pushCommentMulti($o , $astate ,$arrOtherParams){
     	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
     	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
     	$params += $arrOtherParams;
     	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'163.com');
     }
-    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
     

@@ -26,6 +26,26 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function createFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
+        
+        $params['name'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
+    public function removeFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
+        
+        $params['name'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
     public function pushLastForwardId($o,$aRs){
     
         $aRs = json_decode($aRs,true);
@@ -65,7 +85,7 @@ class ApiTencentAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        if(!empty($lastData['time']))
         {
             $params['pageflag'] = "2";
             $params['pagetime'] = $lastData['time'];
@@ -74,13 +94,19 @@ class ApiTencentAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
-    public function createPullCommentMulti($o ,$astate){
+    public function createPullCommentMulti($o ,$astate,$otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params['rootid']= $astate['sid'];
-        $params = array('flag'=>2 , 'format'=>'json' , 'reqnum'=>5, 'rootid'=>$astate['sid']);
+        $params = $otherParams + $params;  // 组合额外配置
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+		$params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+		$params['ids'] = $astate['sid'] ;
+		return $this->oauthCommon->SignRequest($url, 'get' , $params , $o->token, $o->token_secret,'t.qq.com');
+	}
     
     public function pushCommentMulti($o , $astate ,$arrOtherParams){
     	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
