@@ -85,6 +85,14 @@ class ApiSinaWeiboAdapter
         
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
+    public function pushCommentMulti($o ,$astate , $otherParams){
+        $url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
+        $params["access_token"] = $o->token;
+        $params += $otherParams;
+        
+        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+    }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {

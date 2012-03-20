@@ -72,6 +72,12 @@ class ApiRenRenAdapter
         return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
     }
     
+    public function pushCommentMulti($o , $astate ,$arrOtherParams ){
+    	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
+    	$params += $arrOtherParams;
+    	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
     
     public function refreshTtoken($token,$token_secret)
     {
