@@ -99,16 +99,19 @@ class ApiSinaWeiboAdapter
         
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
-    public function createPullCommentMulti($o ,$astate){
+    public function createPullCommentMulti($o ,$astate,$otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
-        
-        $params["access_token"] = $o->token;
         $params["id"] = $astate['sid'];
-//         $params["source"] = '3576764673';
-        
+        $params = $otherParams + $params;  // 组合额外配置
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+		$params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+		$params['ids'] = $astate['sid'] ;
+		return $this->oauthCommon->SignRequest($url, 'get' , $params , $o->token, $o->token_secret,'weibo.com');
+	}
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {

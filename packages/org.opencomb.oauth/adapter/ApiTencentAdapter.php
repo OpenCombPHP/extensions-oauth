@@ -94,13 +94,19 @@ class ApiTencentAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
-    public function createPullCommentMulti($o ,$astate){
+    public function createPullCommentMulti($o ,$astate,$otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params['rootid']= $astate['sid'];
-        $params = array('flag'=>2 , 'format'=>'json' , 'reqnum'=>5, 'rootid'=>$astate['sid']);
+        $params = $otherParams + $params;  // 组合额外配置
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+		$params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+		$params['ids'] = $astate['sid'] ;
+		return $this->oauthCommon->SignRequest($url, 'get' , $params , $o->token, $o->token_secret,'t.qq.com');
+	}
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {

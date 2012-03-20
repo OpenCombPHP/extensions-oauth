@@ -98,13 +98,18 @@ class Api163Adapter
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     
-    public function createPullCommentMulti($o , $astate){
+    public function createPullCommentMulti($o , $astate, $otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
+        $params = $otherParams + $params;  // 组合额外配置
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
-    
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['show']['uri'];
+		$url = preg_replace("/\{id\}/",$astate['sid'],$url );
+		return $this->oauthCommon->SignRequest($url, 'get' , array() , $o->token, $o->token_secret,'163.com');
+	}
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
     
