@@ -26,6 +26,22 @@ class ApiSohuAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function createFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
+        $url = preg_replace("/\{id\}/",$uid,$url );
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'sohu.com');
+    }
+    
+    public function removeFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
+        $url = preg_replace("/\{id\}/",$uid,$url );
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'sohu.com');
+    }
+    
     public function pushLastForwardId($o,$aRs){
     
         $aRs = json_decode($aRs,true);
@@ -64,30 +80,39 @@ class ApiSohuAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        if(!empty($lastData['cursor_id']))
         {
             $params['since_id'] = $lastData['cursor_id'];
         }
-    
+        
+        if(!empty($lastData['max_id']))
+        {
+            $params['max_id'] = $lastData['max_id'];
+        }
+        
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
     public function createPullCommentMulti($o ,$astate , $otherParams){
-    
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
-        
-        $params = $params + $otherParams;  // 组合额外配置
-        
+        $params = $otherParams + $params;  // 组合额外配置
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
-    
-    public function pushCommentMulti($o ,$astate , $otherParams){
+    public function createPullCommentCount($o ,$astate){
+        $url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+        $url = preg_replace("/\{id\}/",$astate['sid'],$url );
+        $params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+        
+        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'sohu.com');
+    }
+
+	public function pushCommentMulti($o ,$astate , $otherParams){
         $url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
         $params = $params + $otherParams;  // 组合额外配置
         
-        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'sohu.com');
+        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'sohu.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)

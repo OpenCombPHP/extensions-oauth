@@ -26,6 +26,26 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function createFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
+        
+        $params['user_id'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+    }
+    
+    public function removeFriendMulti($o,$uid){
+    
+        $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
+        
+        $params['user_id'] = $uid;
+        
+        return  $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+    }
+    
     public function pushLastForwardId($o,$aRs){
     
         $aRs = json_decode($aRs,true);
@@ -65,9 +85,13 @@ class ApiSinaWeiboAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
-        if(!empty($lastData))
+        if(!empty($lastData['cursor_id']))
         {
             $params['since_id'] = $lastData['cursor_id'];
+        }
+        if(!empty($lastData['max_id']))
+        {
+            $params['max_id'] = $lastData['max_id'];
         }
         
         $params["access_token"] = $o->token;
@@ -75,23 +99,27 @@ class ApiSinaWeiboAdapter
         
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
-    public function createPullCommentMulti($o ,$astate){
+    public function createPullCommentMulti($o ,$astate,$otherParams){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
-        
-        $params["access_token"] = $o->token;
         $params["id"] = $astate['sid'];
-//         $params["source"] = '3576764673';
-        
+        $params = $otherParams + $params;  // 组合额外配置
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
-    public function pushCommentMulti($o ,$astate , $otherParams){
+	public function createPullCommentCount($o,$astate){
+		$url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+		$params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+		$params['ids'] = $astate['sid'] ;
+		return $this->oauthCommon->SignRequest($url, 'get' , $params , $o->token, $o->token_secret,'weibo.com');
+	}
+
+	public function pushCommentMulti($o ,$astate , $otherParams){
         $url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
-        $params["access_token"] = $o->token;
+        $params["access_token"] = $o['token'];
         $params += $otherParams;
         
-        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+        return $this->oauthCommon->SignRequest($url, "post", $params, $o['token'], $o['token_secret'],'weibo.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)

@@ -64,6 +64,11 @@ class ApiDoubanAdapter
         $url = $this->arrAdapteeConfigs['api']['timeline']['uri'];
         $params = $this->arrAdapteeConfigs['api']['timeline']['params'];
         
+        if($lastData['num'])
+        {
+            $params['start-index'] = $lastData['num'];
+        }
+        
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'douban.com');
     }
     
@@ -88,11 +93,11 @@ class ApiDoubanAdapter
             {
                 return ;
             }
-            if($lastData['time'] < strtotime($v['published']['$t']))
-            {
+            //if($lastData['time'] < strtotime($v['published']['$t']))
+            //{
                 $aRs = $this->filter($v);
                 $aRsTrue[] = $aRs;
-            }
+            //}
         }
         return $aRsTrue;
     }
