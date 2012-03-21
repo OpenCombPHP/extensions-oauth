@@ -81,12 +81,13 @@ class ApiSohuAdapter
         
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
-    public function createCommentCountMulti($o ,$astate){
-        $url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
-        $url = preg_replace("/\{id\}/",$astate['sid'],$url );
-        $params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+    
+    public function pushCommentMulti($o ,$astate , $otherParams){
+        $url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
+        $params = $params + $otherParams;  // 组合额外配置
         
-        return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
+        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'sohu.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -111,7 +112,6 @@ class ApiSohuAdapter
             }
             $aRsTrue[] = $aRs;
         }
-        
         return $aRsTrue;
     }
     

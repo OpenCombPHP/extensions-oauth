@@ -79,6 +79,13 @@ class Api163Adapter
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     
+    public function pushCommentMulti($o , $astate ,$arrOtherParams){
+    	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
+    	$params += $arrOtherParams;
+    	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'163.com');
+    }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
     

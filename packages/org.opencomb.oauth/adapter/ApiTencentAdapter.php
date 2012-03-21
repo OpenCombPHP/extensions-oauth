@@ -82,6 +82,13 @@ class ApiTencentAdapter
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
+    public function pushCommentMulti($o , $astate ,$arrOtherParams){
+    	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
+    	$params += $arrOtherParams;
+    	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         $responseData = preg_replace("||",'',$responseData );
