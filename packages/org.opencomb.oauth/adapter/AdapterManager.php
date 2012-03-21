@@ -461,7 +461,18 @@ class AdapterManager extends Object
 							),
 							'pullcomment'=>array(
 									'uri'=>'http://api.renren.com/restserver.do',
-									'params'=>array('format'=>'json','method'=>'status.getComment','count'=>30),
+									'params'=>array(
+											'format'=>'json',
+											'method'=>'status.getComment',
+											'count'=>30,
+											'order'=>1,
+									),
+							),
+							'commentcount'=>array(
+									'uri'=>'http://api.renren.com/restserver.do',
+									'params' => array(
+											'method' => 'status.get',
+									),
 							),
 							'pushcomment'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
