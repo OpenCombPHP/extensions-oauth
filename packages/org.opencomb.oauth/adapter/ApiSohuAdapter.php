@@ -112,7 +112,7 @@ class ApiSohuAdapter
         $params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
         $params = $params + $otherParams;  // 组合额外配置
         
-        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'sohu.com');
+        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'sohu.com');
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
