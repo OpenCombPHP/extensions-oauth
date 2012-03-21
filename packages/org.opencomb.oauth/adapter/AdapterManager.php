@@ -57,6 +57,8 @@ class AdapterManager extends Object
 		{
 			throw new AuthAdapterException("无效的服务名称:%s",$sServiceName,null,AuthAdapterException::invalid_service) ;
 		}
+		
+		
 
 		$aSetting = Extension::flyweight('oauth')->setting() ;
 		$sAppKey = $aSetting->item('/'.$sServiceName,'appKey') ;
@@ -427,7 +429,7 @@ class AdapterManager extends Object
 							'callbackCode'=>'urlencode',
 							'tokenUrl' => array(
 									'access_token_uri' => 'https://graph.renren.com/oauth/token' ,
-									'scope' => 'read_user_album+read_user_feed+read_user_status' ,
+									'scope' => 'read_user_album+read_user_feed+read_user_status+publish_comment' ,
 									'accessParam' => 'code' ,//获得access时所需要然参数
 							),
 							'accessRspn'=> array(
@@ -463,7 +465,7 @@ class AdapterManager extends Object
 							),
 							'pushcomment'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
-                                    'params'=>array('format'=>'json','method'=>'Status.addComment'),
+                                    'params'=>array('format'=>'json','method'=>'status.addComment'),
                             ),
 					),
 			) ,
