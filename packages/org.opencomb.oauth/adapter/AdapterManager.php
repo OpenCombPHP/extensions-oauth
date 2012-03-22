@@ -57,6 +57,8 @@ class AdapterManager extends Object
 		{
 			throw new AuthAdapterException("无效的服务名称:%s",$sServiceName,null,AuthAdapterException::invalid_service) ;
 		}
+		
+		
 
 		$aSetting = Extension::flyweight('oauth')->setting() ;
 		$sAppKey = $aSetting->item('/'.$sServiceName,'appKey') ;
@@ -459,11 +461,22 @@ class AdapterManager extends Object
 							),
 							'pullcomment'=>array(
 									'uri'=>'http://api.renren.com/restserver.do',
-									'params'=>array('format'=>'json','method'=>'status.getComment','count'=>30),
+									'params'=>array(
+											'format'=>'json',
+											'method'=>'status.getComment',
+											'count'=>30,
+											'order'=>1,
+									),
+							),
+							'commentcount'=>array(
+									'uri'=>'http://api.renren.com/restserver.do',
+									'params' => array(
+											'method' => 'status.get',
+									),
 							),
 							'pushcomment'=>array(
                                     'uri'=>'http://api.renren.com/restserver.do',
-                                    'params'=>array('format'=>'json','method'=>'Status.addComment'),
+                                    'params'=>array('format'=>'json','method'=>'status.addComment'),
                             ),
 					),
 			) ,

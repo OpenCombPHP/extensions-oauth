@@ -69,20 +69,30 @@ class ApiRenRenAdapter
         
         return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
     }
-    public function createPullCommentMulti($o ,$astate , $auther){
+    public function createPullCommentMulti($o ,$astate , $otherParams,$auther){
         $url = $this->arrAdapteeConfigs['api']['pullcomment']['uri'];
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params['status_id'] = $astate['sid'];
         $params['owner_id'] = $auther['suid'];
+        $params = $params + $otherParams;  // 组合额外配置
+//         var_dump($params);
+        return $this->oauthCommon->CallRequest($url, $params,"json", $o['token'],'renren.com');
+    }
+    public function createPullCommentCount($o ,$astate , $otherParams,$auther){
+        $url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
+        $url = preg_replace("/\{id\}/",$astate['sid'],$url );
+        $params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
+        $params['owner_id'] = $auther['suid'];
         
-        return $this->oauthCommon->CallRequest($url, $params,"json", $o->token,'renren.com');
+        return  $this->oauthCommon->CallRequest($url, $params, 'json',$o->token, 'renren.com');
     }
     
     public function pushCommentMulti($o , $astate ,$arrOtherParams ){
     	$url = $this->arrAdapteeConfigs['api']['pushcomment']['uri'];
     	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
     	$params += $arrOtherParams;
-    	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'t.qq.com');
+    	
+    	return  $this->oauthCommon->CallRequest($url, $params,"json" ,  $o['token'],'renren.com');
     }
     
     public function refreshTtoken($token,$token_secret)
