@@ -189,7 +189,7 @@ class AuthoritionObtaining extends Controller
 		$aBind = $this->user->child('token')->prototype()->createModel() ;
 		if( $aBind->load(
 				array($this->params['service'],$arrAccessToken['id'])
-				, array('service','suid')
+				/* , array('service','suid') */
 		) )
 		{
 			try{
