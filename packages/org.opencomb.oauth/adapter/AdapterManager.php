@@ -427,7 +427,7 @@ class AdapterManager extends Object
 							'callbackCode'=>'urlencode',
 							'tokenUrl' => array(
 									'access_token_uri' => 'https://graph.renren.com/oauth/token' ,
-									'scope' => 'read_user_album+read_user_feed+read_user_status' ,
+									'scope' => 'read_user_album+read_user_feed+read_user_status+publish_comment' ,
 									'accessParam' => 'code' ,//获得access时所需要然参数
 							),
 							'accessRspn'=> array(
