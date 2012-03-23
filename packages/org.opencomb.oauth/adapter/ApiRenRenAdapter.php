@@ -74,15 +74,14 @@ class ApiRenRenAdapter
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params['status_id'] = $astate['sid'];
         $params['owner_id'] = $auther['suid'];
-        $params = $params + $otherParams;  // 组合额外配置
-//         var_dump($params);
+        $params = $otherParams + $params ;  // 组合额外配置
         return $this->oauthCommon->CallRequest($url, $params,"json", $o['token'],'renren.com');
     }
     public function createPullCommentCount($o ,$astate , $otherParams,$auther){
         $url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
-        $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
         $params['owner_id'] = $auther['suid'];
+        $params['status_id'] = $astate['sid'];
         
         return  $this->oauthCommon->CallRequest($url, $params, 'json',$o->token, 'renren.com');
     }
