@@ -162,7 +162,6 @@ class AuthoritionObtaining extends Controller
 	 */
 	protected function actionBindExists()
 	{
-	    
 		$arrAccessToken = Session::singleton()->variable($this->params['service'].'.AccessToken') ;
 		
 		$this->params['user'] = trim($this->params['user']) ;
