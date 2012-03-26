@@ -267,8 +267,8 @@ class AdapterManager extends Object
 					'api' => array(
 							'adapter' => 'org\\opencomb\\oauth\\adapter\\ApiDoubanAdapter' ,
 							'userinfo'=>array(
-									'uri'=>'http://api.douban.com/people/%40me?alt=json',
-									'params'=>array(),
+									'uri'=>'http://api.douban.com/people/%40me',
+									'params'=>array('alt'=>'json'),
 							),
 							'add'=>array(
 									'uri'=>'http://api.douban.com/miniblog/saying',
@@ -377,6 +377,10 @@ class AdapterManager extends Object
 					// 应用
 					'api' => array(
 							'adapter' => 'org\\opencomb\\oauth\\adapter\\Api163Adapter' ,
+					        'show'=>array(
+					                'uri'=>'http://api.t.163.com/users/show.json',
+					                'params'=>array('format'=>'json'),
+					        ),
 							'userinfo'=>array(
 									'uri'=>'http://api.t.163.com/account/verify_credentials.json',
 									'params'=>array("format"=>"json"),
@@ -410,10 +414,6 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.163.com/statuses/reply.json',
                                     'params'=>array(),
                             ),
-							'show'=>array(
-									'uri'=>'http://api.t.163.com/statuses/show/{id}.json',
-									'params'=>array('format'=>'json'),
-							),
 					),
 			) ,
 	

@@ -27,6 +27,15 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function getUserNickname($token,$token_secret)
+    {
+        $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
+        $sRS =  $this->oauthCommon->CallRequest($url, $params,"json", $token);
+        $aRS = json_decode($sRS,true);
+        return $aRS[0]['name'];
+    }
+    
     public function pushLastForwardId($o,$aRs){
 
         return $this->pushLastId($o, $aRs);

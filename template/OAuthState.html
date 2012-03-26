@@ -10,7 +10,7 @@
 
 <foreach for="$theModel->childIterator()" item="value">
 <hr/>
-			<div>{=$value['service']}:{=$value['suid']} 
+			<div><img src="/extensions/oauth/0.1/public/image/{=$value['service']}/login.png" />{=$value['suid']}({=$value['nickname']}) 
 				<if "$value['token']==''">
 					<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$value['service']}">绑定</a>
 				<else/>

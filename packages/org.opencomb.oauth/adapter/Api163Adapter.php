@@ -26,6 +26,15 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function getUserNickname($token,$token_secret)
+    {
+        $url = $this->arrAdapteeConfigs['api']['show']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['show']['params'];
+        $sRS =  $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
+        $aRS = json_decode($sRS,true);
+        return $aRS['name'];
+    }
+    
     public function createFriendMulti($o,$uid){
     
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];

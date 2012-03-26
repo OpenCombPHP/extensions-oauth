@@ -104,6 +104,15 @@ class AuthoritionObtaining extends Controller
 			return ;
 		}
 		
+		/**
+		 * usernickname
+		 */
+		if(empty($this->arrAccessToken['nickname']))
+		{
+		    $apiAdapter = AdapterManager::singleton()->createApiAdapter($this->params['service']) ;
+		    $sNickname = $apiAdapter->getUserNickname($this->arrAccessToken['oauth_token'],$this->arrAccessToken['oauth_token_secret']);
+		    $this->arrAccessToken['nickname'] = $sNickname;
+		}
 		
 		// 检查 token 是否存在
 		$this->user->load(
@@ -202,9 +211,9 @@ class AuthoritionObtaining extends Controller
 		
 		$this->user['token.service'] = $this->params['service'] ;
 		$this->user['token.suid'] = $arrAccessToken['id'] ;
+		$this->user['token.nickname'] = $arrAccessToken['nickname'] ;
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
-		
 		
 		try{
 			$this->user->save() ;
@@ -234,6 +243,7 @@ class AuthoritionObtaining extends Controller
 		$this->user['info.nickname'] = $this->user->username ;
 		$this->user['token.service'] = $this->params['service'] ;
 		$this->user['token.suid'] = $arrAccessToken['id'] ;
+		$this->user['token.nickname'] = $arrAccessToken['nickname'] ;
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
 		
