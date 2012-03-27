@@ -1,16 +1,15 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
+use org\opencomb\coresystem\user\UserPanel;
 use org\jecat\framework\mvc\controller\HttpRequest;
-
 use org\jecat\framework\session\Session;
 use org\opencomb\oauth\adapter\AuthAdapterException;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\message\Message;
 use org\opencomb\platform\ext\Extension;
-use org\jecat\framework\mvc\controller\Controller;
 
-class AuthorizeRequest extends Controller
+class AuthorizeRequest extends UserPanel
 {
 	public function createBeanConfig()
 	{
@@ -70,7 +69,7 @@ class AuthorizeRequest extends Controller
 
 		// 重定向引导用户授权
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
-		$this->location( $sRequestUrl ) ;
+		//$this->location( $sRequestUrl ) ;
 	}
 }
 

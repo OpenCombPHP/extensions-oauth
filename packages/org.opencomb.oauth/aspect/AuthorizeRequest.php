@@ -1,6 +1,8 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
+use org\opencomb\coresystem\mvc\controller\UserSpace;
+
 use org\jecat\framework\mvc\controller\HttpRequest;
 
 use org\jecat\framework\session\Session;
@@ -10,12 +12,11 @@ use org\jecat\framework\message\Message;
 use org\opencomb\platform\ext\Extension;
 use org\jecat\framework\mvc\controller\Controller;
 
-class AuthorizeRequest extends Controller
+class AuthorizeRequest extends UserSpace
 {
 	public function createBeanConfig()
 	{
 	    return array(
-		
 			// 视图
 			'view' => array(
 				'template' => 'oauth:auth/AuthorizeRequest.html' ,
