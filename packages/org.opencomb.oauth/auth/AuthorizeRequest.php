@@ -69,7 +69,7 @@ class AuthorizeRequest extends UserPanel
 
 		// 重定向引导用户授权
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
-		$this->location( $sRequestUrl , 3000000000) ;
+		$this->location( $sRequestUrl , 3) ;
 	}
 }
 
