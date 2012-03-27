@@ -2,23 +2,23 @@
 <br />
 <div>
 <hr/>
-<foreach for="$theModel->childIterator()" item="value">
+<foreach for="$arrServiceModels" key='sService' item="aOUserModel">
 	<div>
-		<if "$value['token']==''">
-			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$value['service']}">
-				绑定<img src="/extensions/oauth/0.1/public/image/{=$value['service']}/login.png" />
+		<if "!$aOUserModel || $aOUserModel['token']==''">
+			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$sService}">
+				绑定<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
 			</a>
 			帐号
 		<else/>
-			<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$value['suid']}&service={=$value['service']}">
-				解除<img src="/extensions/oauth/0.1/public/image/{=$value['service']}/login.png" />
+			<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$aOUserModel['suid']}&service={=$sService}">
+				解除<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
 			</a>
-			<span title="{=$value['suid']}">{=$value['nickname']}</span>
+			<span title="{=$aOUserModel['suid']}">{=$aOUserModel['nickname']}</span>
 			帐号绑定
 		</if>
 		
-		<if "$value['service']=='renren.com'">
-			<a href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$value['suid']}&service={=$value['service']}">刷新</a>
+		<if "$aOUserModel['service']=='renren.com'">
+			<a href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$aOUserModel['suid']}&service={=$sService}">刷新</a>
 		</if>
 	</div>
 	<hr/>
