@@ -26,13 +26,16 @@ class ApiDoubanAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function getUserNickname($token,$token_secret)
+    public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
         $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
         $sRs = $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
         $aRS =  json_decode($sRs,true);
-        return $aRS['title']['$t'];
+        $aRS['nickname'] = $aRS['title']['$t'];
+        $aRS['username'] = $aRS['title']['$t'];
+        $aRS['id'] = $aRS['db:uid']['$t'];
+        return $aRS;
     }
     
     public function pushLastForwardId($o,$aRs){

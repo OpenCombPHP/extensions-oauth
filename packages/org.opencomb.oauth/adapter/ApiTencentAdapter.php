@@ -26,13 +26,16 @@ class ApiTencentAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function getUserNickname($token,$token_secret)
+    public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
         $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
         $sRS =  $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
         $aRS = json_decode($sRS,true);
-        return $aRS['data']['nick'];
+        $aRS['nickname'] = $aRS['data']['nick'];
+        $aRS['username'] = $aRS['data']['name'];
+        $aRS['id'] = $aRS['data']['openid'];
+        return $aRS;
     }
     
     public function createFriendMulti($o,$uid){

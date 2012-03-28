@@ -26,13 +26,16 @@ class ApiSinaWeiboAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function getUserNickname($token,$token_secret)
+    public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
         $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
         $sRS =  $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
         $aRS = json_decode($sRS,true);
-        return $aRS['name'];
+        $aRS['nickname'] = $aRS['name'];
+        $aRS['username'] = $aRS['screen_name'];
+        $aRS['id'] = $aRS['id'];
+        return $aRS;
     }
     
     public function createFriendMulti($o,$uid){
@@ -168,7 +171,7 @@ class ApiSinaWeiboAdapter
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
         
         
-            $aRsTmp['username'] = $aRs['user']['id'];
+            $aRsTmp['username'] = $aRs['user']['screen_name'];
             $aRsTmp['password'] = md5($aRs['user']['id']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['user']['name'];

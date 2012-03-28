@@ -27,13 +27,16 @@ class ApiRenRenAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
-    public function getUserNickname($token,$token_secret)
+    public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
         $params = $this->arrAdapteeConfigs['api']['userinfo']['params'];
         $sRS =  $this->oauthCommon->CallRequest($url, $params,"json", $token);
         $aRS = json_decode($sRS,true);
-        return $aRS[0]['name'];
+        $aRS['nickname'] = $aRS[0]['name'];
+        $aRS['username'] = $aRS[0]['name'];
+        $aRS['id'] = $aRS[0]['uid'];
+        return $aRS;
     }
     
     public function pushLastForwardId($o,$aRs){
@@ -169,7 +172,7 @@ class ApiRenRenAdapter
             $aRsTmp['client_url'] = $aRs['source']['href'];
         
         
-            $aRsTmp['username'] = $aRs['actor_id'];
+            $aRsTmp['username'] = $aRs['name'];
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['name'];
