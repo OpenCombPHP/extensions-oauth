@@ -1,6 +1,7 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
+use org\opencomb\coresystem\user\UserPanel;
 use org\jecat\framework\db\ExecuteException;
 use org\opencomb\coresystem\auth\Id;
 use org\opencomb\coresystem\auth\Authenticate;
@@ -10,9 +11,8 @@ use org\opencomb\oauth\adapter\AuthAdapterException;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\session\Session;
 use org\jecat\framework\message\Message;
-use org\opencomb\coresystem\mvc\controller\Controller ;
 
-class AuthoritionObtaining extends Controller
+class AuthoritionObtaining extends UserPanel
 {
 	public function createBeanConfig()
 	{
