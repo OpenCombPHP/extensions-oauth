@@ -34,7 +34,7 @@ class ApiTencentAdapter
         $aRS = json_decode($sRS,true);
         $aRS['nickname'] = $aRS['data']['nick'];
         $aRS['username'] = $aRS['data']['name'];
-        $aRS['id'] = $aRS['data']['openid'];
+        $aRS['id'] = $aRS['data']['name'];
         return $aRS;
     }
     
@@ -172,7 +172,8 @@ class ApiTencentAdapter
             $aRsTmp['client'] = $aRs['from'];
             $aRsTmp['client_url'] = @$aRs['fromurl'];
         
-        
+            
+            $aRsTmp['uid'] = $aRs['name'];
             $aRsTmp['username'] = $aRs['name'];
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();

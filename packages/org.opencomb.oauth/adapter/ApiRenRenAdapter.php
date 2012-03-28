@@ -171,7 +171,8 @@ class ApiRenRenAdapter
             $aRsTmp['client'] = $aRs['source']['text'];
             $aRsTmp['client_url'] = $aRs['source']['href'];
         
-        
+            
+            $aRsTmp['uid'] = $aRs['actor_id'];
             $aRsTmp['username'] = $aRs['name'];
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();

@@ -170,7 +170,8 @@ class ApiSohuAdapter
             $aRsTmp['cursor_id'] = $aRs['id'];
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
         
-        
+            
+            $aRsTmp['uid'] = $aRs['user']['id'];
             $aRsTmp['username'] = $aRs['user']['screen_name'];
             $aRsTmp['password'] = md5($aRs['user']['id']);
             $aRsTmp['registerTime'] = time();

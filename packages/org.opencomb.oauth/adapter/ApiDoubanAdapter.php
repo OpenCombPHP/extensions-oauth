@@ -131,7 +131,8 @@ class ApiDoubanAdapter
             $aRsTmp['client_url'] = "";
         
             preg_match("/\/([0-9]{1,20})$/", $aRs['author']['uri']['$t'],$aUId);
-            $aRsTmp['username'] = $aUId[1];
+            $aRsTmp['uid'] = $aUId[1];
+            $aRsTmp['username'] = $aRs['author']['name']['$t'];
             $aRsTmp['password'] = md5($aRs['author']['name']['$t']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['author']['name']['$t'];
