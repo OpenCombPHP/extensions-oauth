@@ -1,26 +1,21 @@
-<br />
-<br />
-<div>
-<hr/>
+<css src="oc-wonei-bridge:css/UserPanel.css" />
+
+<ul class="boundto">
 <foreach for="$arrServiceModels" key='sService' item="aOUserModel">
-	<div>
+	<li>
 		<if "!$aOUserModel || $aOUserModel['token']==''">
-			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$sService}">
-				绑定<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
-			</a>
-			帐号
+			<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
+			<em>未绑定</em>
+			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$sService}" class="addbound">绑定</a>			
 		<else/>
-			<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$aOUserModel['suid']}&service={=$sService}">
-				解除<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
-			</a>
+			<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
 			<span title="{=$aOUserModel['suid']}">{=$aOUserModel['nickname']}</span>
-			帐号绑定
+			<em>已绑定</em>
+			<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$aOUserModel['suid']}&service={=$sService}" class="movebound">解除	</a>			
 		</if>
-		
 		<if "$aOUserModel['service']=='renren.com'">
 			<a href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$aOUserModel['suid']}&service={=$sService}">刷新</a>
 		</if>
-	</div>
-	<hr/>
+	</li>
 </foreach>
-</div>
+</ul>
