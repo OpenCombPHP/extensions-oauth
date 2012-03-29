@@ -171,6 +171,7 @@ class ApiTencentAdapter
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['from'];
             $aRsTmp['client_url'] = @$aRs['fromurl'];
+            $aRsTmp['forwardcount'] = @$aRs['count'];
         
             
             $aRsTmp['uid'] = $aRs['name'];

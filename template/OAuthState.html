@@ -12,7 +12,7 @@
 			<a href="?c=org.opencomb.oauth.auth.RemoveBind&id={=$aOUserModel['suid']}&service={=$sService}" class="movebound">解除	</a>			
 		</if>
 		<if "$aOUserModel['service']=='renren.com'">
-			<a href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$aOUserModel['suid']}&service={=$sService}">刷新</a>
+			<a class="ren-refresh" href="?c=org.opencomb.oauth.auth.RefreshBind&id={=$aOUserModel['suid']}&service={=$sService}">刷新</a>
 		</if>
 	</li>
 </foreach>

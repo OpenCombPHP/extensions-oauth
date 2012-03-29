@@ -129,6 +129,7 @@ class ApiDoubanAdapter
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = "";
             $aRsTmp['client_url'] = "";
+            $aRsTmp['forwardcount'] = 0;
         
             preg_match("/\/([0-9]{1,20})$/", $aRs['author']['uri']['$t'],$aUId);
             $aRsTmp['uid'] = $aUId[1];

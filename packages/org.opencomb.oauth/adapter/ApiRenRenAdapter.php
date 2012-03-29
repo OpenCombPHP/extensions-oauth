@@ -170,6 +170,7 @@ class ApiRenRenAdapter
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source']['text'];
             $aRsTmp['client_url'] = $aRs['source']['href'];
+            $aRsTmp['forwardcount'] = 0;
         
             
             $aRsTmp['uid'] = $aRs['actor_id'];

@@ -142,6 +142,7 @@ class AdapterManager extends Object
 							),
 							'timeline'=>array(
 									'uri'=>'http://api.t.sina.com.cn/statuses/friends_timeline.json',
+									//'uri'=>'https://api.weibo.com/2/statuses/home_timeline.json',
 									'params'=>array('format'=>'json'),
 									'columns' => array(''=>'') , 
 							),
