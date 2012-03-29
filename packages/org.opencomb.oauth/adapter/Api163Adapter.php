@@ -175,6 +175,7 @@ class Api163Adapter
         $aRsTmp['data'] = json_encode($aRs);
         $aRsTmp['client'] = $aRs['source'];
         $aRsTmp['cursor_id'] = $aRs['cursor_id'];
+        $aRsTmp['forwardcount'] = $aRs['retweet_count'];
         //             $aRsTmp['client_url'] = $aRs['source']['href'];
     
         
