@@ -169,6 +169,7 @@ class ApiSinaWeiboAdapter
             $aRsTmp['client'] = $aRs['source'];
             $aRsTmp['cursor_id'] = $aRs['id'];
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
+            $aRsTmp['forwardcount'] = 0;
         
             
             $aRsTmp['uid'] = $aRs['user']['id'];
