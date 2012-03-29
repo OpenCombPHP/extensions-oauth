@@ -10,25 +10,19 @@
 	</if>
 	
 	<if $bAlong>
-		<p>
+		<div class="form-state">
 			<a href="?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindAlong&service={=$sServiceName}">将这个{=$sServiceName}帐号做为独立的用户</a>
-		</p>
+		</div>
 	</if>
 	
-	<p>
-		我已经有一个{=$sSiteName}的帐号，将这个{=$sServiceName}帐号和我的{=$sSiteName}帐号绑定
-		
-		<div>
-			用户名： <input name='user' value='{=$sBindUser}' />
-		</div>
-		<div>
-			密码： <input name='password' type="password"/>
-		</div>
-		
+	<div class="form-verify">
+		<p>我已经有一个<span>{=$sSiteName}</span>的帐号，将这个<span>{=$sServiceName}</span>帐号和我的{=$sSiteName}帐号绑定</p>
+		<p>用户名： <input name='user' value='{=$sBindUser}' /></p>
+		<p>密　码： <input name='password' type="password"/></p>
 		<div id="msgqueue"></div>
 		<input type="hidden" value="bindExists" name="act"/>
-		<input id='btnBindExistsId' onclick='bindExistsId()' type="button" value="绑定帐号" />
-	</p>
+		<input id='btnBindExistsId' class="btnBindExistsId" onclick='bindExistsId()' type="button" value="绑定帐号" />
+	</div>
 </form>
 <script>
 function bindExistsId()
