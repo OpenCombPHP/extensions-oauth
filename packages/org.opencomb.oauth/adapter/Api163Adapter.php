@@ -114,6 +114,8 @@ class Api163Adapter
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params = $otherParams + $params;  // 组合额外配置
+//         var_dump($params);
+//         var_dump($url);
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
 	public function createPullCommentCount($o,$astate){

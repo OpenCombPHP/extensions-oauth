@@ -109,6 +109,7 @@ class ApiSohuAdapter
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params = $otherParams + $params;  // 组合额外配置
+        
         return  $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
     public function createPullCommentCount($o ,$astate){
@@ -116,7 +117,7 @@ class ApiSohuAdapter
         $url = preg_replace("/\{id\}/",$astate['sid'],$url );
         $params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
         
-        return  $this->oauthCommon->SignRequest($url, "POST", $params, $o->token, $o->token_secret,'sohu.com');
+        return  $this->oauthCommon->SignRequest($url, "GET", $params, $o->token, $o->token_secret,'sohu.com');
     }
 
 	public function pushCommentMulti($o ,$astate , $otherParams){
