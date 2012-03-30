@@ -116,7 +116,6 @@ class ApiSinaWeiboAdapter
         $params = $this->arrAdapteeConfigs['api']['pullcomment']['params'];
         $params["id"] = $astate['sid'];
         $params = $otherParams + $params;  // 组合额外配置
-        var_dump($params);
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'weibo.com');
     }
 	public function createPullCommentCount($o,$astate){
