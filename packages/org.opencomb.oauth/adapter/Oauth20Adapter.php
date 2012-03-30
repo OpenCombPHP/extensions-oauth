@@ -6,8 +6,6 @@ use org\jecat\framework\session\Session;
 
 use net\daichen\oauth\OAuthCommon;
 
-if (!session_id()) session_start();
-
 class Oauth20Adapter
 {
     public $authRequestUrl;

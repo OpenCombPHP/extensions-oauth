@@ -7,8 +7,6 @@ use net\daichen\oauth\Http;
 
 use net\daichen\oauth\OAuthCommon;
 
-if (!session_id()) session_start();
-
 class Oauth10Adapter
 {
     public $oauthCommon;

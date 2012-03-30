@@ -1,27 +1,27 @@
 <lib name='jquery' />
 <msgqueue for='$theController' />
 
-<form id='theForm' method='post' action='?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists'>
+<form id='theForm' method='post' action='?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindExists&service={=$sServiceName}&code={=$sCode}'>
 
 	<if "!$theModel->isEmpty()">
 	<div>
-		警告：{=$sServiceName}帐号已经绑定到帐号{=$theModel->username}上了，继续下面的操作，将解除和{=$sBindedUser}的绑定
+		警告：已经授权的{=$sServiceTitle}帐号已经绑定到帐号{=$theModel->username}上了，继续下面的操作，将解除和原绑定帐号的绑定
 	</div>
 	</if>
 	
 	<if $bAlong>
 		<div class="form-state">
-			<a href="?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindAlong&service={=$sServiceName}">将这个{=$sServiceName}帐号做为独立的用户</a>
+			<a href="?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=bindAlong&service={=$sServiceName}">将这个{=$sServiceTitle}帐号做为独立的用户</a>
 		</div>
 	</if>
 	
 	<div class="form-verify">
-		<p>我已经有一个<span>{=$sSiteName}</span>的帐号，将这个<span>{=$sServiceName}</span>帐号和我的{=$sSiteName}帐号绑定</p>
+		<p>我已经有一个本站的帐号，将这个<span>{=$sServiceName}</span>帐号和我的本站帐号绑定</p>
 		<p>用户名： <input name='user' value='{=$sBindUser}' /></p>
 		<p>密　码： <input name='password' type="password"/></p>
 		<div id="msgqueue"></div>
 		<input type="hidden" value="bindExists" name="act"/>
-		<input id='btnBindExistsId' class="btnBindExistsId" onclick='bindExistsId()' type="button" value="绑定帐号" />
+		<input id='btnBindExistsId' class="btnBindExistsId" type="submit" value="绑定帐号" />
 	</div>
 </form>
 <script>

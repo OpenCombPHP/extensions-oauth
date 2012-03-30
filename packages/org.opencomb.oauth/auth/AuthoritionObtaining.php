@@ -156,6 +156,7 @@ class AuthoritionObtaining extends UserPanel
 		
 		$this->view->hideForm(false) ;
 		$this->view->variables()->set('sServiceName',$this->params['service']) ;
+		$this->view->variables()->set('sServiceTitle',AdapterManager::singleton()->serviceTitle($this->params['service'])) ;
 		$this->view->variables()->set('sCode',$this->params['code']) ;
 		
 		Session::singleton()->addVariable($this->params['service'].'.AccessToken',$this->arrAccessToken) ;
@@ -216,14 +217,17 @@ class AuthoritionObtaining extends UserPanel
 		$this->user['token.username'] = $arrAccessToken['username'] ;
 		$this->user['token.token'] = $arrAccessToken['oauth_token'] ;
 		$this->user['token.token_secret'] = $arrAccessToken['oauth_token_secret'] ;
+		// $this->user->printStruct() ;
 		
 		try{
 			$this->user->save() ;
-			$this->createMessage(Message::success,"帐号绑定成功") ;
+			$this->createMessage(Message::success,"帐号绑定成功") ;			
 		} catch (\Exception $e) {
 			$this->createMessage(Message::error,"帐号绑定失败:%s",$e->getMessage()) ;
 			return ;
 		}
+		
+		$this->location("?c=org.opencomb.oauth.controlPanel.OAuthState") ;
 	}
 	
 	/**
