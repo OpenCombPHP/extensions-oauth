@@ -4,7 +4,7 @@
 		<if "!$aOUserModel || $aOUserModel['token']==''">
 			<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
 			<em>未绑定</em>
-			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=login&service={=$sService}" class="addbound">绑定</a>			
+			<a href="?c=org.opencomb.oauth.auth.AuthorizeRequest&operation=bind&service={=$sService}" class="addbound">绑定</a>			
 		<else/>
 			<img src="/extensions/oauth/0.1/public/image/{=$sService}/login.png" />
 			<span title="{=$aOUserModel['suid']}">{=$aOUserModel['nickname']}</span>
