@@ -6,6 +6,11 @@ use org\jecat\framework\lang\Object;
 
 class AdapterManager extends Object
 {
+	public function serviceTitle($sService)
+	{
+		return $this->arrAdapteeConfigs[$sService]['name'] ;
+	}
+	
 	/**
 	 * Auth
 	 * @throws AuthAdapterException
