@@ -42,10 +42,7 @@ class RemoveBind extends Controller
 		$this->auser->prototype()->criteria()->where()->eq('service',$this->params["service"]);
 		$this->auser->prototype()->criteria()->where()->eq('suid',$this->params["id"]);
 		$this->auser->load();
-		
-		$this->auser->setData('token',"");
-		$this->auser->setData('token_secret',"");
-		$this->auser->save();
+		$this->auser->delete();
 		
 		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}

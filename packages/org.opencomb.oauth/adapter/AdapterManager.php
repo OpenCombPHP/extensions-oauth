@@ -387,6 +387,10 @@ class AdapterManager extends Object
 					                'uri'=>'http://api.t.163.com/users/show.json',
 					                'params'=>array('format'=>'json'),
 					        ),
+					        'showState'=>array(
+					                'uri'=>'http://api.t.163.com/statuses/show/{id}.json',
+					                'params'=>array('format'=>'json'),
+					        ),
 							'userinfo'=>array(
 									'uri'=>'http://api.t.163.com/account/verify_credentials.json',
 									'params'=>array("format"=>"json"),
