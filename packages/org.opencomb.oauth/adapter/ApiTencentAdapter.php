@@ -183,7 +183,8 @@ class ApiTencentAdapter
         
                 $aRsAttachmentTmp = array();
                 $aRsAttachmentTmp['type'] = 'image';
-                $aRsAttachmentTmp['url'] = $aRs['image'][$i];
+                $aRsAttachmentTmp['url'] = $aRs['image'][$i]."/460";
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['image'][$i]."/120";
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
@@ -193,7 +194,7 @@ class ApiTencentAdapter
                 $aRsAttachmentTmp['type'] = 'video';
                 $aRsAttachmentTmp['url'] = $aRs['video']['player'];
                 $aRsAttachmentTmp['title'] = $aRs['video']['title'];
-                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl'];
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120";
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
