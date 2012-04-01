@@ -177,14 +177,14 @@ class ApiTencentAdapter
             $aRsTmp['password'] = md5($aRs['name']);
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['nick'];
-            $aRsTmp['avatar'] = $aRs['head']."/50";
+            $aRsTmp['avatar'] = $aRs['head']."/50.jpg";
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         
                 $aRsAttachmentTmp = array();
                 $aRsAttachmentTmp['type'] = 'image';
-                $aRsAttachmentTmp['url'] = $aRs['image'][$i]."/460";
-                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['image'][$i]."/120";
+                $aRsAttachmentTmp['url'] = $aRs['image'][$i]."/460.jpg";
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['image'][$i]."/120.jpg";
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
@@ -194,7 +194,7 @@ class ApiTencentAdapter
                 $aRsAttachmentTmp['type'] = 'video';
                 $aRsAttachmentTmp['url'] = $aRs['video']['player'];
                 $aRsAttachmentTmp['title'] = $aRs['video']['title'];
-                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120";
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120.jpg";
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
