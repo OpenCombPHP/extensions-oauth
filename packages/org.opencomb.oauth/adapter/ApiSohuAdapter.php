@@ -176,8 +176,9 @@ class ApiSohuAdapter
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['user']['screen_name'];
             $aRsTmp['avatar'] = $aRs['user']['profile_image_url'];
+            $aRsTmp['verified'] = $aRs['user']['verified'];
             $aRsTmp['forwardcount'] = 0;
-        
+            
             if($aRs['small_pic'])
             {
                 $aRsAttachmentTmp['type'] = 'image';

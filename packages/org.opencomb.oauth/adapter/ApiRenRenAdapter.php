@@ -177,6 +177,7 @@ class ApiRenRenAdapter
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['name'];
             $aRsTmp['avatar'] = $aRs['headurl'];
+            $aRsTmp['verified'] = 0;
         
             for($i = 0; $i < sizeof($aRs['attachment']); $i++){
         
