@@ -1,6 +1,8 @@
 <?php
 namespace org\opencomb\oauth\adapter ;
 
+use org\jecat\framework\util\String;
+
 use org\jecat\framework\session\Session;
 
 use net\daichen\oauth\Http;
@@ -159,13 +161,13 @@ class ApiSinaWeiboAdapter
             
 //             $text = preg_replace("/#(.*)#/", "<a href='http://s.weibo.com/weibo/$1'>#$1#</a>", $aRs['text']);
 //             $text = preg_replace("/@(.*?):/", "<a href='http://weibo.com/n/$1'>$1</a>:", $text);
-            $aRsTmp['id'] = $aRs['id'];
+            $aRsTmp['id'] = (string)$aRs['id'];
             $aRsTmp['title'] = $aRs['text'];
 //             $aRsTmp['body'] = $aRs['description'];
             $aRsTmp['time'] = strtotime($aRs['created_at']);
             $aRsTmp['data'] = json_encode($aRs);
             $aRsTmp['client'] = $aRs['source'];
-            $aRsTmp['cursor_id'] = $aRs['id'];
+            $aRsTmp['cursor_id'] = (string)$aRs['id'];
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
             $aRsTmp['forwardcount'] = 0;
         
