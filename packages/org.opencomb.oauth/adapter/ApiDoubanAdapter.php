@@ -136,6 +136,7 @@ class ApiDoubanAdapter
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['author']['name']['$t'];
             $aRsTmp['avatar'] = $aRs['author']['link'][2]['@href'];
+            $aRsTmp['verified'] = 0;
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         

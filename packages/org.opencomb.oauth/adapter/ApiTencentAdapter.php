@@ -178,6 +178,7 @@ class ApiTencentAdapter
             $aRsTmp['registerTime'] = time();
             $aRsTmp['nickname'] = $aRs['nick'];
             $aRsTmp['avatar'] = $aRs['head']."/50.jpg";
+			$aRsTmp['verified'] = $aRs['isvip'];
         
             for($i = 0; $i < sizeof($aRs['image']); $i++){
         

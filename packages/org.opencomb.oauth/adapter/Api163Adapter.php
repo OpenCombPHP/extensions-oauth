@@ -185,6 +185,7 @@ class Api163Adapter
         $aRsTmp['registerTime'] = time();
         $aRsTmp['nickname'] = $aRs['user']['name'];
         $aRsTmp['avatar'] = $aRs['user']['profile_image_url'];
+        $aRsTmp['verified'] = $aRs['user']['verified'];
     
         if($aRs['thumbnail_pic'])
         {
