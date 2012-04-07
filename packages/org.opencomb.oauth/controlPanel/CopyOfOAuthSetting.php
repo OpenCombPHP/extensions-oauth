@@ -3,7 +3,7 @@ namespace org\opencomb\oauth\controlPanel ;
 
 // use org\jecat\framework\message\Message;
 // use org\jecat\framework\setting\Setting;
-// use org\opencomb\platform\Platform;
+// use org\opencomb\platform\service\Service;
 use org\jecat\framework\verifier\Length;
 
 use org\opencomb\platform\ext\Extension;
