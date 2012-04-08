@@ -24,9 +24,7 @@ class OAuthState extends UserPanel
             	'orm' => array(
             		'table' => 'oauth:user' ,
 		            'keys'=>array('uid','suid'),
-        			'where' => array(
-        				array('eq','uid',$aId->userId()) ,
-        			) ,
+        			'where' => array("uid=@1",array($aId->userId())) ,
             	) ,
                 'list' => true,
             ) ,
