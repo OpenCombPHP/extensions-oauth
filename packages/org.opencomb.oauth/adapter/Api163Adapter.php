@@ -35,6 +35,17 @@ class Api163Adapter
         return $aRS;
     }
     
+    public function getUserByNickname($token,$token_secret)
+    {
+    	$url = $this->arrAdapteeConfigs['api']['show']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['show']['params'];
+    	$sRS =  $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
+    	$aRS = json_decode($sRS,true);
+    	$aRS['nickname'] = $aRS['name'];
+    	$aRS['username'] = $aRS['screen_name'];
+    	return $aRS;
+    }
+    
     public function createFriendMulti($o,$uid){
     
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];

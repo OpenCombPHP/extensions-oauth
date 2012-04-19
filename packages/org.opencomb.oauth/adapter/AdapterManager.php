@@ -192,6 +192,10 @@ class AdapterManager extends Object
 									'uri'=>'http://open.t.qq.com/api/user/info',
 									'params'=>array('format'=>'json'),
 							),
+							'userotherinfo'=>array(
+									'uri'=>'http://open.t.qq.com/api/user/other_info',
+									'params'=>array('format'=>'json'),
+							),
 							'add'=>array(
 									'uri'=>'http://open.t.qq.com/api/t/add',
 									'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
