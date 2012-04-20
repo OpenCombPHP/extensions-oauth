@@ -129,6 +129,10 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sina.com.cn/account/verify_credentials.json',
 									'params'=>array('format'=>'json'),
 							),
+							'userotherinfo'=>array(
+									'uri'=>'http://api.t.sina.com.cn/users/show.json',
+									'params'=>array(),
+							),
 							'add'=>array(
 									'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
 									'params'=>array('format'=>'json'),

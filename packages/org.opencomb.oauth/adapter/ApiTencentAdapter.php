@@ -41,7 +41,10 @@ class ApiTencentAdapter
     	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
     	$params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
     	$params['name'] = $sNickName;
-    	return $this->oauthCommon->SignRequest($url, "GET", $params, $o->token, $o->token_secret,'t.qq.com');
+//     	var_dump($params);
+//     	$o->printStruct();
+//     	exit;
+    	return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
     public function createFriendMulti($o,$uid){

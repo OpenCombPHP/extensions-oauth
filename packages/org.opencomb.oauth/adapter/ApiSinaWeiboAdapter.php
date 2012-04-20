@@ -38,6 +38,14 @@ class ApiSinaWeiboAdapter
         return $aRS;
     }
     
+    public function getUserByNickName($o,$sNickName)
+    {
+    	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+    	$params['screen_name'] =$sNickName;
+    	return $this->oauthCommon->SignRequest($url, "GET", $params, $o->token,  $o->token_secret,'weibo.com');
+    }
+    
     public function createFriendMulti($o,$uid){
     
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
@@ -151,6 +159,18 @@ class ApiSinaWeiboAdapter
         }
         
         return $aRsTrue;
+    }
+    
+    public function filterUser($aRs){
+    	$aRs=  json_decode($aRs,true);
+    	$aRsTmp['uid'] = $aRs['id'];
+    	$aRsTmp['username'] = $aRs['screen_name'];
+    	$aRsTmp['password'] = md5($aRs['id']);
+    	$aRsTmp['registerTime'] = time();
+    	$aRsTmp['nickname'] = $aRs['name'];
+    	$aRsTmp['avatar'] = $aRs['profile_image_url'];
+    	$aRsTmp['verified'] = $aRs['verified'];
+    	return $aRsTmp;
     }
     
     private function filter($aRs){
