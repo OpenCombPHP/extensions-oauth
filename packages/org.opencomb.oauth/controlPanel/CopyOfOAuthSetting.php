@@ -78,7 +78,7 @@ class OAuthSetting extends ControlPanel
 	
 		//var_dump($arr);
 		
-// 		$aSetting = Setting::singleton() ;
+// 		$aSetting = Service::singleton()->setting() ;
 // 		$arrStats = $this->stats() ;
 		
 // 		$bIsSubmiting = $this->authSetting->isSubmit() ;
