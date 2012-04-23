@@ -35,15 +35,12 @@ class Api163Adapter
         return $aRS;
     }
     
-    public function getUserByNickname($token,$token_secret)
+	public function getUserByNickName($o,$sNickName)
     {
-    	$url = $this->arrAdapteeConfigs['api']['show']['uri'];
-    	$params = $this->arrAdapteeConfigs['api']['show']['params'];
-    	$sRS =  $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
-    	$aRS = json_decode($sRS,true);
-    	$aRS['nickname'] = $aRS['name'];
-    	$aRS['username'] = $aRS['screen_name'];
-    	return $aRS;
+    	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+    	$params['name'] = $sNickName;
+    	return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
     }
     
     public function createFriendMulti($o,$uid){
@@ -171,6 +168,19 @@ class Api163Adapter
         }
     
         return $aRsTrue;
+    }
+    
+    public function filterUser($aRs){
+    	$aRs = json_decode($aRs,true);
+    	$aRsTmp['uid'] = $aRs['id'];
+        $aRsTmp['username'] = $aRs['screen_name'];
+        $aRsTmp['password'] = md5($aRs['id']);
+        $aRsTmp['registerTime'] = time();
+        $aRsTmp['nickname'] = $aRs['name'];
+        $aRsTmp['avatar'] = $aRs['profile_image_url'];
+        $aRsTmp['verified'] = $aRs['verified'];
+//     	    	var_dump($aRsTmp);
+    	return $aRsTmp;
     }
     
     private function filter($aRs){

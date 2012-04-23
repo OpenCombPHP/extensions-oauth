@@ -36,6 +36,14 @@ class ApiSohuAdapter
         return $aRS;
     }
     
+    public function getUserByNickName($o,$sNickName)
+    {
+    	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+    	$url = preg_replace("/\{nickname\}/",urlencode($sNickName),$url );
+    	return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
+    }
+    
     public function createFriendMulti($o,$uid){
     
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
@@ -149,6 +157,20 @@ class ApiSohuAdapter
             $aRsTrue[] = $aRs;
         }
         return $aRsTrue;
+    }
+    
+    public function filterUser($aRs){
+    	$aRs = json_decode($aRs,true);
+    	$aRsTmp['uid'] = $aRs['id'];
+            $aRsTmp['username'] = $aRs['screen_name'];
+            $aRsTmp['password'] = md5($aRs['id']);
+            $aRsTmp['registerTime'] = time();
+            $aRsTmp['nickname'] = $aRs['screen_name'];
+            $aRsTmp['avatar'] = $aRs['profile_image_url'];
+            $aRsTmp['verified'] = $aRs['verified'];
+            $aRsTmp['forwardcount'] = 0;
+    	//     	    	var_dump($aRsTmp);
+    	return $aRsTmp;
     }
     
     private function filter($aRs){

@@ -196,6 +196,10 @@ class AdapterManager extends Object
 									'uri'=>'http://open.t.qq.com/api/user/info',
 									'params'=>array('format'=>'json'),
 							),
+							'usersearch'=>array(
+									'uri'=>'http://open.t.qq.com/api/search/user',
+									'params'=>array('format'=>'json'),
+							),
 							'userotherinfo'=>array(
 									'uri'=>'http://open.t.qq.com/api/user/other_info',
 									'params'=>array('format'=>'json'),
@@ -330,6 +334,10 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sohu.com/users/show.json',
 									'params'=>array('format'=>'json'),
 							),
+							'userotherinfo'=>array(
+									'uri'=>'http://api.t.sohu.com/users/show/{nickname}.json',
+									'params'=>array('format'=>'json'),
+							),
 							'add'=>array(
 									'uri'=>'http://api.t.sohu.com/statuses/update.json',
 									'params'=>array('format'=>'json'),
@@ -402,6 +410,10 @@ class AdapterManager extends Object
 							'userinfo'=>array(
 									'uri'=>'http://api.t.163.com/account/verify_credentials.json',
 									'params'=>array("format"=>"json"),
+							),
+							'userotherinfo'=>array(
+									'uri'=>'http://api.t.163.com/users/show.json',
+									'params'=>array('format'=>'json'),
 							),
 							'add'=>array(
 									'uri'=>'http://api.t.163.com/statuses/update.json',

@@ -38,12 +38,23 @@ class ApiTencentAdapter
     
     public function getUserByNickName($o,$sNickName)
     {
+    	$url = $this->arrAdapteeConfigs['api']['usersearch']['uri'];
+    	$params = $this->arrAdapteeConfigs['api']['usersearch']['params'];
+    	$params['keyword'] = $sNickName;
+    	$this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
+    	
+    	$OAuthCommon = new \net\daichen\oauth\OAuthCommon("",  "");
+    	$aRsT = $OAuthCommon -> multi_exec();
+    	$aRsT = json_decode($aRsT['t.qq.com'],true);
+    	foreach($aRsT['data']['info'] as $key=>$info){
+    		if($info['nick'] === $sNickName){
+    			$aRsT = $info;
+    			break;
+    		}
+    	}
     	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
     	$params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
-    	$params['name'] = $sNickName;
-//     	var_dump($params);
-//     	$o->printStruct();
-//     	exit;
+    	$params['name'] = $aRsT['name'];
     	return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
     
@@ -157,6 +168,20 @@ class ApiTencentAdapter
         }
         
         return $aRsTrue;
+    }
+    
+    public function filterUser($aRs){
+    	$aRs = json_decode($aRs,true);
+    	$aRs = $aRs['data'];
+    	$aRsTmp['uid'] = $aRs['name'];
+    	$aRsTmp['username'] = $aRs['name'];
+    	$aRsTmp['password'] = md5($aRs['name']);
+    	$aRsTmp['registerTime'] = time();
+    	$aRsTmp['nickname'] = $aRs['nick'];
+    	$aRsTmp['avatar'] = $aRs['head']."/50.jpg";
+    	$aRsTmp['verified'] = $aRs['isvip'];
+//     	var_dump($aRsTmp);
+    	return $aRsTmp;
     }
     
     private function filter($aRs){
