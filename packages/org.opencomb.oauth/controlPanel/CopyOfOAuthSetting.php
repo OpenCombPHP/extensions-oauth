@@ -130,7 +130,7 @@ class OAuthSetting extends ControlPanel
 			//exit(0);
 		}
 		else {
-			var_dump($value);
+// 			var_dump($value);
 			echo $value;
 			return $value;
 			}
