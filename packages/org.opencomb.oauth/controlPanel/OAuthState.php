@@ -2,9 +2,6 @@
 namespace org\opencomb\oauth\controlPanel ;
 
 use org\opencomb\coresystem\user\UserPanel;
-use org\jecat\framework\auth\IdManager;
-use org\jecat\framework\message\Message;
-use org\opencomb\oauth\controlPanel\OAuthItem;
 
 class OAuthState extends UserPanel
 {
@@ -60,3 +57,4 @@ class OAuthState extends UserPanel
 	    $this->viewOauth->variables()->set('arrServiceModels',$arrServiceModels) ;
 	}
 }
+

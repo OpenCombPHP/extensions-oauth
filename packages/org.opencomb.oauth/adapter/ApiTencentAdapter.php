@@ -1,10 +1,6 @@
 <?php
 namespace org\opencomb\oauth\adapter ;
 
-use org\jecat\framework\session\Session;
-
-use net\daichen\oauth\Http;
-
 use net\daichen\oauth\OAuthCommon;
 
 class ApiTencentAdapter
@@ -247,5 +243,3 @@ class ApiTencentAdapter
             return $aRsTmp;
         }
 }
-
-?>

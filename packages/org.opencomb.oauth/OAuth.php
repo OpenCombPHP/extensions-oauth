@@ -1,12 +1,11 @@
 <?php 
 namespace org\opencomb\oauth ;
 
-use org\jecat\framework\lang\aop\AOP;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\opencomb\platform\service\ServiceSerializer;
 use org\jecat\framework\ui\xhtml\weave\Patch;
 use org\jecat\framework\ui\xhtml\weave\WeaveManager;
-use org\opencomb\platform\ext\Extension ;
+use org\opencomb\platform\ext\Extension;
 use org\opencomb\platform\mvc\view\widget\Menu;
 
 class OAuth extends Extension 
