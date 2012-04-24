@@ -1,14 +1,8 @@
 <?php
 namespace org\opencomb\oauth\controlPanel;
 
-
-use org\jecat\framework\mvc\model\db\Category;
-use org\jecat\framework\mvc\view\DataExchanger;
-use org\jecat\framework\message\Message;
 use org\opencomb\coresystem\mvc\controller\Controller;
 use org\opencomb\platform\ext\Extension;
-use org\opencomb\oauth\adapter\AdapterManager;
-use org\opencomb\oauth\controlPanel\OAuthSetting;
 
 class OAuthItem extends Controller
 {
@@ -76,5 +70,3 @@ class OAuthItem extends Controller
 		};
 	}
 }
-
-?>

@@ -4,14 +4,10 @@ namespace org\opencomb\oauth\controlPanel ;
 // use org\jecat\framework\message\Message;
 // use org\jecat\framework\setting\Setting;
 // use org\opencomb\platform\service\Service;
-use org\jecat\framework\verifier\Length;
 
 use org\opencomb\platform\ext\Extension;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\opencomb\coresystem\mvc\controller\ControlPanel;
-use org\jecat\framework\message\Message;
-use org\opencomb\oauth\controlPanel\OAuthItem;
-
 
 class OAuthSetting extends ControlPanel
 {
@@ -51,3 +47,4 @@ class OAuthSetting extends ControlPanel
 	}
 	
 }
+

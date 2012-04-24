@@ -9,5 +9,3 @@ class AuthAdapterException extends Exception
 	const not_support_feature = 2 ;
 	const not_setup_appkey = 3 ;
 }
-
-?>

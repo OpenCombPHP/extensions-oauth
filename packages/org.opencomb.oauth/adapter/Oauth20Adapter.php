@@ -3,7 +3,6 @@
 namespace org\opencomb\oauth\adapter ;
 
 use org\jecat\framework\session\Session;
-
 use net\daichen\oauth\OAuthCommon;
 
 class Oauth20Adapter
@@ -61,5 +60,3 @@ class Oauth20Adapter
     }
     
 }
-
-?>

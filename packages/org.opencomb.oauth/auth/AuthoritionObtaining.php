@@ -6,7 +6,6 @@ use org\jecat\framework\db\ExecuteException;
 use org\opencomb\coresystem\auth\Id;
 use org\opencomb\coresystem\auth\Authenticate;
 use org\jecat\framework\auth\IdManager;
-use org\jecat\framework\bean\BeanFactory;
 use org\opencomb\oauth\adapter\AuthAdapterException;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\session\Session;

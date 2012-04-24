@@ -167,7 +167,3 @@ class Http{
        return $return;
     }
 }
-
-
-
-?>

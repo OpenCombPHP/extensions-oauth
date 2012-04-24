@@ -2,10 +2,6 @@
 namespace org\opencomb\oauth\auth ;
 
 use org\jecat\framework\message\Message;
-
-use org\opencomb\oauth\adapter\AuthAdapterException;
-use org\opencomb\oauth\adapter\AdapterManager;
-use org\opencomb\platform\ext\Extension;
 use org\jecat\framework\mvc\controller\Controller;
 
 class RemoveBind extends Controller
@@ -45,5 +41,3 @@ class RemoveBind extends Controller
 		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}
 }
-
-?>

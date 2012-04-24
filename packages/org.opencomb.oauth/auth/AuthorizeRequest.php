@@ -3,11 +3,9 @@ namespace org\opencomb\oauth\auth ;
 
 use org\opencomb\coresystem\user\UserPanel;
 use org\jecat\framework\mvc\controller\HttpRequest;
-use org\jecat\framework\session\Session;
 use org\opencomb\oauth\adapter\AuthAdapterException;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\message\Message;
-use org\opencomb\platform\ext\Extension;
 
 class AuthorizeRequest extends UserPanel
 {
@@ -72,5 +70,3 @@ class AuthorizeRequest extends UserPanel
 		$this->location( $sRequestUrl , 3) ;
 	}
 }
-
-?>
