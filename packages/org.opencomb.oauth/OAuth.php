@@ -1,6 +1,8 @@
 <?php 
 namespace org\opencomb\oauth ;
 
+use org\jecat\framework\lang\aop\AOP;
+
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\opencomb\platform\service\ServiceSerializer;
 use org\jecat\framework\ui\xhtml\weave\Patch;
@@ -22,7 +24,7 @@ class OAuth extends Extension
 		// 提供给系统序列化
 		ServiceSerializer::singleton()->addSystemObject(AdapterManager::singleton()) ;
 		
-		
+// 		UserModelAspect.php
 
 		// 注册菜单build事件的处理函数
 		Menu::registerBuildHandle(
@@ -31,6 +33,16 @@ class OAuth extends Extension
 				, 'mainMenu'
 				, array(__CLASS__,'buildControlPanelMenu')
 		) ;
+		
+		AOP::singleton ()->registerBean ( array (
+			// jointpoint
+			'org\\opencomb\\coresystem\\user\\UserModel::loadModel()',
+			// advice
+		array (
+			'org\\opencomb\\oauth\\UserModelAspect', // 在Controller的派生显示时套用wonei的frame
+			'loadModel'
+			)
+		), __FILE__ );
 	}
 	
 	static public function buildControlPanelMenu(array & $arrConfig)
