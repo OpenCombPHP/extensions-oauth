@@ -41,7 +41,6 @@ class ApiSohuAdapter
     }
     
     public function createFriendMulti($o,$uid){
-    
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
         $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
         $url = preg_replace("/\{id\}/",$uid,$url );
@@ -49,7 +48,6 @@ class ApiSohuAdapter
     }
     
     public function removeFriendMulti($o,$uid){
-    
         $url = $this->arrAdapteeConfigs['api']['removeFriend']['uri'];
         $params = $this->arrAdapteeConfigs['api']['removeFriend']['params'];
         $url = preg_replace("/\{id\}/",$uid,$url );
@@ -57,7 +55,6 @@ class ApiSohuAdapter
     }
     
     public function pushLastForwardId($o,$aRs){
-    
         $aRs = json_decode($aRs,true);
         return  $aRs['id'];
     }
@@ -130,6 +127,13 @@ class ApiSohuAdapter
         return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'sohu.com');
     }
     
+    public function filterCommentCount($aRs){
+    	$aRs = json_decode($aRs,true);
+    	$aRsTemp['commentcount'] = $aRs['comments_count'];
+    	$aRsTemp['retweetcount'] = $aRs['transmit_count'];
+    	return $aRsTemp;
+    }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
         $aRs = json_decode ($responseData,true);
@@ -196,6 +200,7 @@ class ApiSohuAdapter
             $aRsTmp['avatar'] = $aRs['user']['profile_image_url'];
             $aRsTmp['verified'] = $aRs['user']['verified'];
             $aRsTmp['forwardcount'] = 0;
+            $aRsTmp['commentcount'] = 0;
             
             if($aRs['small_pic'])
             {

@@ -133,6 +133,10 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sina.com.cn/users/show.json',
 									'params'=>array(),
 							),
+							'commentcount'=>array(
+									'uri'=>'http://api.t.sina.com.cn/statuses/counts.json',
+									'params'=>array(),
+							),
 							'add'=>array(
 									'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
 									'params'=>array('format'=>'json'),
@@ -235,10 +239,9 @@ class AdapterManager extends Object
 									),
 							),
 							'commentcount' => array(
-									'uri'=>'http://open.t.qq.com/api/t/re_count',
+									'uri'=>'http://open.t.qq.com/api/t/show',
 									'params'=>array(
 										'format' => 'json' ,
-										'flag' => 1 ,
 									),
 							),
 							'pushcomment'=>array(

@@ -133,9 +133,17 @@ class Api163Adapter
     	
     	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'163.com');
     }
+    
+	public function filterCommentCount($aRs){
+    	$aRs = json_decode($aRs,true);
+    	var_dump($aRs);exit;
+    	$aRsTemp['commentcount'] = $aRs['mcount'];
+    	$aRsTemp['retweetcount'] = $aRs['count'];
+    	return $aRsTemp;
+    }
+    
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
     {
-    
         $aRs = json_decode ($responseData,true);
     
         foreach ($aRs as $v)
@@ -194,7 +202,7 @@ class Api163Adapter
         $aRsTmp['cursor_id'] = $aRs['cursor_id'];
         $aRsTmp['forwardcount'] = $aRs['retweet_count'];
         //             $aRsTmp['client_url'] = $aRs['source']['href'];
-    
+        $aRsTmp['commentcount'] = $aRs['comments_count'];
         
         $aRsTmp['uid'] = $aRs['user']['id'];
         $aRsTmp['username'] = $aRs['user']['screen_name'];
