@@ -135,10 +135,9 @@ class Api163Adapter
     }
     
 	public function filterCommentCount($aRs){
-    	$aRs = json_decode($aRs,true);
-    	var_dump($aRs);exit;
-    	$aRsTemp['commentcount'] = $aRs['mcount'];
-    	$aRsTemp['retweetcount'] = $aRs['count'];
+		//没有API
+    	$aRsTemp['commentcount'] = 0;
+    	$aRsTemp['retweetcount'] = 0;
     	return $aRsTemp;
     }
     
@@ -202,7 +201,7 @@ class Api163Adapter
         $aRsTmp['cursor_id'] = $aRs['cursor_id'];
         $aRsTmp['forwardcount'] = $aRs['retweet_count'];
         //             $aRsTmp['client_url'] = $aRs['source']['href'];
-        $aRsTmp['commentcount'] = $aRs['comments_count'];
+        $aRsTmp['commentcount'] = 0;
         
         $aRsTmp['uid'] = $aRs['user']['id'];
         $aRsTmp['username'] = $aRs['user']['screen_name'];
