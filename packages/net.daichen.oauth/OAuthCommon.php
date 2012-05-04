@@ -98,7 +98,7 @@ class OAuthCommon extends OAuthBase{
     
     public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert="" , $isMulti = ""){
         $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "", $postData);
-//         var_dump($postUri);
+        
         if(is_array($postUri)){
             if(strtoupper($HttpMode) == "GET"){
                 $url = $postUri[0]."?".$postUri[1];

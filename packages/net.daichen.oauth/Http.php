@@ -19,6 +19,7 @@ class Http{
             'httpMethod'=>$httpMethod,
             'service'=>$service,
         );
+        
         $this->aMultiParams[] = $aMultiParam;
     }
     

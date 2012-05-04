@@ -229,18 +229,24 @@ class ApiTencentAdapter
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
-            $aRsAttachmentTmp = array();
-            $aRsAttachmentTmp['type'] = 'video';
-            $aRsAttachmentTmp['url'] = $aRs['video']['player'];
-            $aRsAttachmentTmp['title'] = $aRs['video']['title'];
-            $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120.jpg";
-            $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            if(!empty($aRs['video']))
+            {
+                $aRsAttachmentTmp = array();
+                $aRsAttachmentTmp['type'] = 'video';
+                $aRsAttachmentTmp['url'] = $aRs['video']['player'];
+                $aRsAttachmentTmp['title'] = $aRs['video']['title'];
+                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120.jpg";
+                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            }
     
-            $aRsAttachmentTmp = array();
-            $aRsAttachmentTmp['type'] = 'music';
-            $aRsAttachmentTmp['url'] = $aRs['music']['url'];
-            $aRsAttachmentTmp['title'] = $aRs['music']['title'];
-            $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            if(!empty($aRs['music']))
+            {
+                $aRsAttachmentTmp = array();
+                $aRsAttachmentTmp['type'] = 'music';
+                $aRsAttachmentTmp['url'] = $aRs['music']['url'];
+                $aRsAttachmentTmp['title'] = $aRs['music']['title'];
+                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+            }
         
             return $aRsTmp;
         }

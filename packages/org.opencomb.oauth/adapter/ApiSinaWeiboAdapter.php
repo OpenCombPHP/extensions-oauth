@@ -140,7 +140,10 @@ class ApiSinaWeiboAdapter
     {
         
         $aRs = json_decode ($responseData,true);
-        
+        if($aRs['error_code'] == "403")
+        {
+            return array();
+        }
         foreach ($aRs as $v)
         {
             $aRs = $this->filter($v);
