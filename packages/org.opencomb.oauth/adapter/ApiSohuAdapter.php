@@ -212,4 +212,43 @@ class ApiSohuAdapter
         
             return $aRsTmp;
         }
+
+    public function search($o, $searchText){
+        $url = $this->arrAdapteeConfigs['api']['search']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['search']['params'];
+        
+        $params["q"] = urlencode($searchText);
+
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
+    }
+    public function filterSearchTimeLine($token, $token_secret, $responseData)
+    {
+        $aRs = json_decode ($responseData,true);
+        foreach ($aRs as $aRs2)
+        {
+            foreach ($aRs2 as $v) {
+                if(empty($v['text']))
+                {
+                    return ;
+                }
+                $aRs2 = $this->filterforSearch($v);
+                
+                if(!empty($v['in_reply_to_status_text']))
+                {
+                        $url = $this->arrAdapteeConfigs['api']['show']['uri'];
+                        $params = $this->arrAdapteeConfigs['api']['show']['params'];
+                        $url = preg_replace("/\{id\}/",$v['in_reply_to_status_id'],$url );
+                        $aSource =  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+                        $aRs['source'] = $this->filterforSearch(json_decode($aSource,true));
+                }
+                $aRsTrue[] = $aRs2;
+            }
+        }
+        return $aRsTrue;
+    }
+    private function filterforSearch($aRs){
+        $aRsTmp = $this->filter($aRs);
+        $aRsTmp['service'] = $this->arrAdapteeConfigs['url'];
+        return $aRsTmp;
+    }
 }

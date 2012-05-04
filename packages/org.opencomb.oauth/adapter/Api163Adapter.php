@@ -221,4 +221,49 @@ class Api163Adapter
     
         return $aRsTmp;
     }
+
+    public function search($o, $searchText){
+        $url = $this->arrAdapteeConfigs['api']['search']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['search']['params'];
+        
+        $params["q"] = $searchText;
+
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'163.com');
+    }
+    public function filterSearchTimeLine($token, $token_secret, $responseData)
+    {
+        $aRs = json_decode ($responseData,true);
+    
+        foreach ($aRs as $v)
+        {
+            if(empty($v['text']) || empty($v['user']['id']))
+            {
+                return ;
+            }
+            /**
+             * 排除当前条
+             */
+            if($lastData['cursor_id'] != $v['cursor_id'])
+            {
+                $aRs = $this->filterforSearch($v);
+                
+                if(!empty($v['in_reply_to_status_text']))
+                {
+                    $url = $this->arrAdapteeConfigs['api']['showState']['uri'];
+                    $params = $this->arrAdapteeConfigs['api']['showState']['params'];
+                    $url = preg_replace("/\{id\}/",$v['in_reply_to_status_id'],$url );
+                    $aSource =  $this->oauthCommon->SignRequest($url, "get", $params, $token, $token_secret);
+                    $aRs['source'] = $this->filterforSearch(json_decode($aSource,true));
+                }
+                $aRsTrue[] = $aRs;
+            }
+        }
+    
+        return $aRsTrue;
+    }
+    private function filterforSearch($aRs){
+        $aRsTmp2 = $this->filter($aRs);
+        $aRsTmp2['service'] = $this->arrAdapteeConfigs['url'];
+        return $aRsTmp2;
+    }
 }

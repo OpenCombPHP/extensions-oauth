@@ -162,4 +162,17 @@ class ApiDoubanAdapter
         
             return $aRsTmp;
         }
+
+    public function search($o, $searchText){
+        return ;
+    }
+    public function filterSearchTimeLine($token, $token_secret, $responseData)
+    {
+        return ;
+    }
+    private function filterforSearch($aRs){
+        $aRsTmp = $this->filter($aRs);
+        $aRsTmp['service'] = $this->arrAdapteeConfigs['url'];
+        return $aRsTmp;
+    }
 }

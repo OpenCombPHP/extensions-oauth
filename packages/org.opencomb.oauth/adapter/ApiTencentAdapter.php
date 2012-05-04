@@ -250,4 +250,39 @@ class ApiTencentAdapter
         
             return $aRsTmp;
         }
+
+    public function search($o, $searchText){
+        $url = $this->arrAdapteeConfigs['api']['search']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['search']['params'];
+        
+        $params["keyword"] = $searchText;
+
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    public function filterSearchTimeLine($token, $token_secret, $responseData)
+    {
+        $responseData = preg_replace("||",'',$responseData );
+        $aRs = json_decode ($responseData,true);
+        $aUser = $aRs['data']['user'];
+        
+        foreach ($aRs['data']['info'] as $v)
+        {
+            $v['user'] = $aUser;
+            $aRs = $this->filterforSearch($v);
+        
+            if(!empty($v['source']))
+            {
+                $v['source']['user'] = $aUser;
+                $aRs['source'] = $this->filterforSearch($v['source']);
+            }
+            $aRsTrue[] = $aRs;
+        }
+        
+        return $aRsTrue;
+    }
+    private function filterforSearch($aRs){
+        $aRsTmp = $this->filter($aRs);
+        $aRsTmp['service'] = $this->arrAdapteeConfigs['url'];
+        return $aRsTmp;
+    }
 }

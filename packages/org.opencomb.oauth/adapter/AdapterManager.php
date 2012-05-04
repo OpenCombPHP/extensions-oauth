@@ -171,6 +171,10 @@ class AdapterManager extends Object
                     				'uri'=>'http://api.t.sina.com.cn/statuses/comment.json',
                     				'params'=>array(),
                     		),
+                    		// 'search'=>array(
+                            //      'uri'=>'https://api.t.sina.com.cn/search.json',
+                            //      'params'=>array('format'=>'json'),
+                            // ),
 					),
 			) ,
 	
@@ -248,6 +252,18 @@ class AdapterManager extends Object
 	                				'uri'=>'http://open.t.qq.com/api/t/comment',
 	                				'params'=>array( 'format'=>'json' ),
 	                		),
+	                		'search'=>array(
+                                    'uri'=>'http://open.t.qq.com/api/search/t',
+                                    'params'=>array(
+                                            'format'=>'json',
+                                            'pagesize'=>10,
+                                            'page'=>1,
+                                            'contenttype'=>0,
+                                            'sorttype'=>0,
+                                            'msgtype'=>0,
+                                            'searchtype'=>0,
+                                    ),
+                            ),
 					),
 			) ,
 	
@@ -378,6 +394,10 @@ class AdapterManager extends Object
                                     'uri'=>'http://api.t.sohu.com/statuses/comment.json',
                                     'params'=>array(),
                             ),
+                            'search'=>array(
+                                    'uri'=>'http://api.t.sohu.com/statuses/search.json',
+                                    'params'=>array(),
+                            ),
 					),
 			) ,
 	
@@ -445,6 +465,10 @@ class AdapterManager extends Object
 							),
 							'pushcomment'=>array(
                                     'uri'=>'http://api.t.163.com/statuses/reply.json',
+                                    'params'=>array(),
+                            ),
+                            'search'=>array(
+                                    'uri'=>'http://api.t.163.com/statuses/search.json',
                                     'params'=>array(),
                             ),
 					),
