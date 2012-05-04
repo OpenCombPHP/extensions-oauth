@@ -167,9 +167,20 @@ class ApiSinaWeiboAdapter
     	return $aRsTmp;
     }
     
+    public function filterCommentCount($aRs){
+    	$aRs = json_decode($aRs,true);
+    	foreach($aRs as  $key=>$value){
+    		$aRsTemp[$key]['commentcount'] = $aRs[$key]['comments'];
+    		$aRsTemp[$key]['retweetcount'] = $aRs[$key]['rt'];
+    	}
+    	if(isset($aRsTemp[0])){
+    		return $aRsTemp[0];
+    	}else{
+    		return 0;
+    	}
+    }
+    
     private function filter($aRs){
-        
-        
             $aRsTmp = array();
             $aRsTmp['system'] = '';
             
@@ -184,7 +195,10 @@ class ApiSinaWeiboAdapter
             $aRsTmp['cursor_id'] = (string)$aRs['id'];
 //             $aRsTmp['client_url'] = $aRs['source']['href'];
             $aRsTmp['forwardcount'] = 0;
-        
+			
+			$aCommentCount = new \com\wonei\woneibridge\comment\CommentCount(array('service'=>'weibo.com' ,'stid'=>'pull|weibo.com|'.$aRsTmp['id'].'|$aRsTmp["uid"]'));
+			$nCommentCount = (int)$aCommentCount->getCommentCount();
+			$aRsTmp['commentcount'] = $nCommentCount;
             
             $aRsTmp['uid'] = $aRs['user']['id'];
             $aRsTmp['username'] = $aRs['user']['screen_name'];

@@ -132,7 +132,7 @@ class ApiTencentAdapter
 	public function createPullCommentCount($o,$astate){
 		$url = $this->arrAdapteeConfigs['api']['commentcount']['uri'];
 		$params = $this->arrAdapteeConfigs['api']['commentcount']['params'];
-		$params['ids'] = $astate['sid'] ;
+		$params['id'] = $astate['sid'] ;
 		return $this->oauthCommon->SignRequest($url, 'get' , $params , $o->token, $o->token_secret,'t.qq.com');
 	}
     
@@ -141,6 +141,14 @@ class ApiTencentAdapter
     	$params = $this->arrAdapteeConfigs['api']['pushcomment']['params'];
     	$params += $arrOtherParams;
     	return  $this->oauthCommon->SignRequest($url, "POST", $params, $o['token'], $o['token_secret'],'t.qq.com');
+    }
+    
+    public function filterCommentCount($aRs){
+    	$aRs = json_decode($aRs,true);
+    	$aRs = $aRs['data'];
+		$aRsTemp['commentcount'] = $aRs['mcount'];
+		$aRsTemp['retweetcount'] = $aRs['count'];
+    	return $aRsTemp;
     }
     
     public function filterTimeLine($token,$token_secret,$responseData,$lastData)
@@ -202,7 +210,7 @@ class ApiTencentAdapter
             $aRsTmp['client'] = $aRs['from'];
             $aRsTmp['client_url'] = @$aRs['fromurl'];
             $aRsTmp['forwardcount'] = @$aRs['count'];
-        
+            $aRsTmp['commentcount'] = $aRs['mcount'];
             
             $aRsTmp['uid'] = $aRs['name'];
             $aRsTmp['username'] = $aRs['name'];
