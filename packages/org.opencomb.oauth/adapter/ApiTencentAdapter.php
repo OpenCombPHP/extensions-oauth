@@ -221,24 +221,18 @@ class ApiTencentAdapter
                 $aRsTmp['attachment'][] = $aRsAttachmentTmp;
             }
         
-            for($i = 0; $i < sizeof($aRs['video']); $i++){
-        
-                $aRsAttachmentTmp = array();
-                $aRsAttachmentTmp['type'] = 'video';
-                $aRsAttachmentTmp['url'] = $aRs['video']['player'];
-                $aRsAttachmentTmp['title'] = $aRs['video']['title'];
-                $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120.jpg";
-                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
-            }
-        
-            for($i = 0; $i < sizeof($aRs['music']); $i++){
-        
-                $aRsAttachmentTmp = array();
-                $aRsAttachmentTmp['type'] = 'music';
-                $aRsAttachmentTmp['url'] = $aRs['music']['url'];
-                $aRsAttachmentTmp['title'] = $aRs['music']['title'];
-                $aRsTmp['attachment'][] = $aRsAttachmentTmp;
-            }
+            $aRsAttachmentTmp = array();
+            $aRsAttachmentTmp['type'] = 'video';
+            $aRsAttachmentTmp['url'] = $aRs['video']['player'];
+            $aRsAttachmentTmp['title'] = $aRs['video']['title'];
+            $aRsAttachmentTmp['thumbnail_pic'] = $aRs['video']['picurl']."/120.jpg";
+            $aRsTmp['attachment'][] = $aRsAttachmentTmp;
+    
+            $aRsAttachmentTmp = array();
+            $aRsAttachmentTmp['type'] = 'music';
+            $aRsAttachmentTmp['url'] = $aRs['music']['url'];
+            $aRsAttachmentTmp['title'] = $aRs['music']['title'];
+            $aRsTmp['attachment'][] = $aRsAttachmentTmp;
         
             return $aRsTmp;
         }
