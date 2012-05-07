@@ -115,9 +115,19 @@ class ApiTencentAdapter
         
         if(!empty($lastData['time']))
         {
-            $params['pageflag'] = "2";
-            $params['pagetime'] = $lastData['time'];
+            //$params['pageflag'] = "2";
+            //$params['pagetime'] = $lastData['time'];
         }
+        
+        return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
+    }
+    
+    public function rowMulti($o,$id){
+    
+        $url = $this->arrAdapteeConfigs['api']['row']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['row']['params'];
+        
+        $params['id'] = $id;
         
         return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'t.qq.com');
     }
@@ -155,8 +165,8 @@ class ApiTencentAdapter
     {
         $responseData = preg_replace("||",'',$responseData );
         $aRs = json_decode ($responseData,true);
-        $aUser = $aRs['data']['user'];
         
+        $aUser = $aRs['data']['user'];
         
         foreach ($aRs['data']['info'] as $v)
         {
@@ -200,7 +210,10 @@ class ApiTencentAdapter
             preg_match_all("/@(.*?)[ |:]/", $aRs['text'], $aAT);
             
             for($i = 0; $i < sizeof($aAT[1]); $i++){
-                $aRs['text'] = str_replace($aAT[0][$i], "@".$aRs['user'][$aAT[1][$i]], $aRs['text']);
+                if(!empty($aRs['user'][$aAT[1][$i]]))
+                {
+                    $aRs['text'] = str_replace($aAT[1][$i], $aRs['user'][$aAT[1][$i]], $aRs['text']);
+                }
             }
             
             $aRsTmp['title'] = $aRs['text'];

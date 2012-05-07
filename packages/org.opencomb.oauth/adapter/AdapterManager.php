@@ -233,6 +233,11 @@ class AdapterManager extends Object
 									'params'=>array('format'=>'json'),
 									'columns' => array(''=>'') , 
 							),
+							'row'=>array(
+									'uri'=>'http://open.t.qq.com/api/t/show',
+									'params'=>array('format'=>'json'),
+									'columns' => array(''=>'') , 
+							),
 							'pullcomment'=>array(
 									'uri'=>'http://open.t.qq.com/api/t/re_list',
 									'params'=>array(
