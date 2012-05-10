@@ -11,13 +11,14 @@ class Http{
     
     private $aMultiParams;
     
-    public function createMultiParams($url,$params=false,$httpMethod=false,$service)
+    public function createMultiParams($url,$params=false,$httpMethod=false,$service,$httpHeader="")
     {
         $aMultiParam = array(
             'url'=>$url,
             'params'=>$params,
             'httpMethod'=>$httpMethod,
             'service'=>$service,
+            'httpHeader'=>$httpHeader,
         );
         
         $this->aMultiParams[] = $aMultiParam;
@@ -49,7 +50,7 @@ class Http{
                     curl_setopt($curl_array[$i], CURLOPT_HTTPGET, true);
                     break;
             }
-            
+            if(!empty($aRs['httpHeader']))curl_setopt($curl_array[$i], CURLOPT_HTTPHEADER, array($aRs['httpHeader']));
             curl_setopt($curl_array[$i],CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3');
             //curl_setopt($curl_array[$i], CURLOPT_URL,$aRs['url']);
             

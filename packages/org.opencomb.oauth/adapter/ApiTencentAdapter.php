@@ -97,10 +97,19 @@ class ApiTencentAdapter
         return  $aRs['data']['id'];
     }
     
-    public function createPushMulti($o,$title){
-    
-        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+    public function createPushMulti($o,$title,$picFile){
+        
+        if(empty($picFile))
+        {
+            $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+            $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        }else {
+            $url = $this->arrAdapteeConfigs['api']['add_pic_url']['uri'];
+            $params = $this->arrAdapteeConfigs['api']['add_pic_url']['params'];
+            $localPath = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+            $params['pic_url'] = "http://".$_SERVER['HTTP_HOST']."/extensions/userstate/upload/pic/".$picFile;
+            //$params['pic_url'] = 'http://img.baidu.com/img/image/ilogob.gif';
+        }
         
         $params['content'] = $title;
         $params['clientip'] = $_SERVER['REMOTE_ADDR'];

@@ -22,12 +22,12 @@ class Oauth20Adapter
             $this->appKey = $aKey;
         }
         
-        $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"],  $this->arrAdapteeConfigs['auth']['authorize'],  $this->arrAdapteeConfigs['auth']['authorize'],  $this->arrAdapteeConfigs['auth']['tokenUrl']['access_token_uri']);
+        $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"],  $this->arrAdapteeConfigs['auth']['authorize'],  $this->arrAdapteeConfigs['auth']['authorize'],  @$this->arrAdapteeConfigs['auth']['tokenUrl']['access_token_uri']);
     }
     
     public function fetchRequestTokenUrl($call_back_uri){
         Session::singleton()->addVariable($this->arrAdapteeConfigs['url'].'.Callback_Uri',$call_back_uri) ;
-        return $this->authRequestUrl = $this->oauthCommon->GetAuthorizationCode($call_back_uri, $this->arrAdapteeConfigs['auth']['tokenUrl']['scope']);
+        return $this->authRequestUrl = $this->oauthCommon->GetAuthorizationCode($call_back_uri, @$this->arrAdapteeConfigs['auth']['tokenUrl']['scope']);
     }
     
     public function fetchAccessToken($code){

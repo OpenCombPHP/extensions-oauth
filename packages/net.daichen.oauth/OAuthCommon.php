@@ -12,6 +12,7 @@ class OAuthCommon extends OAuthBase{
     private $authorize_uri;
     private $access_token_uri;
     private static $http;
+    private $oAuthVersion;
     
     public function __construct($appkey,$appkeysercert,$request_token_uri = "",$authorize_uri = "",$access_token_uri = ""){
         
@@ -96,8 +97,13 @@ class OAuthCommon extends OAuthBase{
         }
     }
     
-    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert="" , $isMulti = ""){
-        $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "", $postData);
+    public function setOAuthVersion($var){
+        $this->oAuthVersion = $var;
+    }
+    
+    public function SignRequest($uri, $HttpMode, $postData, $access_token, $access_token_sercert="" , $isMulti = "" , $httpHeader=""){
+        
+        $postUri = $this->GetOauthUrl($uri, $HttpMode, $this->GetAppKey() ,$this->GetAppKeySercert(),  $access_token, $access_token_sercert,"" , "",$postData, $this->oAuthVersion?$this->oAuthVersion:"");
         
         if(is_array($postUri)){
             if(strtoupper($HttpMode) == "GET"){
@@ -106,20 +112,20 @@ class OAuthCommon extends OAuthBase{
                 {
                     return self::http()->createMultiParams($url,false,$HttpMode,$isMulti);
                 }else{
+                    
                     return self::http()->fetch_page($url,false,$HttpMode);
                 }
             }  
             else if(strtoupper($HttpMode) == "POST") {
-                $url = $postUri[0];
                 
+                $url = $postUri[0];
                 
                 if(!empty($isMulti))
                 {
-                    return self::http()->createMultiParams($url,$postUri[1],$HttpMode,$isMulti);
+                    return self::http()->createMultiParams($url,$postUri[1],$HttpMode,$isMulti,$httpHeader);
                 }else{
                     return self::http()->fetch_page($url,$postUri[1],$HttpMode);
                 }
-                
                 
             }  else {
                 return "";

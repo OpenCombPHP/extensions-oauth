@@ -2,10 +2,10 @@
 namespace net\daichen\oauth ;
 class OAuthBase{
     private  static  $OAuthVersion = "1.0";
+    private  static  $OAuthVersionKey = "oauth_version";
     private  static  $OAuthParameterPrefix = "oauth_";
     private  static  $OAuthConsumerKeyKey = "oauth_consumer_key";
     private  static  $OAuthCallbackKey = "oauth_callback";
-    private  static  $OAuthVersionKey = "oauth_version";
     private  static  $OAuthSignatureMethodKey = "oauth_signature_method";
     private  static  $OAuthSignatureKey = "oauth_signature";
     private  static  $OAuthTimestampKey = "oauth_timestamp";
@@ -45,7 +45,7 @@ class OAuthBase{
         return $plist;
     }
 
-    public static function GetOauthUrl($url,$httpMethod,$customerKey,$customSecrect,$tokenKey,$tokenSecrect,$verify,$callbackUrl,$parameters)
+    public static function GetOauthUrl($url,$httpMethod,$customerKey,$customSecrect,$tokenKey,$tokenSecrect,$verify,$callbackUrl,$parameters,$OAuthVersion="")
     {
         $parameterString =self::NormalizeRequestParameters($parameters);
         $urlWithParameter = $url;
@@ -54,15 +54,22 @@ class OAuthBase{
         }
         $nonce = self::generate_nonce();
         $timeStamp =  self::generate_timestamp();
-        $parameters[self::$OAuthVersionKey] = self::$OAuthVersion;
+        
+        $parameters[self::$OAuthVersionKey] = $OAuthVersion?$OAuthVersion:self::$OAuthVersion;
         $parameters[self::$OAuthNonceKey] =$nonce;
         $parameters[self::$OAuthTimestampKey] = $timeStamp;
         $parameters[self::$OAuthSignatureMethodKey] = self::$HMACSHA1SignatureType;
         $parameters[self::$OAuthConsumerKeyKey] =$customerKey;
-
+        
         if ($tokenKey != "")
         {
-            $parameters[self::$OAuthTokenKey] =$tokenKey;
+            if(!empty($OAuthVersion) && $OAuthVersion == "2.0")
+            {
+                $parameters['access_token'] =$tokenKey;
+            }else{
+                $parameters[self::$OAuthTokenKey] =$tokenKey;
+            }
+            
         }
 
         if ($verify !="")

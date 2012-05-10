@@ -7,6 +7,7 @@ class ApiSinaWeiboAdapter
 {
     public $oauthCommon;
     public $arrAdapteeConfigs = array() ;
+    public $appkey = array();
     
     public function __construct($aSiteConfig,$aKey) {
         
@@ -17,6 +18,7 @@ class ApiSinaWeiboAdapter
             $this->arrAdapteeConfigs = $aSiteConfig;
         }
         
+        $this->appkey = $aKey;
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
@@ -83,14 +85,46 @@ class ApiSinaWeiboAdapter
         return  $aRs['id'];
     }
     
-    public function createPushMulti($o,$title){
+    public function createPushMulti($o,$title,$picFile){
     
-        $url = $this->arrAdapteeConfigs['api']['add']['uri'];
-        $params = $this->arrAdapteeConfigs['api']['add']['params'];
+        if(empty($picFile))
+        {
+            $url = $this->arrAdapteeConfigs['api']['add']['uri'];
+            $params = $this->arrAdapteeConfigs['api']['add']['params'];
+            $params['status'] = urlencode($title);
+            return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
+            
+        }else {
+            /**
+             * 交换oauth2
+             * @var unknown_type
+             */
+            $url2 = $this->arrAdapteeConfigs['api']['get_oauth2_token']['uri'];
+            $params2 = $this->arrAdapteeConfigs['api']['get_oauth2_token']['params'];
+            $trs = $this->oauthCommon->SignRequest($url2, "post", $params2, $o->token, $o->token_secret);
+            $aTrs = json_decode($trs,true);
+            $oauth2_access_token = $aTrs['access_token'];
+            
+            /**
+             * 使用oauth2
+             * @var unknown_type
+             */
+            $url = $this->arrAdapteeConfigs['api']['add_file_url']['uri'];
+            $params = $this->arrAdapteeConfigs['api']['add_file_url']['params'];
+            $localPath = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+            $params['pic_url'] = "http://".$_SERVER['HTTP_HOST']."/extensions/userstate/upload/pic/".$picFile;
+            //$params['url'] = 'http://img.baidu.com/img/image/ilogob.gif';
+            $params['status'] = urlencode($title);
+            $params["access_token"] = $oauth2_access_token;
+            
+            $this->oauthCommon->setOAuthVersion("2.0");
+            $rs = $this->oauthCommon->SignRequest($url, "post", $params, $oauth2_access_token, "");
+            
+            echo "<pre>";print_r($rs);echo "</pre>";
+            return $rs;
+            
+        }
         
-        $params['status'] = urlencode($title);
-        
-        return $this->oauthCommon->SignRequest($url, "post", $params, $o->token, $o->token_secret,'weibo.com');
     }
     
     public function createTimeLineMulti($o ,$lastData){

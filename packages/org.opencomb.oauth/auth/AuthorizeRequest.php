@@ -57,7 +57,6 @@ class AuthorizeRequest extends UserPanel
 		
 		$sRequestUrl = $aAdapter->fetchRequestTokenUrl($sCallbackUrl) ;
 		
-		
 		if(empty($sRequestUrl))
 		{
 			$this->createMessage( Message::error,"从 %s 取得 request token 失败，请检查 oauth 配置", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;

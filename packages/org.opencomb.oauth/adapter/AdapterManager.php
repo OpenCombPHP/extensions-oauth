@@ -129,6 +129,10 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sina.com.cn/account/verify_credentials.json',
 									'params'=>array('format'=>'json'),
 							),
+							'get_oauth2_token'=>array(
+									'uri'=>'https://api.weibo.com/oauth2/get_oauth2_token',
+									'params'=>array('format'=>'json'),
+							),
 							'userotherinfo'=>array(
 									'uri'=>'http://api.t.sina.com.cn/users/show.json',
 									'params'=>array(),
@@ -141,6 +145,14 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
 									'params'=>array('format'=>'json'),
 							),
+							'add_file'=>array(
+                    				'uri'=>'http://api.t.sina.com.cn/statuses/upload.json',
+                    				'params'=>array('format'=>'json'),
+                    		),
+							'add_file_url'=>array(
+                    				'uri'=>'https://api.weibo.com/2/statuses/upload_url_text.json',
+                    				'params'=>array('format'=>'json'),
+                    		),
 							'forward'=>array(
 									'uri'=>'http://api.t.sina.com.cn/statuses/repost.json',
 									'params'=>array('format'=>'json'),
@@ -216,6 +228,14 @@ class AdapterManager extends Object
 									'uri'=>'http://open.t.qq.com/api/t/add',
 									'params'=>array('format'=>'json','clientip'=>'123.119.32.211'),
 							),
+							'add_file'=>array(
+                    				'uri'=>'http://open.t.qq.com/api/t/add_pic',
+                    				'params'=>array('format'=>'json'),
+                    		),
+							'add_pic_url'=>array(
+                    				'uri'=>'http://open.t.qq.com/api/t/add_pic_url',
+                    				'params'=>array('format'=>'json'),
+                    		),
 							'forward'=>array(
 									'uri'=>'http://open.t.qq.com/api/t/re_add',
 									'params'=>array('format'=>'json'),

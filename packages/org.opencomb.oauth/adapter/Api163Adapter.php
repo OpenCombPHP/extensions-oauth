@@ -82,7 +82,7 @@ class Api163Adapter
         return  $aRs['id'];
     }
     
-    public function createPushMulti($o,$title){
+    public function createPushMulti($o,$title,$picFile){
     
         $url = $this->arrAdapteeConfigs['api']['add']['uri'];
         $params = $this->arrAdapteeConfigs['api']['add']['params'];
