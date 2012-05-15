@@ -20,6 +20,17 @@ class Api163Adapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function getForwardNumber($token,$token_secret,$id)
+    {
+        $url = $this->arrAdapteeConfigs['api']['showState']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['showState']['params'];
+        $url = preg_replace("/\{id\}/",$id,$url );
+    
+        $rs = $this->oauthCommon->SignRequest($url, "GET", $params, $token, $token_secret);
+    
+        $aRS = json_decode($rs,true);
+        return $aRS['retweet_count'];
+    }
     public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['show']['uri'];

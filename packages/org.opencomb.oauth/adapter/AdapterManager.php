@@ -145,6 +145,10 @@ class AdapterManager extends Object
 									'uri'=>'http://api.t.sina.com.cn/statuses/update.json',
 									'params'=>array('format'=>'json'),
 							),
+							'show'=>array(
+									'uri'=>'https://api.weibo.com/2/statuses/show.json',
+									'params'=>array('format'=>'json'),
+							),
 							'add_file'=>array(
                     				'uri'=>'http://api.t.sina.com.cn/statuses/upload.json',
                     				'params'=>array('format'=>'json'),

@@ -34,6 +34,35 @@ class ApiSinaWeiboAdapter
         return $aRS;
     }
     
+    public function getForwardNumber($token,$token_secret,$id)
+    {
+        
+        /**
+         * 交换oauth2
+         * @var unknown_type
+         */
+        $url2 = $this->arrAdapteeConfigs['api']['get_oauth2_token']['uri'];
+        $params2 = $this->arrAdapteeConfigs['api']['get_oauth2_token']['params'];
+        $trs = $this->oauthCommon->SignRequest($url2, "post", $params2, $token, $token_secret);
+        $aTrs = json_decode($trs,true);
+        $oauth2_access_token = $aTrs['access_token'];
+        
+        /**
+         * 使用oauth2
+         * @var unknown_type
+         */
+        $url = $this->arrAdapteeConfigs['api']['show']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['show']['params'];
+        $params['id'] = $id;
+        $params["access_token"] = $oauth2_access_token;
+        
+        $this->oauthCommon->setOAuthVersion("2.0");
+        $rs = $this->oauthCommon->SignRequest($url, "GET", $params, $oauth2_access_token, "");
+        
+        $aRS = json_decode($rs,true);
+        return $aRS['reposts_count'];
+    }
+    
     public function getUserByNickName($o,$sNickName)
     {
     	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
@@ -120,7 +149,6 @@ class ApiSinaWeiboAdapter
             $this->oauthCommon->setOAuthVersion("2.0");
             $rs = $this->oauthCommon->SignRequest($url, "post", $params, $oauth2_access_token, "");
             
-            echo "<pre>";print_r($rs);echo "</pre>";
             return $rs;
             
         }

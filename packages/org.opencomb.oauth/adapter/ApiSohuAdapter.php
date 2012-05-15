@@ -20,6 +20,11 @@ class ApiSohuAdapter
         $this->oauthCommon = new OAuthCommon($aKey["appkey"],  $aKey["appsecret"]);
     }
     
+    public function getForwardNumber($token,$token_secret,$id)
+    {
+        return 0;
+    }
+    
     public function getUser($token,$token_secret)
     {
         $url = $this->arrAdapteeConfigs['api']['userinfo']['uri'];
