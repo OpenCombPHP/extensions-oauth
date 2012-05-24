@@ -264,7 +264,7 @@ class ApiTencentAdapter
             $aRsTmp['client'] = $aRs['from'];
             $aRsTmp['client_url'] = @$aRs['fromurl'];
             $aRsTmp['forwardcount'] = @$aRs['count'];
-            $aRsTmp['commentcount'] = $aRs['mcount'];
+            $aRsTmp['commentcount'] = @$aRs['mcount'];
             
             $aRsTmp['uid'] = $aRs['name'];
             $aRsTmp['username'] = $aRs['name'];
