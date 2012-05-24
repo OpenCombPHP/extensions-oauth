@@ -71,6 +71,16 @@ class ApiSinaWeiboAdapter
     	return $this->oauthCommon->SignRequest($url, "GET", $params, $o->token,  $o->token_secret,'weibo.com');
     }
     
+    public function getUserByNote($o,$sUid)
+    {
+        $url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+        $params['user_id'] = $sUid;
+        $sTmp = $this->oauthCommon->SignRequest($url, "GET", $params, $o->token,  $o->token_secret);
+        $aRs = json_decode($sTmp,true);
+        return $aRs['description'];
+    }
+    
     public function createFriendMulti($o,$uid){
     
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];

@@ -46,6 +46,19 @@ class ApiTencentAdapter
         return $aRS;
     }
     
+    
+    public function getUserByNote($o,$sUid)
+    {
+        $url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+        $params['name'] = $sUid;
+        
+        $sTmp = $this->oauthCommon->SignRequest($url, "GET", $params, $o->token,  $o->token_secret);
+        $aRS = json_decode($sTmp,true);
+        return $aRS['data']['introduction'];
+    }
+    
+    
     public function getUserByNickName($o,$sNickName)
     {
     	$url = $this->arrAdapteeConfigs['api']['usersearch']['uri'];

@@ -42,6 +42,18 @@ class Api163Adapter
         return $aRS;
     }
     
+    public function getUserByNote($o,$sUid)
+    {
+        $url = $this->arrAdapteeConfigs['api']['show']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['show']['params'];
+        $params['user_id'] = $sUid;
+    
+        $sTmp = $this->oauthCommon->SignRequest($url, "GET", $params, $o->token,  $o->token_secret);
+        $aRS = json_decode($sTmp,true);
+        
+        return $aRS['description'];
+    }
+    
 	public function getUserByNickName($o,$sNickName)
     {
     	$url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];

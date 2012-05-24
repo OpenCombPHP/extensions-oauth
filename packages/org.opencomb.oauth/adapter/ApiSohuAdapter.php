@@ -45,6 +45,18 @@ class ApiSohuAdapter
     	return $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret,'sohu.com');
     }
     
+    public function getUserByNote($o,$sUid)
+    {
+        $url = $this->arrAdapteeConfigs['api']['userotherinfo']['uri'];
+        $params = $this->arrAdapteeConfigs['api']['userotherinfo']['params'];
+        $url = preg_replace("/\{nickname\}/",$sUid,$url );
+        $sTmp = $this->oauthCommon->SignRequest($url, "get", $params, $o->token, $o->token_secret);
+        
+        $aRS = json_decode($sTmp,true);
+        
+        return $aRS['description'];
+    }
+    
     public function createFriendMulti($o,$uid){
         $url = $this->arrAdapteeConfigs['api']['createFriend']['uri'];
         $params = $this->arrAdapteeConfigs['api']['createFriend']['params'];
