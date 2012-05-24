@@ -192,7 +192,7 @@ class ApiTencentAdapter
     public function filterCommentCount($aRs){
     	$aRs = json_decode($aRs,true);
     	$aRs = $aRs['data'];
-    	if(isset($aRs['mcount'])){
+    	if(!isset($aRs['mcount'])){
     	    $aRsTemp['commentcount'] = 0;
     	    $aRsTemp['retweetcount'] = 0;
     	    return;
