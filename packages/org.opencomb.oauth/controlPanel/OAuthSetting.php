@@ -1,9 +1,10 @@
 <?php
-namespace org\opencomb\oauth\controlPanel ;
+/**
+ * 作废
+ * @author gaojun
+ */
 
-// use org\jecat\framework\message\Message;
-// use org\jecat\framework\setting\Setting;
-// use org\opencomb\platform\service\Service;
+namespace org\opencomb\oauth\controlPanel ;
 
 use org\opencomb\platform\ext\Extension;
 use org\opencomb\oauth\adapter\AdapterManager;

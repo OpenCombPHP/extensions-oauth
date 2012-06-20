@@ -1,10 +1,12 @@
 <h2>{=$oAuthName}</h2>
 <msgqueue />
 <form  method="post">
-	<!--<label>选择是否使用:<widget id="do_checkbox" /></label><br/>-->
-	<label>appKey:<widget id="appKey_text" /></label><br/>
-	<label>appSecret:<widget id="appSecret_text" /></label><br/>
+	<foreach for='$aOauthAppkey' item='v'>
+		<div><b>{=$v['name']}</b></div>
+		<label>是否显示:</label>&nbsp;&nbsp;<input type="checkbox" name="display[{=$v['name']}]" value='true' {=empty($v['display']) || $v['display'] == 'true' ? "checked='checked'":''} />
+		<label>appKey:</label>&nbsp;&nbsp;<input name="appKey_text[{=$v['name']}]" value='{=$v['appKey']}' />
+		<label>appSecret:</label>&nbsp;&nbsp;<input name="appSecret_text[{=$v['name']}]" value='{=$v['appSecret']}' />
+		<hr/>
+	</foreach>
 	<input type="submit" value="保存" />
 </form>
-
-<hr/>

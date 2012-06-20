@@ -1,6 +1,8 @@
 <?php 
 namespace org\opencomb\oauth ;
 
+use org\opencomb\coresystem\mvc\controller\ControlPanel;
+
 use org\jecat\framework\lang\aop\AOP;
 
 use org\opencomb\oauth\adapter\AdapterManager;
@@ -27,12 +29,7 @@ class OAuth extends Extension
 // 		UserModelAspect.php
 
 		// 注册菜单build事件的处理函数
-		Menu::registerBuildHandle(
-				'org\\opencomb\\coresystem\\mvc\\controller\\ControlPanelFrame'
-				, 'frameView'
-				, 'mainMenu'
-				, array(__CLASS__,'buildControlPanelMenu')
-		) ;
+		ControlPanel::registerMenuHandler( array(__CLASS__,'buildControlPanelMenu') ) ;
 		
 		AOP::singleton ()->registerBean ( array (
 			// jointpoint

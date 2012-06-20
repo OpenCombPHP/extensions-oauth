@@ -1,72 +1,58 @@
 <?php
 namespace org\opencomb\oauth\controlPanel;
 
+use org\opencomb\coresystem\mvc\controller\ControlPanel;
+
 use org\opencomb\coresystem\mvc\controller\Controller;
 use org\opencomb\platform\ext\Extension;
 
-class OAuthItem extends Controller
+/**
+ * 设置appkey
+ * @author gaojun
+ *
+ */
+
+class OAuthItem extends ControlPanel
 {
-	public function createBeanConfig()
-	{
-		$arrBean = array(
-			'view:authItem' => array(
+	protected $arrConfig = array(
+			'view'=>array(
 				'template' => 'OAuthItem.html' ,
-				'class' => 'form' ,
-				'widgets'=>array(
-						 array(
-								'id'=>'appKey_text',
-								'class'=>'text',
-								'title'=>'appKey',
-								'verifier:notempty'=>array(),
-								'verifier:length'=>array(
-										'min'=>5,
-										'max'=>10)
-						),
-						 array(
-								'id'=>'appSecret_text',
-								'class'=>'text',
-								'title'=>'appSecret',
-								'verifier:notempty'=>array(),
-								'verifier:length'=>array(
-										'min'=>5,
-										'max'=>32)
-						),
-						//是否使用appkey
-						/*
-						array(
-								'id'=>'do_checkbox',
-								'class'=>'checkbox',
-								'checked'=>1,
-								//'type'=>'radio',
-						)
-						*/
-				)
-			)
-		) ;
-		return $arrBean;
-	}
+			),
+	) ;	
 	
 	public function process()
 	{
 		$aSetting = Extension::flyweight('oauth')->setting();
-		$akey=$aSetting->key('/'.'dalian',true);
-		$this->viewAuthItem->widget('appKey_text')->setValue($this->params->get('appKey'));
-		$this->viewAuthItem->widget('appSecret_text')->setValue($this->params->get('appSecret'));
-		$this->viewAuthItem->variables()->set('oAuthName',$this->params->get('name')) ;
 		
-		if ($this->viewAuthItem->isSubmit ( $this->params ))
+		$aOauthAppkey = array(
+		    array('name'=>'163.com'),     
+		    array('name'=>'douban.com'),     
+		    array('name'=>'renren.com'),     
+		    array('name'=>'sohu.com'),     
+		    array('name'=>'t.qq.com'),     
+		    array('name'=>'weibo.com'),     
+        );
+		
+		for($i = 0; $i < sizeof($aOauthAppkey); $i++)
 		{
-			
-			$this->viewAuthItem->loadWidgets ( $this->params );
-			$skey = $this->params->get('domain');
-			$sappKey = $this->viewAuthItem->widget('appKey_text')->value();
-			$sappSecret = $this->viewAuthItem->widget('appSecret_text')->value();
-			$aSetting->setItem('/'.$skey,'appKey',trim($sappKey));
-			$aSetting->setItem('/'.$skey,'appSecret',trim($sappSecret));
-			if (! $this->viewAuthItem->verifyWidgets ())
-			{
-				//break;
-			}
+		    $aOauthAppkey[$i]['appKey'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appKey');
+		    $aOauthAppkey[$i]['appSecret'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appSecret');
+		    $aOauthAppkey[$i]['flag'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('flag');
+		    $aOauthAppkey[$i]['display'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('display');
+		}
+		
+		$this->view()->variables()->set('aOauthAppkey',$aOauthAppkey ) ;
+		
+		if ($_POST)
+		{
+		    for($i = 0; $i < sizeof($aOauthAppkey); $i++)
+		    {
+		        $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('appKey',trim($_POST['appKey_text'][$aOauthAppkey[$i]['name']]));
+			    $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('appSecret',trim($_POST['appSecret_text'][$aOauthAppkey[$i]['name']]));
+			    $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('display', !empty($_POST['display'][$aOauthAppkey[$i]['name']]) ? :'false');
+		    }
+		    
+		    $this->location('?c=org.opencomb.oauth.controlPanel.OAuthItem');
 		};
 	}
 }
