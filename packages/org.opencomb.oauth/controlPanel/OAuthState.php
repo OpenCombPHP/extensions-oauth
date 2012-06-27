@@ -1,48 +1,37 @@
 <?php
 namespace org\opencomb\oauth\controlPanel ;
 
+use org\jecat\framework\mvc\model\Model;
+
 use org\opencomb\coresystem\user\UserPanel;
 
 class OAuthState extends UserPanel
 {
-	public function createBeanConfig()
-	{
-		$aId = $this->requireLogined() ;
-	    
-		$arrBean = array(
-            'frame' => array(
-                	'class'=>'org\\opencomb\\coresystem\\mvc\\controller\\UserPanelFrame',
-             ) ,
-			'view:oauth' => array(
-				'template' => 'oauth:OAuthState.html' ,
-				'model' => 'auser' ,
-			) ,
-            'model:auser' => array(
-            	'orm' => array(
-            		'table' => 'oauth:user' ,
-		            'keys'=>array('uid','suid'),
-        			'where' => array("uid=@1",array($aId->userId())) ,
-            	) ,
-                'list' => true,
-            ) ,
-		);
-		
-		return $arrBean;
-	}
+	protected $arrConfig = array(
+	        'frame' => array(
+	                'class'=>'org\\opencomb\\coresystem\\mvc\\controller\\UserPanelFrame',
+	        ) ,
+	        'view' => array(
+	                'template' => 'oauth:OAuthState.html' ,
+	        ) ,
+	) ;	
 	
 	public function process()
 	{
 		$aId = $this->requireLogined() ;
 		
-	    $this->auser->load();
+		$model = Model::create('oauth:user');
+		$model->where("uid='{$aId->userId()}'");
+	    $model->load();
 	    
-	    if(!$this->auser){
+	    if(!$model){
 	    	return;
 	    }
+	    
 	    $arrServices= array('t.qq.com', 'sohu.com' , '163.com' , 'weibo.com' ,'renren.com' ,'douban.com');
 	    $arrServiceModels = array();
 	    foreach($arrServices as $sService){
-	    	foreach($this->auser->childIterator() as $aModel){
+	    	foreach($model as $aModel){
 	    		if($aModel['service'] == $sService && $aModel['token'] !== ''){
 	    			$arrServiceModels[$sService] = $aModel;
 	    			break;
@@ -54,6 +43,7 @@ class OAuthState extends UserPanel
 	    	}
 	    }
 	    
+	    $this->view()->setModel($model);
 	    $this->viewOauth->variables()->set('arrServiceModels',$arrServiceModels) ;
 	}
 }

@@ -20,7 +20,8 @@ class OAuth extends Extension
 	public function load()
 	{
 		$aWeaveMgr = WeaveManager::singleton() ;
-		$aWeaveMgr->registerTemplate( "coresystem:Login.html", '/div@0/form@0/a@0', 'oauth:user/LoginForWeiboCom.html', Patch::appendAfter ) ;
+		$aWeaveMgr->registerTemplate( "coresystem:Login.html", '/div@0', 'oauth:user/LoginForWeiboCom.html', Patch::appendAfter ) ;
+		
 		
 		// --------------------------
 		// 提供给系统序列化

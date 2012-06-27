@@ -8,22 +8,10 @@ use org\jecat\framework\mvc\controller\Controller;
 
 class RefreshBind extends Controller
 {
-	public function createBeanConfig()
-	{
-		$arrBean = array(
-            'model:auser' => array(
-            	'orm' => array(
-            		'table' => 'oauth:user' ,
-		            'keys'=>array('uid','suid'),
-            	) ,
-            ) ,
-		);
-		
-		return $arrBean;
-	}
-	
 	public function process()
 	{
+	    $this->model('oauth:user');
+	    
 		if( empty($this->params['service']) )
 		{
 			$this->createMessage(Message::error,"缺少参数 service") ;
@@ -37,11 +25,12 @@ class RefreshBind extends Controller
 			return ;
 		}
 		
-		$this->auser->loadSql("service = @1 AND suid = @2" , $this->params["service"] , $this->params["id"]);
+		$this->model('oauth:user')->where("service = '{$this->params["service"]}' AND suid = '{$this->params["id"]}'");
+		$this->model('oauth:user')->load();
 		
         try{
-            $aAdapter = AdapterManager::singleton()->createApiAdapter($this->auser->service) ;
-            $aRs = $aAdapter->refreshTtoken($this->auser->token,$this->auser->token_secret);
+            $aAdapter = AdapterManager::singleton()->createApiAdapter($this->model('oauth:user')->service) ;
+            $aRs = $aAdapter->refreshTtoken($this->model('oauth:user')->token,$this->model('oauth:user')->token_secret);
         }catch(AuthAdapterException $e){
             $this->createMessage(Message::error,$e->messageSentence(),$e->messageArgvs()) ;
             $this->messageQueue()->display() ;
@@ -50,9 +39,12 @@ class RefreshBind extends Controller
 		
 		$aRs = json_decode($aRs,true);
 		
-		$this->auser->setData('token',$aRs['access_token']);
-		$this->auser->setData('token_secret',$aRs['refresh_token']);
-		$this->auser->save();
+		$this->model('oauth:user')->insert(
+            array(
+                    'token' => $aRs['access_token'],
+                    'token_secret' => $aRs['refresh_token'],
+            )		        
+        );
 		
 		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}

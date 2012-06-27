@@ -1,6 +1,8 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
+use org\jecat\framework\mvc\model\Model;
+
 use org\jecat\framework\message\Message;
 use org\jecat\framework\mvc\controller\Controller;
 
@@ -22,6 +24,8 @@ class RemoveBind extends Controller
 	
 	public function process()
 	{
+	    $aModel = Model::create('oauth:user');
+	    
 		if( empty($this->params['service']) )
 		{
 			$this->createMessage(Message::error,"缺少参数 service") ;
@@ -35,8 +39,7 @@ class RemoveBind extends Controller
 			return ;
 		}
 		
-		$this->auser->loadSql("service = @1 AND suid = @2" , $this->params["service"] , $this->params["id"]);
-		$this->auser->delete();
+		$aModel->delete("service = '{$this->params["service"]}' AND suid = '{$this->params["id"]}'");
 		
 		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}

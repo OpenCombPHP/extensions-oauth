@@ -1,24 +1,21 @@
 <?php
 namespace org\opencomb\oauth\auth ;
 
+use org\opencomb\coresystem\mvc\controller\UserSpace;
+
 use org\opencomb\coresystem\user\UserPanel;
 use org\jecat\framework\mvc\controller\HttpRequest;
 use org\opencomb\oauth\adapter\AuthAdapterException;
 use org\opencomb\oauth\adapter\AdapterManager;
 use org\jecat\framework\message\Message;
 
-class AuthorizeRequest extends UserPanel
+class AuthorizeRequest extends UserSpace
 {
-	public function createBeanConfig()
-	{
-	    return array(
-		
-			// 视图
-			'view' => array(
-				'template' => 'oauth:auth/AuthorizeRequest.html' ,
-			) ,
-		) ;
-	}
+	protected $arrConfig = array(
+			'view'=>array(
+				'template' => 'auth/AuthorizeRequest.html' ,
+			),
+	) ;	
 	
 	public function process()
 	{
@@ -44,7 +41,7 @@ class AuthorizeRequest extends UserPanel
 		}
 		
 		// 取得未授权 request token
-		$sCallbackUrl = HttpRequest::singleton()->urlNoQuery().'?c=org.opencomb.oauth.auth.AuthoritionObtaining&act=form' ;
+		$sCallbackUrl = HttpRequest::singleton()->urlNoQuery().'?c=org.opencomb.oauth.auth.AuthoritionObtaining&a=auth.AuthoritionObtaining::form' ;
 		$sCallbackUrl.= '&' . http_build_query(array(
 			'operation'=>$this->params['operation'] ,
 			'service'=>$this->params['service'] ,
@@ -65,6 +62,9 @@ class AuthorizeRequest extends UserPanel
 		}
 
 		// 重定向引导用户授权
+		
+		echo "<pre>";print_r($sRequestUrl);echo "</pre>";exit;
+		
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
 		$this->location( $sRequestUrl , 3) ;
 	}
