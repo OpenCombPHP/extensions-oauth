@@ -18,4 +18,11 @@
 	
 	<publicFolder folder="/public" />
 	
+	
+	<!-- 依赖蜂巢系统 -->
+	<require type="framework"><![CDATA[ =0.8 ]]></require>
+	<require type="platform"><![CDATA[ =0.4 ]]></require>
+	<!-- 依赖扩展 -->
+	<require type="extension" item="coresystem"><![CDATA[ =0.2 ]]></require>
+	
 </Extension>
