@@ -19,37 +19,25 @@ class OAuth extends Extension
 	 */
 	public function load()
 	{
-		$aWeaveMgr = WeaveManager::singleton() ;
-		$aWeaveMgr->registerTemplate( "coresystem:Login.html", '/div@0', 'oauth:user/LoginForWeiboCom.html', Patch::appendAfter ) ;
-		
-		
 		// --------------------------
 		// 提供给系统序列化
 		ServiceSerializer::singleton()->addSystemObject(AdapterManager::singleton()) ;
-		
-// 		UserModelAspect.php
 
 		// 注册菜单build事件的处理函数
 		ControlPanel::registerMenuHandler( array(__CLASS__,'buildControlPanelMenu') ) ;
-		
-		AOP::singleton ()->registerBean ( array (
-			// jointpoint
-			'org\\opencomb\\coresystem\\user\\UserModel::loadModel()',
-			// advice
-		array (
-			'org\\opencomb\\oauth\\UserModelAspect', // 在Controller的派生显示时套用wonei的frame
-			'loadModel'
-			)
-		), __FILE__ );
+	}
+
+	public function initRegisterUITemplateWeave(WeaveManager $aWeaveMgr)
+	{
+		$aWeaveMgr->registerTemplate( "coresystem:user/Login.html", '/div@0', 'oauth:user/LoginOAuth.html', Patch::appendAfter ) ;
 	}
 	
 	static public function buildControlPanelMenu(array & $arrConfig)
 	{
 		// 合并配置数组，增加菜单
 		$arrConfig['item:system']['item:platform-manage']['item:oauth']=array (
-		  		'title'=>'OAuth' ,
-		  		'link' => '?c=org.opencomb.oauth.controlPanel.OAuthSetting' ,
-		  		'query' => 'c=org.opencomb.oauth.controlPanel.OAuthSetting' ,
+		  		'title'=>'OAuth设置' ,
+		  		'controller' => 'org.opencomb.oauth.controlPanel.OAuthSetting' ,
 		) ;
 	}
 }
