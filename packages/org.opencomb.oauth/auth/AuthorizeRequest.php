@@ -63,8 +63,6 @@ class AuthorizeRequest extends UserSpace
 
 		// 重定向引导用户授权
 		
-		echo "<pre>";print_r($sRequestUrl);echo "</pre>";exit;
-		
 		$this->createMessage( Message::notice,"正在请求%s授权...", AdapterManager::singleton()->arrAdapteeConfigs[$this->params['service']]['name'] ) ;
 		$this->location( $sRequestUrl , 3) ;
 	}

@@ -10,19 +10,12 @@
 	</description>
  
 	<class>org.opencomb.oauth.OAuth</class>
-	<package folder="/packages/org.opencomb.oauth" namespace="org.opencomb.oauth" />
-	<package folder="/packages/net.daichen.oauth" namespace="net.daichen.oauth" />
-	<package folder="/packages/am.abrah.oauth" namespace="am.abrah.oauth" />
+	<package folder="/packages/org.opencomb.oauth" namespace="org.opencomb.oauth"/>
+	<package folder="/packages/net.daichen.oauth" namespace="net.daichen.oauth"/>
+	<package folder="/packages/am.abrah.oauth" namespace="am.abrah.oauth"/>
  
-	<template folder="/template" />
+	<template folder="/template"/>
 	
-	<publicFolder folder="/public" />
+	<publicFolder folder="/public"/>
 	
-	
-	<!-- 依赖蜂巢系统 -->
-	<require type="framework"><![CDATA[ =0.8 ]]></require>
-	<require type="platform"><![CDATA[ =0.4 ]]></require>
-	<!-- 依赖扩展 -->
-	<require type="extension" item="coresystem"><![CDATA[ =0.2 ]]></require>
-	
-</Extension>
+<data><installer>org\opencomb\oauth\setup\DataInstaller</installer></data></Extension>

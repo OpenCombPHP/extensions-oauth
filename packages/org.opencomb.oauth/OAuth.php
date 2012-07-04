@@ -37,7 +37,7 @@ class OAuth extends Extension
 		// 合并配置数组，增加菜单
 		$arrConfig['item']['system']['item']['platform-manage']['item']['oauth']=array (
 		  		'title'=>'OAuth设置' ,
-		  		'controller' => 'org.opencomb.oauth.controlPanel.OAuthSetting' ,
+		  		'controller' => 'org.opencomb.oauth.controlPanel.OAuthItem' ,
 		) ;
 	}
 }
