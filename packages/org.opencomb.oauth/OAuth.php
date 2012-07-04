@@ -35,7 +35,7 @@ class OAuth extends Extension
 	static public function buildControlPanelMenu(array & $arrConfig)
 	{
 		// 合并配置数组，增加菜单
-		$arrConfig['item:system']['item:platform-manage']['item:oauth']=array (
+		$arrConfig['item']['system']['item']['platform-manage']['item']['oauth']=array (
 		  		'title'=>'OAuth设置' ,
 		  		'controller' => 'org.opencomb.oauth.controlPanel.OAuthSetting' ,
 		) ;
