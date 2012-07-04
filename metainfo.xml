@@ -18,4 +18,8 @@
 	
 	<publicFolder folder="/public"/>
 	
+	<data>
+		<version>0.1</version>
+	</data>
+	
 </Extension>
