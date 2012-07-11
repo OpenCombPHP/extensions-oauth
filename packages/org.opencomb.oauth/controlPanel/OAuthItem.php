@@ -34,11 +34,20 @@ class OAuthItem extends ControlPanel
         );
 		
 		for($i = 0; $i < sizeof($aOauthAppkey); $i++)
-		{
-		    $aOauthAppkey[$i]['appKey'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appKey');
-		    $aOauthAppkey[$i]['appSecret'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appSecret');
-		    $aOauthAppkey[$i]['flag'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('flag');
-		    $aOauthAppkey[$i]['display'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('display');
+		{	
+			if($aSetting->hasItem( $aOauthAppkey[$i]['name'], 'appKey'))
+			{
+				$aOauthAppkey[$i]['appKey'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appKey');
+				$aOauthAppkey[$i]['appSecret'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appSecret');
+				$aOauthAppkey[$i]['flag'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('flag');
+				$aOauthAppkey[$i]['display'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('display');
+			}else{
+				$aOauthAppkey[$i]['appKey'] = '';
+				$aOauthAppkey[$i]['appSecret'] = '';
+				$aOauthAppkey[$i]['flag'] = '';
+				$aOauthAppkey[$i]['display'] = '';
+			}
+
 		}
 		
 		$this->view()->variables()->set('aOauthAppkey',$aOauthAppkey ) ;
