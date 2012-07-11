@@ -46,6 +46,6 @@ class RefreshBind extends Controller
             )		        
         );
 		
-		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
+		$this->location( "?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}
 }

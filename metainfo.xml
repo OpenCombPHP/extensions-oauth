@@ -18,4 +18,8 @@
 	
 	<publicFolder folder="/public"/>
 	
-<data><installer>org\opencomb\oauth\setup\DataInstaller</installer></data></Extension>
+<data>		<version>
+			0.2
+		</version><installer>org\opencomb\oauth\setup\DataInstaller</installer></data>
+
+</Extension>

@@ -41,6 +41,6 @@ class RemoveBind extends Controller
 		
 		$aModel->delete("service = '{$this->params["service"]}' AND suid = '{$this->params["id"]}'");
 		
-		$this->location( "/?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
+		$this->location( "?c=org.opencomb.oauth.controlPanel.OAuthState" ) ;
 	}
 }
