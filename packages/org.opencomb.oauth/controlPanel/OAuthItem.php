@@ -37,17 +37,16 @@ class OAuthItem extends ControlPanel
 		{	
 			if($aSetting->hasItem( $aOauthAppkey[$i]['name'], 'appKey'))
 			{
-				$aOauthAppkey[$i]['appKey'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appKey');
-				$aOauthAppkey[$i]['appSecret'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('appSecret');
-				$aOauthAppkey[$i]['flag'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('flag');
-				$aOauthAppkey[$i]['display'] = $aSetting->key( $aOauthAppkey[$i]['name'] )->item('display');
+				$aOauthAppkey[$i]['appKey'] = $aSetting->item($aOauthAppkey[$i]['name'],'appKey');
+				$aOauthAppkey[$i]['appSecret'] = $aSetting->item($aOauthAppkey[$i]['name'],'appSecret');
+				$aOauthAppkey[$i]['flag'] = $aSetting->item($aOauthAppkey[$i]['name'],'flag');
+				$aOauthAppkey[$i]['display'] = $aSetting->item($aOauthAppkey[$i]['name'],'display');
 			}else{
 				$aOauthAppkey[$i]['appKey'] = '';
 				$aOauthAppkey[$i]['appSecret'] = '';
 				$aOauthAppkey[$i]['flag'] = '';
 				$aOauthAppkey[$i]['display'] = '';
 			}
-
 		}
 		
 		$this->view()->variables()->set('aOauthAppkey',$aOauthAppkey ) ;
@@ -56,9 +55,9 @@ class OAuthItem extends ControlPanel
 		{
 		    for($i = 0; $i < sizeof($aOauthAppkey); $i++)
 		    {
-		        $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('appKey',trim($_POST['appKey_text'][$aOauthAppkey[$i]['name']]));
-			    $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('appSecret',trim($_POST['appSecret_text'][$aOauthAppkey[$i]['name']]));
-			    $aSetting->key( $aOauthAppkey[$i]['name'] )->setItem('display', !empty($_POST['display'][$aOauthAppkey[$i]['name']]) ? :'false');
+		        $aSetting->setItem($aOauthAppkey[$i]['name'],'appKey',trim($_POST['appKey_text'][$aOauthAppkey[$i]['name']]));
+			    $aSetting->setItem($aOauthAppkey[$i]['name'],'appSecret',trim($_POST['appSecret_text'][$aOauthAppkey[$i]['name']]));
+			    $aSetting->setItem($aOauthAppkey[$i]['name'],'display', !empty($_POST['display'][$aOauthAppkey[$i]['name']]) ? :'false');
 		    }
 		    
 		    $this->location('?c=org.opencomb.oauth.controlPanel.OAuthItem');
